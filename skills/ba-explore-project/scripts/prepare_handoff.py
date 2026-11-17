@@ -34,7 +34,7 @@ def load_json(path):
 
 
 def validate_inventory(project, inventory_path):
-    path = project.path(inventory_path)
+    path = project.temporary_path(inventory_path)
     digest = sha(path) if path.is_file() else None
     data = load_json(path)
     contract = load_json(SKILL / "references/exploration.schema.json")

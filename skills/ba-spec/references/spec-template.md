@@ -6,12 +6,12 @@ document_type: spec
 project_id: agent-notes
 status: draft
 source_documents:
-- path: .specify/_planning/drafts/PBI-001/business.md
-  sha256: b145a0531ccf204e1ae02e21f2ffdaa70caf962bcebe7a54dbdd7bbdf0853eb7
-- path: .specify/_planning/requirements.md
-  sha256: 6b105dd6e09ee90b872a66650ed5b2e3df8fe596f2c5e457498b3dad49284556
-- path: .specify/_planning/product-backlog.md
-  sha256: 9d235920a1ea615bd6420162e3812b9ae1b382bb4576d5cba6ac04c1887d8726
+- path: .temp/drafts/PBI-001/business.md
+  sha256: a2c9717006738f9c2732959a15c9bdd5af57820e0cb56c0e019d8d4dfa7060ed
+- path: .temp/requirements.md
+  sha256: c947f2712fcce64155b0661af3c3069fc99df6fc05512d965506b40082fb6237
+- path: .temp/product-backlog.md
+  sha256: 1093307639ac1f18571232aa33c1dce49bce7f7122ec83859139bf1b1ae259cc
 generated_by: ba-spec
 pbi_id: PBI-001
 epic_id: EPIC-001

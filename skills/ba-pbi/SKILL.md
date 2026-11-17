@@ -15,6 +15,8 @@ Bắt buộc: mô tả tính năng/thay đổi và project đang làm việc. Op
 
 ## Input Validation
 
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+
 Load config; nếu chưa có, đề xuất [template](../../templates/ba-project.example.yaml) và xác nhận các giá trị thiết yếu trước khi tạo hồ sơ. Validate brainstorm, requirements, backlog đang có bằng helper BA, gồm expected type, project/version, refs và source hashes.
 
 Thiếu hồ sơ nền: báo chính xác file/skill upstream. Nếu chưa có căn cứ để gắn PBI vào CAP/REQ thì đề xuất ba-explore-project cho hiện trạng hoặc bootstrap bằng ba-workflow với phạm vi tối thiểu; chỉ điều phối bootstrap khi nằm trong yêu cầu hoặc người dùng cho phép. Không tạo baseline giả, không biến “thêm một PBI” thành tái phân tích toàn dự án.

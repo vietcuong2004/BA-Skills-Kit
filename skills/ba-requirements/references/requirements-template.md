@@ -6,7 +6,7 @@ document_type: requirements
 project_id: agent-notes
 status: draft
 source_documents:
-- path: .specify/_planning/brainstorm.md
+- path: .temp/brainstorm.md
   sha256: 938a9a472fe6d3e586528e10b8463a1ddff1e125c3f8b2cc84dd11a9724c941c
 - path: scenario.txt
   sha256: b677361b715a3f5d8f19fb47d15ccbf1bbb6bd362414dcd32daa4966f295f0a8

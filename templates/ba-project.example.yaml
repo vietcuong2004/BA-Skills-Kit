@@ -3,7 +3,7 @@ project_id: example-notes
 project_name: Example Notes
 repository_root: .
 output_root: .specify
-planning_dir: .specify/_planning
+planning_dir: .temp
 round_prefix: R
 pbi_prefix: PBI
 language: vi

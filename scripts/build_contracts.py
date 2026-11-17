@@ -59,7 +59,9 @@ def write(name, schema):
 
 def main():
     write("project-config", obj({"config_version": {"const": "1.0"}, "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
-        "project_name": S, "repository_root": S, "output_root": S, "planning_dir": S,
+        "project_name": S, "repository_root": S,
+        "output_root": {**S, "default": ".specify", "description": "Published Round/PBI pairs only; must be disjoint from .temp."},
+        "planning_dir": {**S, "default": ".temp", "description": "Must resolve to project/.temp or a directory below it. Never inside output_root."},
         "round_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
         "pbi_prefix": {"type": "string", "pattern": "^[A-Z][A-Z0-9]*$"}, "language": S,
         "skill_runtime": {"const": "codex"}, "approval_policy": {"const": "human_checkpoints"}}))

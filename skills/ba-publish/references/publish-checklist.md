@@ -1,5 +1,7 @@
 # Checklist publish
 
+- Layout: `.specify` chỉ có Round/PBI/{business.md,spec.md}; planning_dir dưới `.temp`. Audit toàn output trước và sau publish, staging/log/manifest ở `.temp`, không tạo `_planning` trong output.
+
 - Đúng config/root/project và PBI được chọn; Round allocation duy nhất, dependency hợp lệ.
 - Nguồn backlog/requirements/brainstorm/business/spec/round/review không stale; review bao phủ đúng draft bytes.
 - Review PASS hoặc CONDITIONAL + explicit Draft Publication; không blocker.

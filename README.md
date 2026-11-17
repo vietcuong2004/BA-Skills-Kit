@@ -6,13 +6,13 @@ BA Skills Kit gồm **9 skill pipeline và 2 skill phụ: khảo sát dự án h
 
 Bạn **không cần biết cách viết PBI ngay từ đầu**. Hãy mô tả sản phẩm muốn xây dựng bằng ngôn ngữ thông thường; bộ Skills sẽ hỗ trợ phân tích từng bước, tạo tài liệu để bạn đọc, chỉnh sửa và phê duyệt. **AI không thay thế người quyết định nghiệp vụ.**
 
-> **Ví dụ:** “Tôi muốn làm website MISA Note, có ghi chú cá nhân, ghi chú công ty, tạo tài liệu từ mẫu, tìm kiếm và chia sẻ tài liệu.”
+> **Ví dụ:** “Tôi muốn xây dựng your-project cho [nhóm người dùng], hỗ trợ [các chức năng chính] để giải quyết [nhu cầu hoặc vấn đề].”
 >
 > Từ mô tả này, bộ Kit giúp làm rõ yêu cầu, chia nhỏ thành PBI, đề xuất PBI nào thực hiện ở R1/R2, rồi tạo `business.md` và `spec.md` cho từng PBI được chọn.
 
 ## 1. BA Skills Kit giải quyết vấn đề gì?
 
-Khi bắt đầu một dự án, ý tưởng thường mới chỉ là một vài câu: *“Tôi muốn có tính năng tạo ghi chú, quản lý thư mục, chia sẻ tài liệu…”* Nhưng để Developer xây dựng và QA kiểm thử, nhóm dự án còn phải làm rõ:
+Khi bắt đầu một dự án, ý tưởng thường mới chỉ là một vài câu: *“Tôi muốn có chức năng tạo, chỉnh sửa, tìm kiếm và phân quyền truy cập dữ liệu…”* Nhưng để Developer xây dựng và QA kiểm thử, nhóm dự án còn phải làm rõ:
 
 - **Ai** sử dụng tính năng và **vì sao** họ cần nó?
 - Người dùng sẽ thao tác **như thế nào**? Phần mềm phải phản hồi ra sao?
@@ -29,9 +29,9 @@ Nếu yêu cầu chưa rõ, nhóm phát triển dễ hiểu khác nhau, thiếu 
 |---|---|
 | **BA** | Người phân tích nhu cầu, quy trình và yêu cầu phần mềm. |
 | **Skill** | Bộ hướng dẫn để AI thực hiện một công việc cụ thể theo quy tắc đã định. |
-| **Epic** | Nhóm công việc lớn, ví dụ *Quản lý ghi chú*. |
-| **Feature** | Một nhóm chức năng thuộc Epic, ví dụ *Ghi chú cá nhân*. |
-| **PBI** | Một phần việc cụ thể trong Product Backlog, có phạm vi và kết quả kiểm chứng được; ví dụ *Tạo ghi chú cá nhân*. |
+| **Epic** | Nhóm công việc lớn, ví dụ *Quản lý hồ sơ*. |
+| **Feature** | Một nhóm chức năng thuộc Epic, ví dụ *Tiếp nhận hồ sơ*. |
+| **PBI** | Một phần việc cụ thể trong Product Backlog, có phạm vi và kết quả kiểm chứng được; ví dụ *Tạo hồ sơ mới*. |
 | **Product Backlog** | Danh sách các PBI cần xem xét, ưu tiên và thực hiện. |
 | **Round** | Đợt triển khai gồm các PBI được chọn. Đây là cách tổ chức của nhóm dự án; không mặc định giống hoàn toàn Scrum Sprint. |
 | **Acceptance Criteria (AC)** | Các điều kiện nghiệm thu: làm thế nào để biết tính năng đáp ứng yêu cầu. |
@@ -100,23 +100,23 @@ BẠN NHẬP Ý TƯỞNG SẢN PHẨM
 
 Bạn có thể dùng **`ba-workflow`** để đi qua nhiều bước hoặc gọi **từng Skill riêng** khi chỉ cần làm một việc.
 
-## 3. Ví dụ xuyên suốt: xây dựng MISA Note
+## 3. Ví dụ xuyên suốt: áp dụng cho your-project
 
 Giả sử bạn nhập:
 
-> Tôi muốn xây dựng website MISA Note cho cá nhân và doanh nghiệp. Người dùng có thể tạo ghi chú cá nhân, ghi chú công ty, tạo tài liệu nhanh từ mẫu, soạn thảo nội dung, tìm kiếm, tổ chức theo thư mục và chia sẻ tài liệu.
+> Tôi muốn xây dựng your-project để quản lý hồ sơ. Người dùng được cấp quyền có thể tạo, chỉnh sửa và tìm kiếm hồ sơ. Hãy giúp tôi làm rõ các yêu cầu và chia thành những phần việc có thể nghiệm thu.
 
-**Bước 1 – Làm rõ ý tưởng.** AI lập `brainstorm.md`, nhóm các năng lực như *Quản lý ghi chú*, *Soạn thảo tài liệu*, *Tìm kiếm*, *Chia sẻ*. Đồng thời ghi câu hỏi còn thiếu: ai được tạo ghi chú công ty, có cho phép chia sẻ ngoài công ty không, v.v.
+**Bước 1 – Làm rõ ý tưởng.** AI lập `brainstorm.md`, xác định các năng lực như *Quản lý hồ sơ*, *Tìm kiếm*, *Kiểm soát truy cập*. Đồng thời ghi câu hỏi còn thiếu: ai được tạo hồ sơ, những trường dữ liệu nào bắt buộc, quyền chỉnh sửa được xác định ra sao.
 
-**Bước 2 – Phân tích yêu cầu.** AI lập `requirements.md`. Ví dụ, từ nhóm *Quản lý ghi chú* có yêu cầu `REQ-001 – Tạo ghi chú cá nhân`, `REQ-002 – Chỉnh sửa ghi chú cá nhân`. Với mỗi yêu cầu, tài liệu mô tả hành vi, quy tắc và tình huống cần làm rõ.
+**Bước 2 – Phân tích yêu cầu.** AI lập `requirements.md`. Ví dụ, từ nhóm *Quản lý hồ sơ* có yêu cầu `REQ-001 – Tạo hồ sơ mới`, `REQ-002 – Chỉnh sửa hồ sơ`. Với mỗi yêu cầu, tài liệu mô tả hành vi, quy tắc và tình huống cần làm rõ.
 
 **Bước 3 – Lấy PBI từ yêu cầu.** AI lập `product-backlog.md`, ví dụ:
 
 ```text
-EPIC-001: Quản lý ghi chú
-└── FEAT-001: Ghi chú cá nhân
-    ├── PBI-001: Tạo ghi chú cá nhân    ← REQ-001
-    └── PBI-002: Chỉnh sửa ghi chú      ← REQ-002
+EPIC-001: Quản lý hồ sơ
+└── FEAT-001: Tiếp nhận và cập nhật hồ sơ
+    ├── PBI-001: Tạo hồ sơ mới        ← REQ-001
+    └── PBI-002: Chỉnh sửa hồ sơ      ← REQ-002
 ```
 
 Đây là bước trả lời câu hỏi **“PBI từ đâu mà có?”**: PBI được phân rã từ yêu cầu đã phân tích, không phải danh sách công việc AI nghĩ ra tùy ý. Bạn kiểm tra và điều chỉnh danh sách trước khi tiếp tục.
@@ -128,33 +128,39 @@ EPIC-001: Quản lý ghi chú
 - `business.md` trả lời **vì sao cần tính năng này, ai dùng, mang lại giá trị gì và giải pháp nghiệp vụ ra sao**.
 - `spec.md` trả lời **phần mềm phải hoạt động cụ thể thế nào và kiểm tra đúng/sai bằng tiêu chí gì**.
 
-Ví dụ `spec.md` có thể yêu cầu kiểm tra: tạo ghi chú thành công; nhập tiêu đề rỗng; bấm tạo nhiều lần; mất mạng khi lưu. Hành vi chưa được quyết định sẽ được ghi thành câu hỏi, **không tự coi là quy tắc đã duyệt**.
+Ví dụ `spec.md` có thể yêu cầu kiểm tra: tạo hồ sơ thành công; thiếu trường bắt buộc; bấm tạo nhiều lần; mất mạng khi lưu. Hành vi chưa được quyết định sẽ được ghi thành câu hỏi, **không tự coi là quy tắc đã duyệt**.
+
+`your-project` là tên thay thế cho dự án của bạn. Chức năng quản lý hồ sơ ở đây chỉ minh họa quy trình; hãy thay bằng đối tượng và nghiệp vụ thực tế của sản phẩm.
 
 **Bước 7 – Review.** AI so sánh tài liệu với yêu cầu gốc, phát hiện AC còn thiếu hoặc các luồng mâu thuẫn. Bạn xử lý những điểm cần quyết định.
 
 **Bước 8 – Xuất tài liệu.** Khi đủ điều kiện và được phép, bộ Kit tạo:
 
 ```text
-MISA-Note/
+your-project/
+├── .temp/
+│   ├── exploration/
+│   ├── brainstorm.md
+│   ├── requirements.md
+│   ├── product-backlog.md
+│   ├── round-plan.md
+│   ├── pbi-requests/
+│   ├── drafts/
+│   ├── reviews/
+│   ├── approvals.json
+│   └── workflow-state.md
 └── .specify/
-    ├── _planning/
-    │   ├── brainstorm.md
-    │   ├── requirements.md
-    │   ├── product-backlog.md
-    │   ├── round-plan.md
-    │   ├── drafts/
-    │   └── reviews/
     ├── R1/
-    │   ├── PBI-001-tao-ghi-chu-ca-nhan/
+    │   ├── PBI-001-tao-ho-so-moi/
     │   │   ├── business.md
     │   │   └── spec.md
-    │   └── PBI-002-chinh-sua-ghi-chu/
+    │   └── PBI-002-chinh-sua-ho-so/
     │       ├── business.md
     │       └── spec.md
     └── R2/
 ```
 
-**Mỗi thư mục PBI chính thức chỉ có hai file `business.md` và `spec.md`.** Báo cáo review và tài liệu phân tích tổng thể nằm riêng trong `_planning/`.
+**`.specify` chỉ chứa các Round; mỗi Round chứa các PBI và mỗi PBI có đúng hai file `business.md`, `spec.md`.** Tất cả báo cáo khảo sát, phân tích, backlog, kế hoạch, drafts, reviews, approvals, tiến độ và file tạm đều nằm trong `.temp/` bên cạnh `.specify`. `.temp` cần giữ lại để tiếp tục workflow và kiểm tra nguồn, không tự xóa sau publish.
 
 ## 4. Cần chuẩn bị gì trước khi sử dụng?
 
@@ -212,7 +218,7 @@ Hoặc chỉ cần: **“Dùng skill BA-PBI để viết một PBI mới cho tí
 
 Skill đề xuất ID/parent/requirement refs dựa trên hồ sơ thật, kiểm tra overlap, cập nhật nguồn tối thiểu khi cần và giữ lịch sử. Nếu chưa có hồ sơ BA nền, nó chỉ ra bước explore/bootstrap cần thiết. Yêu cầu quá lớn sẽ được đề nghị thu nhỏ/tách trước khi tạo, không tự nhét nhiều outcome vào một PBI.
 
-Output: request record trong `.specify/_planning/pbi-requests/`, backlog cập nhật và (sau duyệt scope) `drafts/PBI-ID/{business.md,spec.md}` cùng `reviews/PBI-ID-review.md`. Round là tùy chọn cho draft; publish là bước riêng. Xem [hướng dẫn BA-PBI](skills/ba-pbi/SKILL.md).
+Output: request record trong `.temp/pbi-requests/`, backlog cập nhật và (sau duyệt scope) `drafts/PBI-ID/{business.md,spec.md}` cùng `reviews/PBI-ID-review.md`. Round là tùy chọn cho draft; publish là bước riêng. Xem [hướng dẫn BA-PBI](skills/ba-pbi/SKILL.md).
 
 ### Dự án đã có giao diện và chức năng, nhưng bạn chưa biết hiện trạng
 
@@ -226,7 +232,7 @@ Dừng để tôi xem danh mục và chọn phạm vi trước khi chuyển sang
 
 Tên hiển thị là **BA-explore-project**, tên gọi kỹ thuật là `ba-explore-project`. Claude Code dùng `/ba-explore-project`; các agent khác có thể nhận câu “Dùng skill BA-explore-project để khảo sát dự án hiện tại”.
 
-Output mặc định nằm trong `.specify/_planning/exploration/`:
+Output mặc định nằm trong `.temp/exploration/`:
 
 - `project-exploration.json`: tính năng, mức xác minh, nguồn file/line/symbol và SHA-256.
 - `project-exploration.md`: báo cáo hiện trạng để bạn đọc và chọn phạm vi.
@@ -237,7 +243,7 @@ Sau khi đọc báo cáo, gửi:
 ```text
 $ba-workflow
 Tôi chọn tài liệu hóa [EXF IDs hoặc phân hệ] từ
-.specify/_planning/exploration/exploration-brief.md.
+.temp/exploration/exploration-brief.md.
 Đọc inventory và report cùng thư mục, dùng làm input cho ba-brainstorm.
 Tạo brainstorm → requirements → backlog mô tả hiện trạng, giữ evidence refs,
 mức xác minh và câu hỏi còn mở. Đưa raw source_documents do helper explore
@@ -254,8 +260,8 @@ Sau khi cài, mở Agent tại project và gửi **đoạn sau vào ô chat** (k
 ```text
 Dùng skill ba-workflow để phân tích dự án hiện tại.
 
-Ý tưởng của tôi: Tôi muốn xây dựng website ghi chú cho cá nhân và công ty,
-có tạo ghi chú, tạo tài liệu từ mẫu, tìm kiếm, quản lý thư mục và chia sẻ.
+Ý tưởng của tôi: Tôi muốn xây dựng your-project cho [nhóm người dùng],
+với các chức năng [liệt kê nhu cầu chính] để giải quyết [vấn đề hoặc mục tiêu].
 
 Hãy đọc tài liệu dự án hiện có để hiểu bối cảnh.
 Nếu có mã nguồn, phân biệt tính năng đã tồn tại và tính năng mới.
@@ -269,9 +275,9 @@ Dừng lại để tôi xem và duyệt Product Backlog trước khi lập Round
 **Sau lệnh này bạn sẽ nhận được gì?** Theo cấu hình mặc định, các file sau được tạo trong project:
 
 ```text
-.specify/_planning/brainstorm.md
-.specify/_planning/requirements.md
-.specify/_planning/product-backlog.md
+.temp/brainstorm.md
+.temp/requirements.md
+.temp/product-backlog.md
 ```
 
 Mở `product-backlog.md`, kiểm tra có thiếu PBI, trùng PBI hoặc chia PBI quá lớn không. Nếu chưa đúng, hãy yêu cầu sửa. **Không cần chạy lại từ đầu nếu chỉ cần điều chỉnh một phần**; Agent cần giữ ID và xác định các tài liệu bị ảnh hưởng.
@@ -292,7 +298,7 @@ Giải thích thứ tự ưu tiên và các phụ thuộc.
 Dừng để tôi xem kế hoạch trước khi viết tài liệu PBI.
 ```
 
-Kết quả: `.specify/_planning/round-plan.md`.
+Kết quả: `.temp/round-plan.md`.
 
 ### Lần 2: Chọn PBI cần viết chi tiết
 
@@ -310,9 +316,9 @@ Dừng sau review; chưa publish.
 Kết quả cho mỗi PBI, ví dụ:
 
 ```text
-.specify/_planning/drafts/PBI-001/business.md
-.specify/_planning/drafts/PBI-001/spec.md
-.specify/_planning/reviews/PBI-001-review.md
+.temp/drafts/PBI-001/business.md
+.temp/drafts/PBI-001/spec.md
+.temp/reviews/PBI-001-review.md
 ```
 
 Nếu review báo lỗi nghiêm trọng hoặc câu hỏi nghiệp vụ chưa giải quyết, hãy trả lời và yêu cầu sửa/review lại. **Review PASS không đồng nghĩa PO đã phê duyệt**.
@@ -393,7 +399,7 @@ Phân biệt **hai nơi**:
 - **BA-Skills-Kit:** bộ công cụ dùng chung; không chứa hồ sơ nghiệp vụ riêng của từng sản phẩm.
 - **Project của bạn:** nơi lưu `ba-project.yaml`, thư mục `.specify/`, backlog, Round và tài liệu PBI.
 
-Đó là lý do một máy có thể dùng cùng một BA Skills Kit cho MISA Note, CRM, ERP hoặc dự án khác mà không trộn dữ liệu giữa các project.
+Đó là lý do một máy có thể dùng cùng một BA Skills Kit cho nhiều dự án khác nhau mà không trộn dữ liệu giữa các project.
 
 ## 11. AI tự quyết được những gì?
 

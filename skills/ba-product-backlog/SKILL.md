@@ -11,6 +11,8 @@ Config, `{planning_dir}/brainstorm.md` và `requirements.md`. Đọc [convention
 
 ## Input Validation
 
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+
 Validate từng file với `--project-config <config> --file <path> --expected-type <type> --check-refs`. Cùng project/version, không stale; REQ.capability_refs phải tồn tại. Chưa đạt thì dừng tại nguồn lỗi.
 
 ## Data Extraction

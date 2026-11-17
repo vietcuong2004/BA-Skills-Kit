@@ -23,12 +23,16 @@
     "output_root": {
       "type": "string",
       "minLength": 1,
-      "pattern": "\\S"
+      "pattern": "\\S",
+      "default": ".specify",
+      "description": "Published Round/PBI pairs only; must be disjoint from .temp."
     },
     "planning_dir": {
       "type": "string",
       "minLength": 1,
-      "pattern": "\\S"
+      "pattern": "\\S",
+      "default": ".temp",
+      "description": "Must resolve to project/.temp or a directory below it. Never inside output_root."
     },
     "round_prefix": {
       "type": "string",

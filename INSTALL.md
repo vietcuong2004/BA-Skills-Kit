@@ -198,7 +198,7 @@ project_id: my-notes
 project_name: My Notes
 repository_root: .
 output_root: .specify
-planning_dir: .specify/_planning
+planning_dir: .temp
 round_prefix: R
 pbi_prefix: PBI
 language: vi
@@ -212,7 +212,7 @@ approval_policy: human_checkpoints
 | `project_name` | Tên sản phẩm hiển thị |
 | `repository_root` | Giữ `.`; đặt file cấu hình tại root project |
 | `output_root` | Giữ `.specify` nếu muốn dùng vị trí mặc định |
-| `planning_dir` | Giữ `.specify/_planning`; chứa phân tích, nháp, review và tiến độ |
+| `planning_dir` | Giữ `.temp`; chứa phân tích, nháp, review và tiến độ |
 | `round_prefix` / `pbi_prefix` | Giữ `R` / `PBI` khi mới dùng |
 | `language` | `vi` để nội dung tiếng Việt |
 | `skill_runtime` | **Giữ `codex` trên cả ba công cụ trong phiên bản Kit hiện tại**, xem giải thích dưới |
@@ -220,7 +220,17 @@ approval_policy: human_checkpoints
 
 **Giới hạn tương thích cấu hình:** schema hiện chỉ chấp nhận `skill_runtime: codex`. Trường này chưa được các helper dùng để chọn công cụ thực thi; nơi cài skill và công cụ bạn mở mới quyết định agent nào chạy. Đổi thành `claude` hoặc `antigravity` sẽ gây `INVALID_CONFIG`. Hướng dẫn này dùng khả năng cài vào thư mục tùy chọn của installer, chưa mở rộng enum của schema.
 
-Các output được resolve từ root project, không từ nơi cài skill hay nơi giữ Kit nguồn. Với ví dụ này, chúng nằm dưới `D:\Projects\MyProject\.specify`.
+Các đường dẫn được resolve từ root project, không từ nơi cài skill hay nơi giữ Kit nguồn. Với ví dụ này, chỉ cặp tài liệu publish nằm dưới `D:\Projects\MyProject\.specify`; hồ sơ trung gian nằm trong `.temp`.
+
+**Phân vùng bắt buộc:** `.specify` chỉ chứa Round/PBI-ID-slug/{business.md,spec.md}; toàn bộ hồ sơ làm việc nằm dưới `D:\Projects\MyProject\.temp`. Helper chặn planning_dir ở ngoài `.temp` hoặc output_root chồng lên `.temp`. Không xóa `.temp` sau publish vì source refs/hash và RESUME cần các file ở đó.
+
+**Project đã dùng bản cũ:** nếu config còn `planning_dir: .specify/_planning` hoặc `_planing`, đổi đường dẫn phải đi cùng chuyển dữ liệu và sửa refs/hash có kiểm soát theo [quy trình migration](conventions/BA-CONVENTIONS.md#chuyển-dự-án-đang-dùng-layout-cũ). Installer chỉ cập nhật skills, không tự di chuyển hồ sơ dự án. Có thể yêu cầu agent: “Chuyển hồ sơ BA trung gian từ layout cũ sang .temp, giữ các cặp Round/PBI, kiểm conflicts và refs/hash, không xóa dữ liệu; báo review/approval cần xác nhận lại.”
+
+Kiểm cấu trúc sau khi chuyển:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/check_ba_layout.py --project-config "D:/Projects/MyProject/ba-project.yaml" --check-documents
+```
 
 ## 5. Kiểm tra đã cài thành công
 
@@ -248,7 +258,7 @@ Cho biết đường dẫn planning/output đã resolve và skill nào còn thi�
 Chưa tạo hồ sơ phân tích cho tới khi tôi gửi ý tưởng.
 ```
 
-Sau đó dùng mẫu gọi tương ứng ở mục 3A, 3B hoặc 3C. Khi bạn gửi ý tưởng, agent thực hiện brainstorm → requirements → backlog và chờ bạn duyệt trước bước phụ thuộc. [README](README.md#5-làm-gì-khi-agent-dừng-để-hỏi-bạn) hướng dẫn các lần duyệt và đầu ra.
+Sau đó dùng mẫu gọi tương ứng ở mục 3A, 3B hoặc 3C. Khi bạn gửi ý tưởng, agent thực hiện brainstorm → requirements → backlog và chờ bạn duyệt trước bước phụ thuộc. [README](README.md#7-sau-khi-có-backlog-làm-tiếp-thế-nào) hướng dẫn các lần duyệt và đầu ra.
 
 ## 6. Tiếp tục hoặc chạy riêng một skill
 
@@ -318,7 +328,7 @@ Tại Kit nguồn mới, dùng **đúng thư mục đã cài trước đó**, th
 Các lệnh sau dùng Python của Kit, chạy tại thư mục Kit:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/validate_ba_document.py --project-config "D:/Projects/MyProject/ba-project.yaml" --file ".specify/_planning/drafts/PBI-001/spec.md" --expected-type spec --pbi-id PBI-001 --check-refs --format json
+.\.venv\Scripts\python.exe scripts/validate_ba_document.py --project-config "D:/Projects/MyProject/ba-project.yaml" --file ".temp/drafts/PBI-001/spec.md" --expected-type spec --pbi-id PBI-001 --check-refs --format json
 .\.venv\Scripts\python.exe scripts/workflow_state.py --project-config "D:/Projects/MyProject/ba-project.yaml"
 .\.venv\Scripts\python.exe scripts/publish_ba.py --project-config "D:/Projects/MyProject/ba-project.yaml" --pbi-id PBI-001
 ```

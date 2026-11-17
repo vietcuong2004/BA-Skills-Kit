@@ -29,4 +29,4 @@ Giữ mức xác minh, EXF/EVD evidence refs và câu hỏi còn mở trong tài
 Không diễn giải các PBI này thành tính năng cần xây mới. Dừng để tôi duyệt backlog.
 ```
 
-`{planning_dir}` phải thay bằng path config thật, thường `.specify/_planning`. Nếu hồ sơ BA đã có, đề nghị merge có kiểm soát, giữ CAP/REQ/PBI IDs và confirmed decisions thay vì overwrite. Không tự chuyển cả project sang scope mới chỉ vì quét thêm một module.
+`{planning_dir}` phải thay bằng path config thật, thường `.temp`. Nếu hồ sơ BA đã có, đề nghị merge có kiểm soát, giữ CAP/REQ/PBI IDs và confirmed decisions thay vì overwrite. Không tự chuyển cả project sang scope mới chỉ vì quét thêm một module.

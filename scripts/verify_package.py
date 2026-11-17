@@ -32,30 +32,32 @@ def main():
         project.mkdir()
         config = project / "ba-project.yaml"
         config.write_bytes((extracted / "templates/ba-project.example.yaml").read_bytes())
-        idea = project / "idea.txt"
+        idea = project / ".temp/inputs/idea.txt"
+        idea.parent.mkdir(parents=True)
         idea.write_text("Smoke-check a notes discovery document.", encoding="utf-8")
-        fact = {"text": "Synthetic package smoke check", "confirmation_status": "Proposed", "source_refs": ["idea.txt"]}
+        fact = {"text": "Synthetic package smoke check", "confirmation_status": "Proposed", "source_refs": [".temp/inputs/idea.txt"]}
         data = {"product_overview": fact, "vision": fact, "target_users": ["User"], "problems": [fact],
                 "jobs_to_be_done": [fact], "capabilities": [{"capability_id": "CAP-001", "name": "Note capture",
                     "description": "Capture a note", "target_users": ["User"], "business_value": "Remember information",
-                    "source_refs": ["idea.txt"], "confirmation_status": "Proposed"}],
+                    "source_refs": [".temp/inputs/idea.txt"], "confirmation_status": "Proposed"}],
                 "goals": [fact], "scope": [fact], "exclusions": [], "constraints": [], "assumptions": [],
                 "open_questions": [], "metrics": [], "change_history": []}
         metadata = {"schema_version": "1.0", "document_type": "brainstorm", "project_id": "example-notes",
-                    "status": "draft", "generated_by": "ba-brainstorm", "source_documents": [{"path": "idea.txt", "sha256": sha(idea), "kind": "raw"}]}
-        document = project / "brainstorm.md"
+                    "status": "draft", "generated_by": "ba-brainstorm", "source_documents": [{"path": ".temp/inputs/idea.txt", "sha256": sha(idea), "kind": "raw"}]}
+        document = project / ".temp/brainstorm.md"
         document.write_text(render(metadata, data, {h: "Synthetic smoke check." for h in HEADINGS["brainstorm"]}), encoding="utf-8")
         commands = [
             [sys.executable, "-X", "utf8", str(extracted / "scripts/validate_ba_document.py"), "--project-config", str(config), "--file", str(document), "--check-refs", "--format", "json"],
             [sys.executable, "-X", "utf8", str(extracted / "scripts/install_skills.py"), "--project-root", str(destination / "target"), "--apply"],
             [sys.executable, "-X", "utf8", str(destination / "target/.agents/skills/ba-spec/references/kit/scripts/validate_ba_document.py"), "--project-config", str(config), "--file", str(document), "--check-refs", "--format", "json"],
+            [sys.executable, "-X", "utf8", str(destination / "target/.agents/skills/ba-publish/references/kit/scripts/check_ba_layout.py"), "--project-config", str(config), "--check-documents"],
         ]
         for command in commands:
             result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", timeout=30)
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
         report = {"result": "PASS", "archive_sha256": sha(archive), "manifest_files": len(manifest["files"]),
-                  "checks": ["ZIP CRC", "no local tests in package", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts"]}
+                  "checks": ["ZIP CRC", "no local tests in package", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor"]}
     (KIT / "dist/package-verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

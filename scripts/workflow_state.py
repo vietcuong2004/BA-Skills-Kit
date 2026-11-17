@@ -6,7 +6,7 @@ from ba_core import BAError, Project, Validator, sha
 
 
 def resume(project, state_path=None):
-    state_path = project.path(state_path or project.planning / "workflow-state.md")
+    state_path = project.temporary_path(state_path or project.planning / "workflow-state.md")
     # State snapshots are deliberately checked separately: stale artifacts are recoverable blockers.
     validator = Validator(project)
     state = validator.require_valid(state_path, "workflow-state")

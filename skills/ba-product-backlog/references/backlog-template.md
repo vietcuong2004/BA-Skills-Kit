@@ -6,10 +6,10 @@ document_type: product-backlog
 project_id: agent-notes
 status: draft
 source_documents:
-- path: .specify/_planning/brainstorm.md
+- path: .temp/brainstorm.md
   sha256: 938a9a472fe6d3e586528e10b8463a1ddff1e125c3f8b2cc84dd11a9724c941c
-- path: .specify/_planning/requirements.md
-  sha256: 6b105dd6e09ee90b872a66650ed5b2e3df8fe596f2c5e457498b3dad49284556
+- path: .temp/requirements.md
+  sha256: c947f2712fcce64155b0661af3c3069fc99df6fc05512d965506b40082fb6237
 generated_by: ba-product-backlog
 ---
 # product-backlog

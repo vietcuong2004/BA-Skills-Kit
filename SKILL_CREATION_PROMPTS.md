@@ -1,5 +1,7 @@
 # Bộ prompt tạo BA Skills Kit bằng Codex
 
+> **Layout runtime hiện tại:** `planning_dir` mặc định `.temp` và phải nằm trong project/.temp. `.specify` chỉ chứa các Round/PBI-ID-slug/{business.md,spec.md}. Tất cả inputs, exploration, backlog, plan, requests, drafts, reviews, approvals, state, log, manifests và staging đều ở `.temp`; không tạo `_planning`/`_planing` trong `.specify`. Root config vẫn ở project root. Áp dụng quy tắc này cho mọi prompt bên dưới, kể cả khi bổ sung skill phụ.
+
 > **Dành cho Codex chưa có bất kỳ context nào.** Trước khi thực hiện các prompt, đọc `README.md` cùng thư mục. Mỗi prompt là một nhiệm vụ độc lập; chỉ chuyển bước khi đã kiểm tra output bước trước. Các đường dẫn là tương đối với **thư mục gốc BA-Skills-Kit** trừ khi ghi rõ là project đích.
 
 ## Hướng dẫn sử dụng

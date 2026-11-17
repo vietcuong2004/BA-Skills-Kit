@@ -6,11 +6,11 @@ import os
 import tempfile
 from pathlib import Path
 
-from ba_core import BAError, Project, Validator, errors_for, sha, slugify
+from ba_core import BAError, Project, Validator, check_output_layout, errors_for, sha, slugify
 
 
 def read_approvals(project, path):
-    path = project.path(path)
+    path = project.temporary_path(path)
     if not path.is_file():
         raise BAError("MISSING_APPROVAL", "Human checkpoint record is missing", path,
                       fix="Ghi quyết định thực tế của người dùng theo approvals.schema.json; không tự tạo phê duyệt.")
@@ -39,6 +39,7 @@ def checkpoint(project, approvals, name, allowed, paths, pbi_id=None):
 
 
 def prepare(project, pbi_id, approvals_path=None):
+    check_output_layout(project)
     if not __import__("re").fullmatch(__import__("re").escape(project.config["pbi_prefix"]) + r"-[0-9]{3,}", pbi_id):
         raise BAError("PBI_MISMATCH", "An exact configured PBI ID is required", pbi_id)
     validator = Validator(project)
@@ -111,6 +112,7 @@ def publish(project, manifest):
         raise BAError("PUBLISH_BLOCKED", "Dry-run has blocking diagnostics", manifest["target"])
     if sha(project.config_path) != manifest["config_sha256"]:
         raise BAError("STALE_INPUT", "Config changed after dry-run", project.config_path)
+    check_output_layout(project)
     for path, expected in manifest["snapshot"].items():
         if sha(project.path(path)) != expected:
             raise BAError("STALE_INPUT", "Input changed after dry-run", path)
@@ -124,9 +126,10 @@ def publish(project, manifest):
         return {"created": [], "updated": [], "skipped": [e["destination"] for e in manifest["entries"]], "blocked": [], "conflicts": []}
     if target.exists():
         raise BAError("PUBLISH_CONFLICT", "Target appeared after dry-run", target)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    # Stage in the same parent so directory rename is atomic. Staging never enters the PBI folder.
-    with tempfile.TemporaryDirectory(prefix=".ba-stage-", dir=target.parent) as temp:
+    # Keep even temporary staging outside output_root. Cross-filesystem rename fails safely.
+    stage_root = project.temporary_path(project.temp / "publish-staging")
+    stage_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(prefix="pair-", dir=stage_root) as temp:
         staging = Path(temp) / "pair"
         staging.mkdir()
         for entry in manifest["entries"]:
@@ -144,6 +147,8 @@ def publish(project, manifest):
         # Windows rename refuses an existing target; on POSIX guard existing paths immediately before rename.
         if target.exists():
             raise BAError("PUBLISH_CONFLICT", "Target created concurrently", target)
+        check_output_layout(project)
+        target.parent.mkdir(parents=True, exist_ok=True)
         os.rename(staging, target)
     validator = Validator(project)
     for entry in manifest["entries"]:
@@ -153,6 +158,7 @@ def publish(project, manifest):
         validator.require_valid(path, Path(entry["destination"]).stem, manifest["pbi_id"])
     if {p.name for p in target.iterdir()} != {"business.md", "spec.md"}:
         raise BAError("POST_PUBLISH_FAILED", "Unexpected file in published PBI", target)
+    check_output_layout(project)
     return {"created": [e["destination"] for e in manifest["entries"]], "updated": [], "skipped": [], "blocked": [], "conflicts": []}
 
 

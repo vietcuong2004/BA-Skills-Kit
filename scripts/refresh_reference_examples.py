@@ -1,8 +1,8 @@
-"""Refresh skill examples from the checked-in in-session fixture; not project generation."""
+"""Maintenance only: refresh examples from local test fixtures (not shipped in the Kit)."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FIXTURE = ROOT / "tests/fixtures/agent-notes/.specify/_planning"
+FIXTURE = ROOT / "tests/fixtures/agent-notes/.temp"
 MAPPING = {
     "ba-brainstorm": ("brainstorm.md", "brainstorm-template.md"),
     "ba-requirements": ("requirements.md", "requirements-template.md"),
@@ -15,6 +15,8 @@ MAPPING = {
 
 
 def main():
+    if not FIXTURE.is_dir():
+        raise SystemExit("NOT RUN: local tests/fixtures are not included in the distributed Kit. This maintenance helper is optional; skill installation does not need fixtures.")
     for skill, (source, filename) in MAPPING.items():
         content = (FIXTURE / source).read_text(encoding="utf-8")
         target = ROOT / "skills" / skill / "references" / filename

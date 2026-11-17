@@ -137,11 +137,17 @@ class Project:
         root = safe_path(path.parent, cfg["repository_root"])
         if not root.is_dir():
             raise BAError("INVALID_CONFIG", "repository_root must be an existing directory", root)
-        for key in ("output_root", "planning_dir"):
-            safe_path(root, cfg[key])
-        if safe_path(root, cfg["planning_dir"]) == safe_path(root, cfg["output_root"]):
-            raise BAError("INVALID_CONFIG", "planning_dir must differ from output_root", path)
-        return cls(path, root, cfg)
+        output = safe_path(root, cfg["output_root"])
+        planning = safe_path(root, cfg["planning_dir"])
+        temp = safe_path(root, ".temp")
+        if not planning.is_relative_to(temp):
+            raise BAError("PLANNING_LAYOUT", "planning_dir must be .temp or a subdirectory of .temp", path, "/planning_dir",
+                          "Đổi planning_dir thành .temp. Với dữ liệu cũ, chuyển hồ sơ khỏi .specify rồi cập nhật refs/hash và review theo conventions/BA-CONVENTIONS.md; không xóa dữ liệu.")
+        if output.is_relative_to(temp) or temp.is_relative_to(output):
+            raise BAError("INVALID_CONFIG", "output_root and .temp must not overlap or contain one another", path)
+        project = cls(path, root, cfg)
+        check_output_layout(project)
+        return project
 
     def path(self, value):
         return safe_path(self.root, value)
@@ -152,6 +158,73 @@ class Project:
     @property
     def planning(self):
         return self.path(self.config["planning_dir"])
+
+    @property
+    def temp(self):
+        return self.path(".temp")
+
+    @property
+    def output(self):
+        return self.path(self.config["output_root"])
+
+    def temporary_path(self, value):
+        path = self.path(value)
+        if not path.is_relative_to(self.temp):
+            raise BAError("TEMP_LAYOUT", "Intermediate BA artifacts must be written under project/.temp", path,
+                          fix="Ghi exploration/backlog/drafts/reviews/state/logs vào planning_dir dưới .temp; .specify chỉ dành cho cặp đã publish.")
+        return path
+
+
+def check_output_layout(project):
+    """Read-only structural audit: output contains only Round/PBI/{business.md,spec.md}."""
+    output = project.output
+    if not output.exists():
+        return
+    if not output.is_dir():
+        raise BAError("OUTPUT_LAYOUT", "output_root must be a directory", output)
+    seen = {}
+    round_pattern = re.escape(project.config["round_prefix"]) + r"[1-9][0-9]*"
+    pbi_pattern = r"(" + re.escape(project.config["pbi_prefix"]) + r"-[0-9]{3,})-[a-z0-9]+(?:-[a-z0-9]+)*"
+    for rnd in sorted(output.iterdir()):
+        project.path(rnd)
+        if rnd.is_symlink() or not rnd.is_dir() or not re.fullmatch(round_pattern, rnd.name):
+            raise BAError("OUTPUT_LAYOUT", "Only Round directories are allowed in output_root", rnd,
+                          fix="Chuyển hồ sơ trung gian sang .temp bằng migration có kiểm soát; không tự xóa file cũ.")
+        if rnd.resolve().parent != output:
+            raise BAError("UNSAFE_PATH", "Round directory resolves outside output_root", rnd)
+        for folder in sorted(rnd.iterdir()):
+            project.path(folder)
+            match = re.fullmatch(pbi_pattern, folder.name)
+            if folder.is_symlink() or not folder.is_dir() or not match:
+                raise BAError("OUTPUT_LAYOUT", "Round may contain only PBI-ID-slug directories", folder)
+            if folder.resolve().parent != rnd.resolve():
+                raise BAError("UNSAFE_PATH", "PBI directory resolves outside its Round", folder)
+            identifier = match.group(1)
+            if identifier in seen:
+                raise BAError("DUPLICATE_PUBLISHED_PBI", f"{identifier} already exists at {seen[identifier]}", folder)
+            seen[identifier] = folder
+            if {p.name for p in folder.iterdir()} != {"business.md", "spec.md"}:
+                raise BAError("PUBLISH_CONFLICT", "Published PBI must contain exactly business.md and spec.md", folder)
+            for name in ("business.md", "spec.md"):
+                file = folder / name
+                project.path(file)
+                if file.is_symlink() or not file.is_file() or file.resolve().parent != folder.resolve():
+                    raise BAError("UNSAFE_PATH", "Published pair must be regular files inside the PBI directory", file)
+
+
+def check_document_location(project, doc):
+    """Canonical intermediates stay in .temp; only correctly addressed PBI pairs may be published."""
+    kind = doc.metadata["document_type"]
+    if doc.path.is_relative_to(project.temp):
+        return
+    if kind in ("business", "spec") and doc.path.is_relative_to(project.output):
+        data = doc.data
+        if "round_id" not in data:
+            raise BAError("DOCUMENT_LOCATION", "Published PBI must have a round_id", doc.path)
+        expected = project.path(project.output / data["round_id"] / f"{data['pbi_id']}-{slugify(data['title'])}" / f"{kind}.md")
+        if doc.path == expected:
+            return
+    raise BAError("DOCUMENT_LOCATION", "BA intermediates belong in .temp; published files must match Round/PBI paths", doc.path)
 
 
 @dataclass
@@ -276,6 +349,7 @@ class Validator:
             return None
         if meta["project_id"] != self.project.config["project_id"]:
             self.issue("PROJECT_MISMATCH", doc, "project_id differs from config")
+        check_document_location(self.project, doc)
         expected_generator = "ba-workflow" if kind == "workflow-state" else "ba-" + kind
         if meta["generated_by"] != expected_generator:
             self.issue("GENERATOR_MISMATCH", doc, f"Expected {expected_generator}")

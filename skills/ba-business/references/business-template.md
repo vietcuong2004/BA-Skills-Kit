@@ -6,14 +6,14 @@ document_type: business
 project_id: agent-notes
 status: draft
 source_documents:
-- path: .specify/_planning/brainstorm.md
+- path: .temp/brainstorm.md
   sha256: 938a9a472fe6d3e586528e10b8463a1ddff1e125c3f8b2cc84dd11a9724c941c
-- path: .specify/_planning/requirements.md
-  sha256: 6b105dd6e09ee90b872a66650ed5b2e3df8fe596f2c5e457498b3dad49284556
-- path: .specify/_planning/product-backlog.md
-  sha256: 9d235920a1ea615bd6420162e3812b9ae1b382bb4576d5cba6ac04c1887d8726
-- path: .specify/_planning/round-plan.md
-  sha256: 87b68678977c83f909b4f28b847b0d947bef9f9e9f4365f13f5a07cf45eea7e1
+- path: .temp/requirements.md
+  sha256: c947f2712fcce64155b0661af3c3069fc99df6fc05512d965506b40082fb6237
+- path: .temp/product-backlog.md
+  sha256: 1093307639ac1f18571232aa33c1dce49bce7f7122ec83859139bf1b1ae259cc
+- path: .temp/round-plan.md
+  sha256: dd76a12a05b693b3ad469bd8def9027ce53a15919e92e9c487bec72906fd4375
 - path: scenario.txt
   sha256: b677361b715a3f5d8f19fb47d15ccbf1bbb6bd362414dcd32daa4966f295f0a8
 generated_by: ba-business

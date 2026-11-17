@@ -31,6 +31,7 @@ description: Điểm vào Kit nguồn để tìm và áp dụng đúng skill ph�
 2. Đọc [quy ước](conventions/BA-CONVENTIONS.md), SKILL.md đã chọn và schema liên quan. Chỉ đọc references của mode cần thực hiện.
 3. Thực hiện Input Validation → Data Extraction → Processing → Output Validation theo skill. Công cụ validate/publish/state ở `scripts/`; chúng không tự gọi model để sinh nội dung.
 4. Ghi output theo repository root trong config. Validate bằng `validate_ba_document.py --project-config <config> --file <output> --check-refs`; PBI thêm expected type và requested PBI ID.
+   `planning_dir` phải dưới `.temp`. `.specify` chỉ chứa các Round/PBI với đúng hai file business.md/spec.md; toàn bộ hồ sơ phân tích, draft, review và tiến độ nằm trong `.temp`. Nếu gặp cấu hình cũ dưới output_root, báo migration cần thiết, không tiếp tục ghi vào `_planning`.
 5. Báo path, schema/hash/result, Proposed/Open Questions/blockers và checkpoint còn chờ. Không coi PASS là phê duyệt.
 
 ## Khi Kit chưa được cài vào runtime

@@ -1,5 +1,7 @@
 # Recovery / RESUME
 
+Kiểm layout trước: state, artifacts và hồ sơ trung gian thuộc `.temp`. Config cũ chứa planning_dir bên trong `.specify` phải được chuyển theo conventions; không chạy tiếp để tạo `_planning` mới hoặc chỉ đổi config mà bỏ broken refs/hashes.
+
 1. Validate config và state schema. State `artifacts` chứa snapshot path/hash, không dùng metadata.sources để state vẫn mở được khi output thay đổi.
 2. Chạy workflow_state.py để đọc từng artifact thật, so hash và validate recursive source chain. MISSING_INPUT/STALE_INPUT/CONTENT_CHANGED tạo invalidated, không tự xóa.
 3. Tìm bước sớm nhất ảnh hưởng selected PBI/Round. Đọc lại nguồn, giữ IDs/Confirmed decisions, giải quyết conflict; chỉ thực hiện bước trong scope user yêu cầu.

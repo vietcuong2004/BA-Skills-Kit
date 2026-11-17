@@ -11,6 +11,8 @@ description: Điều phối toàn bộ pipeline BA từ ý tưởng đến backl
 
 ## Input Validation
 
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+
 Load config (chưa có → đề xuất template và xác nhận giá trị thiết yếu). Đọc files/state đang có, validate trước dùng; không chạy lại bước còn fresh. SINGLE-PBI cần exact ID; SINGLE-ROUND cần exact Round ID rồi resolve pbi_refs, không đoán. RESUME dùng `python <KIT_ROOT>/scripts/workflow_state.py --project-config <config>` và đọc [recovery guide](references/recovery-guide.md).
 
 ## Data Extraction
