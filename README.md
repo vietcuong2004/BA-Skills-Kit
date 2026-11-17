@@ -2,7 +2,7 @@
 
 **Biến một ý tưởng phần mềm thành bộ tài liệu yêu cầu và PBI có cấu trúc, sẵn sàng để nhóm phát triển cùng xem xét.**
 
-BA Skills Kit là bộ **9 kỹ năng (AI Skills)** dành cho các AI coding agent như Codex và Claude Code. Bộ công cụ hỗ trợ Business Analyst (BA), Product Owner (PO) và nhóm phát triển đi từ một mô tả sản phẩm ban đầu đến danh sách công việc phát triển (**Product Backlog**), kế hoạch theo **Round** và tài liệu chi tiết cho từng **Product Backlog Item (PBI)**.
+BA Skills Kit gồm **9 skill pipeline và 2 skill phụ: khảo sát dự án hiện có, thêm một PBI mới** dành cho các AI coding agent như Codex và Claude Code. Bộ công cụ hỗ trợ Business Analyst (BA), Product Owner (PO) và nhóm phát triển đi từ một mô tả sản phẩm ban đầu đến danh sách công việc phát triển (**Product Backlog**), kế hoạch theo **Round** và tài liệu chi tiết cho từng **Product Backlog Item (PBI)**.
 
 Bạn **không cần biết cách viết PBI ngay từ đầu**. Hãy mô tả sản phẩm muốn xây dựng bằng ngôn ngữ thông thường; bộ Skills sẽ hỗ trợ phân tích từng bước, tạo tài liệu để bạn đọc, chỉnh sửa và phê duyệt. **AI không thay thế người quyết định nghiệp vụ.**
 
@@ -198,6 +198,57 @@ Mở Codex/Claude Code tại **thư mục gốc của dự án sản phẩm**, k
 
 ## 6. Dùng lần đầu: chỉ cần gửi một câu lệnh
 
+### Đang có dự án, muốn thêm một PBI cho tính năng mới
+
+```text
+$ba-pbi
+Tạo một PBI mới cho tính năng: [mô tả tính năng muốn bổ sung].
+Đọc hiện trạng và hồ sơ BA liên quan, phân tích phần thay đổi.
+Thêm PBI vào backlog, giữ các PBI cũ và dừng để tôi duyệt phạm vi.
+Sau khi tôi duyệt, viết business.md, spec.md và review cho đúng PBI đó.
+```
+
+Hoặc chỉ cần: **“Dùng skill BA-PBI để viết một PBI mới cho tính năng [mô tả] trong dự án hiện tại.”** Codex gọi `$ba-pbi`, Claude Code gọi `/ba-pbi`.
+
+Skill đề xuất ID/parent/requirement refs dựa trên hồ sơ thật, kiểm tra overlap, cập nhật nguồn tối thiểu khi cần và giữ lịch sử. Nếu chưa có hồ sơ BA nền, nó chỉ ra bước explore/bootstrap cần thiết. Yêu cầu quá lớn sẽ được đề nghị thu nhỏ/tách trước khi tạo, không tự nhét nhiều outcome vào một PBI.
+
+Output: request record trong `.specify/_planning/pbi-requests/`, backlog cập nhật và (sau duyệt scope) `drafts/PBI-ID/{business.md,spec.md}` cùng `reviews/PBI-ID-review.md`. Round là tùy chọn cho draft; publish là bước riêng. Xem [hướng dẫn BA-PBI](skills/ba-pbi/SKILL.md).
+
+### Dự án đã có giao diện và chức năng, nhưng bạn chưa biết hiện trạng
+
+```text
+$ba-explore-project
+Tôi chưa biết dự án này đang có những tính năng gì. Hãy khảo sát repository,
+lập danh mục tính năng hiện hữu có bằng chứng, phân biệt UI/mock/backend/đã chạy thử.
+Chuẩn bị đầu vào cho các skill BA hiện có để viết tài liệu PBI mô tả hiện trạng.
+Dừng để tôi xem danh mục và chọn phạm vi trước khi chuyển sang pipeline BA.
+```
+
+Tên hiển thị là **BA-explore-project**, tên gọi kỹ thuật là `ba-explore-project`. Claude Code dùng `/ba-explore-project`; các agent khác có thể nhận câu “Dùng skill BA-explore-project để khảo sát dự án hiện tại”.
+
+Output mặc định nằm trong `.specify/_planning/exploration/`:
+
+- `project-exploration.json`: tính năng, mức xác minh, nguồn file/line/symbol và SHA-256.
+- `project-exploration.md`: báo cáo hiện trạng để bạn đọc và chọn phạm vi.
+- `exploration-brief.md`: đầu vào cho ba-brainstorm, giữ giới hạn và câu hỏi chưa rõ.
+
+Sau khi đọc báo cáo, gửi:
+
+```text
+$ba-workflow
+Tôi chọn tài liệu hóa [EXF IDs hoặc phân hệ] từ
+.specify/_planning/exploration/exploration-brief.md.
+Đọc inventory và report cùng thư mục, dùng làm input cho ba-brainstorm.
+Tạo brainstorm → requirements → backlog mô tả hiện trạng, giữ evidence refs,
+mức xác minh và câu hỏi còn mở. Đưa raw source_documents do helper explore
+cung cấp vào brainstorm để phát hiện khi code/docs nguồn thay đổi.
+Không coi các PBI hiện hữu là tính năng mới cần xây. Dừng để tôi duyệt backlog.
+```
+
+Sau đó tiếp tục Round → business/spec → review/publish như mục 7. Chín skill cũ và contracts của chúng giữ nguyên; skill phụ chỉ cung cấp đầu vào. Xem [handoff guide](skills/ba-explore-project/references/handoff-guide.md).
+
+### Dự án mới hoặc nhu cầu mới đã mô tả được
+
 Sau khi cài, mở Agent tại project và gửi **đoạn sau vào ô chat** (không phải PowerShell hoặc Terminal):
 
 ```text
@@ -328,13 +379,14 @@ BA-Skills-Kit/
 ├── AGENTS.md                # Hướng dẫn chung cho Agent tương thích
 ├── CLAUDE.md                # Hướng dẫn dành cho Claude Code
 ├── SKILL.md                 # Điểm dẫn tới các Skills (nếu phiên bản Kit có)
-├── skills/                  # 9 Skills, mỗi Skill có SKILL.md riêng
+├── skills/                  # 9 skill pipeline, ba-explore-project và ba-pbi
 ├── conventions/             # Quy ước viết tài liệu BA
 ├── contracts/               # Cấu trúc dữ liệu chuẩn giữa các bước
 ├── scripts/                 # Kiểm tra dữ liệu, quản lý tiến độ, xuất tài liệu
-├── templates/               # Mẫu tài liệu
-└── tests/                   # Dữ liệu mẫu và kiểm thử (nếu có)
+└── templates/               # Mẫu tài liệu
 ```
+
+`tests/` chỉ được giữ local để kiểm tra/bảo trì Kit, đã được `.gitignore` bỏ qua và không nằm trong gói ZIP cài đặt. Máy hoặc dự án khác không cần thư mục này để dùng skill.
 
 Phân biệt **hai nơi**:
 

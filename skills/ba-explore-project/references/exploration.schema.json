@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BA project exploration 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "generated_by", "project_id", "status", "intent", "summary", "scope", "source_files", "evidence", "features", "limitations", "change_history"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "generated_by": {"const": "ba-explore-project"},
+    "project_id": {"$ref": "#/$defs/text"},
+    "status": {"const": "draft"},
+    "intent": {"const": "document_existing_system"},
+    "summary": {"$ref": "#/$defs/text"},
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["requested", "scanned_paths", "skipped"],
+      "properties": {
+        "requested": {"$ref": "#/$defs/text"},
+        "scanned_paths": {"$ref": "#/$defs/texts"},
+        "skipped": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["path", "reason"], "properties": {"path": {"$ref": "#/$defs/text"}, "reason": {"$ref": "#/$defs/text"}}}}
+      }
+    },
+    "source_files": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": false, "required": ["path", "sha256"], "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}},
+    "evidence": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["evidence_id", "kind", "path", "start_line", "end_line", "symbol", "observation"],
+      "properties": {
+        "evidence_id": {"type": "string", "pattern": "^EVD-[0-9]{3,}$"},
+        "kind": {"enum": ["ui", "implementation", "test_source", "documentation", "runtime_result"]},
+        "path": {"$ref": "#/$defs/text"},
+        "start_line": {"type": "integer", "minimum": 1},
+        "end_line": {"type": "integer", "minimum": 1},
+        "symbol": {"$ref": "#/$defs/text"},
+        "observation": {"$ref": "#/$defs/text"},
+        "runtime": {"type": "object", "additionalProperties": false, "required": ["environment", "action", "observed_result", "run_at"], "properties": {"environment": {"$ref": "#/$defs/text"}, "action": {"$ref": "#/$defs/text"}, "observed_result": {"$ref": "#/$defs/text"}, "run_at": {"$ref": "#/$defs/text"}}}
+      },
+      "allOf": [{"if": {"properties": {"kind": {"const": "runtime_result"}}}, "then": {"required": ["runtime"]}}]
+    }},
+    "features": {"type": "array", "minItems": 1, "items": {
+      "type": "object", "additionalProperties": false,
+      "required": ["feature_id", "name", "module", "actors", "entry_points", "availability", "verification", "evidence_refs", "behaviors", "flows", "rules", "data", "permissions", "dependencies", "gaps", "open_questions"],
+      "properties": {
+        "feature_id": {"type": "string", "pattern": "^EXF-[0-9]{3,}$"},
+        "name": {"$ref": "#/$defs/text"}, "module": {"$ref": "#/$defs/text"},
+        "actors": {"$ref": "#/$defs/texts"}, "entry_points": {"$ref": "#/$defs/texts"},
+        "availability": {"enum": ["enabled", "disabled", "unknown"]},
+        "verification": {"enum": ["UNKNOWN", "UI_ONLY", "MOCK", "PARTIAL", "STATIC_IMPLEMENTATION", "RUNTIME_VERIFIED"]},
+        "evidence_refs": {"$ref": "#/$defs/refs"},
+        "behaviors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/claim"}},
+        "flows": {"$ref": "#/$defs/claims"}, "rules": {"$ref": "#/$defs/claims"}, "data": {"$ref": "#/$defs/claims"}, "permissions": {"$ref": "#/$defs/claims"},
+        "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^EXF-[0-9]{3,}$"}},
+        "gaps": {"$ref": "#/$defs/texts"}, "open_questions": {"$ref": "#/$defs/texts"}
+      }
+    }},
+    "limitations": {"$ref": "#/$defs/texts"},
+    "change_history": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["at", "change", "affected_ids", "reason"], "properties": {"at": {"$ref": "#/$defs/text"}, "change": {"$ref": "#/$defs/text"}, "affected_ids": {"$ref": "#/$defs/texts"}, "reason": {"$ref": "#/$defs/text"}}}}
+  },
+  "$defs": {
+    "text": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "texts": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/text"}},
+    "refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^EVD-[0-9]{3,}$"}},
+    "claim": {"type": "object", "additionalProperties": false, "required": ["text", "evidence_refs", "confirmation_status"], "properties": {"text": {"$ref": "#/$defs/text"}, "evidence_refs": {"$ref": "#/$defs/refs"}, "confirmation_status": {"enum": ["Confirmed", "Proposed", "Open Question"]}}},
+    "claims": {"type": "array", "items": {"$ref": "#/$defs/claim"}}
+  }
+}

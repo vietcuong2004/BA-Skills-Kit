@@ -1,6 +1,6 @@
 # Cài BA Skills Kit cho Claude Code, Codex và Antigravity
 
-Tài liệu này hướng dẫn cài bộ 9 skill vào công cụ AI bạn sử dụng, tạo cấu hình dự án và chạy lần đầu. Để hiểu từng bước phân tích và các file đầu ra, đọc [README.md](README.md).
+Tài liệu này hướng dẫn cài 9 skill pipeline và 2 skill phụ `ba-explore-project`, `ba-pbi` (tổng 11 skill) vào công cụ AI bạn sử dụng, tạo cấu hình dự án và chạy lần đầu. Để hiểu từng bước phân tích và các file đầu ra, đọc [README.md](README.md).
 
 **Chọn một công cụ, làm phần chuẩn bị chung, cài theo hướng dẫn riêng, rồi tạo cấu hình và bắt đầu.** Không cần cài cả ba.
 
@@ -228,13 +228,13 @@ Các output được resolve từ root project, không từ nơi cài skill hay 
 
 Trong **Kit nguồn**, [AGENTS.md](AGENTS.md) là chỉ dẫn workspace, [SKILL.md](SKILL.md) là bộ chỉ đường, [CLAUDE.md](CLAUDE.md) import AGENTS.md. Tên file chuẩn cho Codex là **AGENTS.md**, không phải AGENT.md. Tham khảo [Codex AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Claude Code project instructions](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools) và [Antigravity rules](https://antigravity.google/docs/rules): Antigravity hiện cũng đọc AGENTS.md ở workspace.
 
-Installer chỉ cài chín skill và tài nguyên riêng, không ghi đè AGENTS.md/CLAUDE.md hay cấu hình chỉ dẫn của project đích. Mỗi skill có SKILL.md trong thư mục discovery ở mục 1; đó là điểm vào khi gọi skill đã cài. Root SKILL.md của Kit không tự được discovery chỉ vì Kit nằm đâu đó trên máy.
+Installer cài các skill trong `skills/` và tài nguyên riêng (hiện có 11 skill), không ghi đè AGENTS.md/CLAUDE.md hay cấu hình chỉ dẫn của project đích. Mỗi skill có SKILL.md trong thư mục discovery ở mục 1; đó là điểm vào khi gọi skill đã cài. Root SKILL.md của Kit không tự được discovery chỉ vì Kit nằm đâu đó trên máy.
 
 Nếu không cài mà yêu cầu đọc Kit trực tiếp, chỉ định đường dẫn AGENTS.md và SKILL.md như ví dụ trong README. Nếu Kit ở ngoài workspace, agent cần quyền đọc vị trí đó theo môi trường của bạn. Mở Codex trong project con không làm nó tự quét mọi Kit bên cạnh.
 
 ### Kiểm tra bản đã cài
 
-1. Thư mục skill của công cụ có đủ 9 thư mục `ba-*`, mỗi thư mục có `SKILL.md`.
+1. Thư mục skill của công cụ có đủ 11 thư mục `ba-*`, bao gồm `ba-explore-project` và `ba-pbi`; mỗi thư mục có `SKILL.md`.
 2. Ví dụ `ba-workflow/references/kit/` có `contracts/`, `conventions/`, `templates/`, `scripts/`. Installer đóng gói các tài nguyên này để skill không bị mất liên kết khi sang project khác. Chỉ copy riêng SKILL.md sẽ thiếu tài nguyên.
 3. Root project có `ba-project.yaml` và bạn đã xác nhận tên/đường dẫn.
 4. Agent đọc được skill và chạy được Python đã cài thư viện.
@@ -281,6 +281,10 @@ Nếu dùng Codex và Antigravity trên cùng project, có thể dùng chung b�
 
 ## 8. Cập nhật bản đã cài
 
+**BA-PBI** là skill phụ để thêm một PBI mới và tạo bộ tài liệu draft sau duyệt scope. Installer tự thêm `ba-pbi` khi cập nhật. Gọi `$ba-pbi` trong Codex hoặc `/ba-pbi` trong Claude Code, rồi mô tả tính năng; không cần sửa SKILL.md cũ. Cài theo project/global thì dùng lại thư mục đã chọn ở lần cài trước.
+
+Bản Kit hiện có thêm **BA-explore-project** để khảo sát tính năng hiện hữu trước khi tài liệu hóa. Installer tự thêm thư mục `ba-explore-project` khi cài/cập nhật; không cần sửa chín SKILL.md cũ. Cài global hay project thì dùng lại đúng `--skills-dir` trước đây, mở phiên agent mới để thấy skill phụ. Gọi `$ba-explore-project` trong Codex hoặc `/ba-explore-project` trong Claude Code. Skill dừng ở báo cáo/brief; sau khi bạn chọn phạm vi, chuyển sang ba-workflow theo mẫu trong README.
+
 Tại Kit nguồn mới, dùng **đúng thư mục đã cài trước đó**, thêm `--update`:
 
 ```powershell
@@ -307,19 +311,18 @@ Tại Kit nguồn mới, dùng **đúng thư mục đã cài trước đó**, th
 
 ## 10. Kiểm chứng và công cụ nâng cao
 
-**Đã kiểm chứng:** pipeline fixtures, installer vào thư mục tùy chọn, nguồn/schema/publish và discovery đủ 9 skill trên Codex CLI 0.161.0. Xem [báo cáo kiểm thử](tests/INTEGRATION_REPORT.md).
+**Đã kiểm chứng:** pipeline fixtures, installer vào thư mục tùy chọn, nguồn/schema/publish và discovery đủ 11 skill trên Codex CLI 0.161.0. Thư mục `tests/` và các báo cáo kiểm thử chỉ giữ local để bảo trì, được Git bỏ qua và không đóng gói vào ZIP; không cần chúng khi cài sang máy hoặc project khác.
 
 **Chưa chạy trực tiếp:** discovery và pipeline trong Claude Code/Antigravity. Hai hướng dẫn đó dựa trên định dạng SKILL.md và đường dẫn chính thức; không coi việc file đã cài là bằng chứng agent đã thực hiện thành công. Agent cần có quyền đọc/ghi project và chạy Python theo thiết lập của công cụ.
 
 Các lệnh sau dùng Python của Kit, chạy tại thư mục Kit:
 
 ```powershell
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe scripts/validate_ba_document.py --project-config "D:/Projects/MyProject/ba-project.yaml" --file ".specify/_planning/drafts/PBI-001/spec.md" --expected-type spec --pbi-id PBI-001 --check-refs --format json
 .\.venv\Scripts\python.exe scripts/workflow_state.py --project-config "D:/Projects/MyProject/ba-project.yaml"
 .\.venv\Scripts\python.exe scripts/publish_ba.py --project-config "D:/Projects/MyProject/ba-project.yaml" --pbi-id PBI-001
 ```
 
-Lệnh publish trên chỉ dry-run; `--apply` chỉ thực hiện khi đã có phê duyệt thật theo hợp đồng Kit. Hồ sơ test trong `tests/fixtures` chứa phê duyệt mô phỏng, không dùng làm phê duyệt dự án thật.
+Lệnh publish trên chỉ dry-run; `--apply` chỉ thực hiện khi đã có phê duyệt thật theo hợp đồng Kit. Nếu máy bảo trì còn `tests/`, có thể chạy `python -m unittest discover -s tests -v` để kiểm thử local. Các fixture chứa phê duyệt mô phỏng, không dùng làm phê duyệt dự án thật.
 
 Hướng dẫn nghiệp vụ: [README](README.md). Chi tiết hợp đồng và bảo toàn dữ liệu: [BA-CONVENTIONS](conventions/BA-CONVENTIONS.md).

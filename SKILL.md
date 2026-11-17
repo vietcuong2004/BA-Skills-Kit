@@ -5,12 +5,14 @@ description: Điểm vào Kit nguồn để tìm và áp dụng đúng skill ph�
 
 # BA Skills Kit — Điểm vào cho agent
 
-Đọc [AGENTS.md](AGENTS.md) trước khi làm việc trong Kit nguồn. File này chỉ đường tới chín skill chuyên trách; không thay thế hợp đồng của chúng. Installer cài chín thư mục dưới `skills/`, không đăng ký root này thành skill thứ mười.
+Đọc [AGENTS.md](AGENTS.md) trước khi làm việc trong Kit nguồn. File này chỉ đường tới chín skill pipeline và hai skill phụ khám phá hiện trạng/thêm PBI; không thay thế hợp đồng của chúng. Installer cài các thư mục dưới `skills/`, không đăng ký root này thành skill riêng.
 
 ## Chọn nhiệm vụ
 
 | Yêu cầu | Đọc tiếp | Đầu ra chính |
 | --- | --- | --- |
+| Thêm một tính năng/PBI mới vào dự án hiện hữu | [ba-pbi](skills/ba-pbi/SKILL.md) | Backlog delta và business/spec/review sau duyệt scope |
+| Repository đã có tính năng nhưng thiếu tài liệu; chưa biết hiện trạng | [ba-explore-project](skills/ba-explore-project/SKILL.md) | Inventory/evidence/report và brief cho ba-brainstorm |
 | Ý tưởng mới, pipeline nhiều bước, resume, một PBI/Round | [ba-workflow](skills/ba-workflow/SKILL.md) | Điều phối và workflow-state.md |
 | Làm rõ ý tưởng/sản phẩm | [ba-brainstorm](skills/ba-brainstorm/SKILL.md) | brainstorm.md |
 | Phân tích yêu cầu từ discovery | [ba-requirements](skills/ba-requirements/SKILL.md) | requirements.md |
