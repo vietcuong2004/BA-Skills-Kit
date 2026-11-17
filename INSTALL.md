@@ -224,6 +224,16 @@ Các output được resolve từ root project, không từ nơi cài skill hay 
 
 ## 5. Kiểm tra đã cài thành công
 
+### File hướng dẫn chung và discovery skill
+
+Trong **Kit nguồn**, [AGENTS.md](AGENTS.md) là chỉ dẫn workspace, [SKILL.md](SKILL.md) là bộ chỉ đường, [CLAUDE.md](CLAUDE.md) import AGENTS.md. Tên file chuẩn cho Codex là **AGENTS.md**, không phải AGENT.md. Tham khảo [Codex AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md), [Claude Code project instructions](https://code.claude.com/docs/en/memory#share-one-file-with-other-coding-tools) và [Antigravity rules](https://antigravity.google/docs/rules): Antigravity hiện cũng đọc AGENTS.md ở workspace.
+
+Installer chỉ cài chín skill và tài nguyên riêng, không ghi đè AGENTS.md/CLAUDE.md hay cấu hình chỉ dẫn của project đích. Mỗi skill có SKILL.md trong thư mục discovery ở mục 1; đó là điểm vào khi gọi skill đã cài. Root SKILL.md của Kit không tự được discovery chỉ vì Kit nằm đâu đó trên máy.
+
+Nếu không cài mà yêu cầu đọc Kit trực tiếp, chỉ định đường dẫn AGENTS.md và SKILL.md như ví dụ trong README. Nếu Kit ở ngoài workspace, agent cần quyền đọc vị trí đó theo môi trường của bạn. Mở Codex trong project con không làm nó tự quét mọi Kit bên cạnh.
+
+### Kiểm tra bản đã cài
+
 1. Thư mục skill của công cụ có đủ 9 thư mục `ba-*`, mỗi thư mục có `SKILL.md`.
 2. Ví dụ `ba-workflow/references/kit/` có `contracts/`, `conventions/`, `templates/`, `scripts/`. Installer đóng gói các tài nguyên này để skill không bị mất liên kết khi sang project khác. Chỉ copy riêng SKILL.md sẽ thiếu tài nguyên.
 3. Root project có `ba-project.yaml` và bạn đã xác nhận tên/đường dẫn.

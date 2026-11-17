@@ -7,7 +7,7 @@ from ba_core import KIT, sha
 
 
 def main():
-    files = [KIT / name for name in ("README.md", "SKILL_CREATION_PROMPTS.md", "INSTALL.md", "requirements-kit.txt", ".gitignore")]
+    files = [KIT / name for name in ("README.md", "AGENTS.md", "CLAUDE.md", "SKILL.md", "SKILL_CREATION_PROMPTS.md", "INSTALL.md", "requirements-kit.txt", ".gitignore")]
     for folder in ("templates", "conventions", "contracts", "scripts", "tests", "skills"):
         files.extend(p for p in (KIT / folder).rglob("*") if p.is_file() and "__pycache__" not in p.parts and p.suffix != ".pyc")
     manifest = {p.relative_to(KIT).as_posix(): sha(p) for p in sorted(files)}
