@@ -5,7 +5,7 @@
 ## Điểm bắt đầu
 
 - Đọc [SKILL.md](SKILL.md) để chọn skill và tìm tài nguyên phù hợp. Chỉ mở SKILL.md của các skill cần dùng, không tải toàn bộ references mặc định.
-- Hướng dẫn cho người dùng và mẫu câu nhắn: [README.md](README.md).
+- Giới thiệu/thuật ngữ/cài đặt cho người dùng: [README.md](README.md). Quy trình và mẫu câu nhắn tách theo hai luồng: [project hiện có](GUIDE_EXISTING_PROJECT.md), [project mới từ ý tưởng](GUIDE_NEW_PROJECT.md).
 - Cài/cập nhật theo runtime: [INSTALL.md](INSTALL.md).
 - Khi tạo/sửa tài liệu BA hoặc xử lý contract: đọc [BA-CONVENTIONS.md](conventions/BA-CONVENTIONS.md) và schema tương ứng trong `contracts/`.
 - `SKILL_CREATION_PROMPTS.md` là tài liệu xây dựng/bảo trì; các câu yêu cầu chờ xác nhận trong bootstrap mẫu không tự áp dụng cho mọi nhiệm vụ. Thực hiện phạm vi người dùng đã yêu cầu.

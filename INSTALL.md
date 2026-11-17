@@ -1,6 +1,6 @@
 # Cài BA Skills Kit cho Claude Code, Codex và Antigravity
 
-Tài liệu này hướng dẫn cài 9 skill pipeline và 2 skill phụ `ba-explore-project`, `ba-pbi` (tổng 11 skill) vào công cụ AI bạn sử dụng, tạo cấu hình dự án và chạy lần đầu. Để hiểu từng bước phân tích và các file đầu ra, đọc [README.md](README.md).
+Tài liệu này hướng dẫn cài 9 skill pipeline và 2 skill phụ `ba-explore-project`, `ba-pbi` (tổng 11 skill) vào công cụ AI bạn sử dụng, tạo cấu hình dự án và chạy lần đầu. Giới thiệu/thuật ngữ ở [README.md](README.md); quy trình cùng các file đầu ra ở [hướng dẫn project hiện có](GUIDE_EXISTING_PROJECT.md) và [hướng dẫn project mới](GUIDE_NEW_PROJECT.md).
 
 **Chọn một công cụ, làm phần chuẩn bị chung, cài theo hướng dẫn riêng, rồi tạo cấu hình và bắt đầu.** Không cần cài cả ba.
 
@@ -258,7 +258,7 @@ Cho biết đường dẫn planning/output đã resolve và skill nào còn thi�
 Chưa tạo hồ sơ phân tích cho tới khi tôi gửi ý tưởng.
 ```
 
-Sau đó dùng mẫu gọi tương ứng ở mục 3A, 3B hoặc 3C. Khi bạn gửi ý tưởng, agent thực hiện brainstorm → requirements → backlog và chờ bạn duyệt trước bước phụ thuộc. [README](README.md#7-sau-khi-có-backlog-làm-tiếp-thế-nào) hướng dẫn các lần duyệt và đầu ra.
+Sau đó chọn [luồng project hiện có](GUIDE_EXISTING_PROJECT.md) để bắt đầu bằng ba-explore-project, hoặc [luồng project mới](GUIDE_NEW_PROJECT.md) để bắt đầu từ ý tưởng. Hai file hướng dẫn các bước, lần duyệt và đầu ra; dùng cú pháp gọi tương ứng công cụ ở mục 3A, 3B hoặc 3C.
 
 ## 6. Tiếp tục hoặc chạy riêng một skill
 
@@ -335,4 +335,4 @@ Các lệnh sau dùng Python của Kit, chạy tại thư mục Kit:
 
 Lệnh publish trên chỉ dry-run; `--apply` chỉ thực hiện khi đã có phê duyệt thật theo hợp đồng Kit. Nếu máy bảo trì còn `tests/`, có thể chạy `python -m unittest discover -s tests -v` để kiểm thử local. Các fixture chứa phê duyệt mô phỏng, không dùng làm phê duyệt dự án thật.
 
-Hướng dẫn nghiệp vụ: [README](README.md). Chi tiết hợp đồng và bảo toàn dữ liệu: [BA-CONVENTIONS](conventions/BA-CONVENTIONS.md).
+Hướng dẫn nghiệp vụ: [project hiện có](GUIDE_EXISTING_PROJECT.md) hoặc [project mới](GUIDE_NEW_PROJECT.md). Giới thiệu chung: [README](README.md). Chi tiết hợp đồng và bảo toàn dữ liệu: [BA-CONVENTIONS](conventions/BA-CONVENTIONS.md).

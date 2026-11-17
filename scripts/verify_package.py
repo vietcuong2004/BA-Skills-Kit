@@ -23,6 +23,9 @@ def main():
                     raise ValueError("Unsafe ZIP member")
             z.extractall(destination)
         extracted = destination / "BA-Skills-Kit"
+        for name in ("README.md", "GUIDE_EXISTING_PROJECT.md", "GUIDE_NEW_PROJECT.md", "INSTALL.md"):
+            if not (extracted / name).is_file():
+                raise ValueError(f"Missing user guide: {name}")
         manifest = json.loads((extracted / "KIT-MANIFEST.json").read_text(encoding="utf-8"))
         for name, expected in manifest["files"].items():
             if sha(extracted / name) != expected:
@@ -57,7 +60,7 @@ def main():
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
         report = {"result": "PASS", "archive_sha256": sha(archive), "manifest_files": len(manifest["files"]),
-                  "checks": ["ZIP CRC", "no local tests in package", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor"]}
+                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor"]}
     (KIT / "dist/package-verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 
