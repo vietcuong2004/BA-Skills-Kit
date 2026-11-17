@@ -1,0 +1,50 @@
+---
+name: ba-product-backlog
+description: Phân rã brainstorm và requirements hợp lệ thành Epic, Feature và PBI theo vertical slicing, INVEST và requirement coverage. Dùng khi lập hoặc cập nhật product backlog, không tự estimate hay lập Round.
+---
+
+# BA-product-backlog
+
+## Input Contract
+
+Config, `{planning_dir}/brainstorm.md` và `requirements.md`. Đọc [conventions](../../conventions/BA-CONVENTIONS.md), [schema](../../contracts/product-backlog.schema.json); resolve KIT_ROOT/project paths theo conventions.
+
+## Input Validation
+
+Validate từng file với `--project-config <config> --file <path> --expected-type <type> --check-refs`. Cùng project/version, không stale; REQ.capability_refs phải tồn tại. Chưa đạt thì dừng tại nguồn lỗi.
+
+## Data Extraction
+
+Đọc CAP, REQ IDs, actors, outcomes, scope, BR, assumptions/confirmation và dependencies có evidence. Giữ các yêu cầu chưa chốt riêng; không coi việc nằm trong requirements là được duyệt.
+
+## Processing
+
+Nhóm Epic → Feature theo giá trị sản phẩm, không chỉ menu UI. Phân rã thành PBI có kết quả người dùng quan sát được, gồm cả hành trình cần để nghiệm thu. Xem [INVEST](references/invest-checklist.md) và [vertical slices](references/vertical-slicing-examples.md). Không tạo PBI chỉ “frontend”, “backend” hoặc technical task khi người dùng đang yêu cầu backlog nghiệp vụ.
+
+Mỗi PBI có pbi_id, epic_id, feature_id, title, user_story, business_value, scope/out_of_scope, requirement_refs, dependencies, priority_proposal, estimation_status=Unestimated, confirmation_status, open_questions và lý do INVEST. Không tự đặt story points. Feature ghi requirement_refs và đúng Epic parent.
+
+Kiểm tra overlap, oversized PBI, dependency cycles và coverage: mỗi REQ thuộc ít nhất một PBI hoặc nằm trong unassigned_requirements với reason. Cho phép REQ thuộc nhiều PBI khi các lát cắt không trùng giá trị. Priority là đề xuất. Backlog mới luôn draft đến checkpoint con người.
+
+## Output Contract
+
+`{planning_dir}/product-backlog.md`, metadata product-backlog/ba-product-backlog; sources chứa cả brainstorm và requirements. Dùng [template](references/backlog-template.md). Bảng hiển thị phải khớp BA-DATA IDs/title/status.
+
+## Output Validation
+
+Validator `--expected-type product-backlog --check-refs --format json`; kiểm parent, scope, ID, refs, coverage và freshness. Đọc lại nội dung để kiểm INVEST thật, không chỉ presence của field.
+
+## Error Handling
+
+Thiếu brainstorm → ba-brainstorm; thiếu requirements → ba-requirements. Không tái tạo input hoặc tự lập Round. Giả định còn mở → Proposed/draft, ghi câu hỏi ảnh hưởng phạm vi.
+
+## Traceability
+
+CAP → REQ → Feature → PBI. Giữ IDs khi update; thêm history cho added/changed/deprecated. PBI đã dùng không tự xóa hoặc đổi số. Thay đổi backlog làm Round/drafts/reviews và approvals gắn hash cũ hết hiệu lực.
+
+## Example Invocation
+
+`$ba-product-backlog project_config=./ba-project.yaml` — “Tạo backlog có thể duyệt từ requirements.” Ví dụ 1 CAP → 2 REQ → 1 Epic/Feature → 2 PBI trong template chỉ minh họa, không cố định số lượng.
+
+## Completion Criteria
+
+Output PASS; coverage đầy đủ hoặc gaps có reason; INVEST được phân tích; không có estimate AI tự chốt. Báo PBI count, Proposed/unassigned và nhắc checkpoint duyệt scope trước điều phối Round. Acceptance: missing source/broken parent/cycle → fail; requirement nhiều-nhiều hợp lệ → pass.

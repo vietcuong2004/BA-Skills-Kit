@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "project-config",
+  "type": "object",
+  "properties": {
+    "config_version": {
+      "const": "1.0"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "project_name": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "repository_root": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "output_root": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "planning_dir": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "round_prefix": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+    },
+    "pbi_prefix": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*$"
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "skill_runtime": {
+      "const": "codex"
+    },
+    "approval_policy": {
+      "const": "human_checkpoints"
+    }
+  },
+  "required": [
+    "config_version",
+    "project_id",
+    "project_name",
+    "repository_root",
+    "output_root",
+    "planning_dir",
+    "round_prefix",
+    "pbi_prefix",
+    "language",
+    "skill_runtime",
+    "approval_policy"
+  ],
+  "additionalProperties": false
+}

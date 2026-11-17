@@ -1,0 +1,662 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "requirements",
+  "type": "object",
+  "properties": {
+    "actors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "actor_id": {
+            "type": "string",
+            "pattern": "^ACT-[0-9]{3,}$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "role": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "actor_id",
+          "name",
+          "role"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "pattern": "^REQ-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "actor": {
+            "type": "string",
+            "pattern": "^ACT-[0-9]{3,}$"
+          },
+          "trigger": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "expected_outcome": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "capability_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^CAP-[0-9]{3,}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "business_rule_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^BR-[0-9]{3,}$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "requirement_id",
+          "title",
+          "description",
+          "actor",
+          "trigger",
+          "preconditions",
+          "expected_outcome",
+          "capability_refs",
+          "source_refs",
+          "confirmation_status",
+          "business_rule_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "business_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "br_id": {
+            "type": "string",
+            "pattern": "^BR-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "rule": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "requirement_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-[0-9]{3,}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          }
+        },
+        "required": [
+          "br_id",
+          "title",
+          "rule",
+          "requirement_refs",
+          "source_refs",
+          "confirmation_status"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "permissions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "as_is": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "flow_id": {
+            "type": "string",
+            "pattern": "^(MF|AF|EF)-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "kind": {
+            "enum": [
+              "main",
+              "alternative",
+              "exception"
+            ]
+          },
+          "trigger": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "branch_point": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "step": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "actor_action": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "system_action": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "input": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "result": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                }
+              },
+              "required": [
+                "step",
+                "actor_action",
+                "system_action",
+                "input",
+                "result"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "termination": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "expected_outcome": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "data_state": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "feedback": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "recovery": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "requirement_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-[0-9]{3,}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "related_br_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^BR-[0-9]{3,}$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          }
+        },
+        "required": [
+          "flow_id",
+          "title",
+          "kind",
+          "trigger",
+          "branch_point",
+          "steps",
+          "termination",
+          "expected_outcome",
+          "data_state",
+          "feedback",
+          "recovery",
+          "requirement_refs",
+          "related_br_refs",
+          "confirmation_status"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "edge_cases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ec_id": {
+            "type": "string",
+            "pattern": "^EC-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "scenario": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "preconditions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "expected_behavior": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "open_question": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "requirement_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-[0-9]{3,}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "related_br_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^BR-[0-9]{3,}$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "related_ac_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^AC-[0-9]{3,}$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          }
+        },
+        "required": [
+          "ec_id",
+          "title",
+          "scenario",
+          "preconditions",
+          "requirement_refs",
+          "related_br_refs",
+          "related_ac_refs",
+          "confirmation_status"
+        ],
+        "additionalProperties": false,
+        "anyOf": [
+          {
+            "required": [
+              "expected_behavior"
+            ]
+          },
+          {
+            "required": [
+              "open_question"
+            ],
+            "properties": {
+              "confirmation_status": {
+                "const": "Open Question"
+              }
+            }
+          }
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "nonfunctional": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "change_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "change": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "affected_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "at",
+          "change",
+          "affected_ids",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "actors",
+    "requirements",
+    "business_rules",
+    "data",
+    "permissions",
+    "as_is",
+    "flows",
+    "edge_cases",
+    "nonfunctional",
+    "open_questions",
+    "change_history"
+  ],
+  "additionalProperties": false
+}

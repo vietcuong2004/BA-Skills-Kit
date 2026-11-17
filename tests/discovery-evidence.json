@@ -1,0 +1,28 @@
+{
+  "result": "PASS",
+  "method": "Codex app-server skills/list; no model turn",
+  "expected": [
+    "ba-brainstorm",
+    "ba-business",
+    "ba-product-backlog",
+    "ba-publish",
+    "ba-requirements",
+    "ba-review",
+    "ba-round-plan",
+    "ba-spec",
+    "ba-workflow"
+  ],
+  "discovered": [
+    "ba-brainstorm",
+    "ba-business",
+    "ba-product-backlog",
+    "ba-publish",
+    "ba-requirements",
+    "ba-review",
+    "ba-round-plan",
+    "ba-spec",
+    "ba-workflow"
+  ],
+  "diagnostics": [],
+  "runtime_version": "codex-cli 0.161.0"
+}

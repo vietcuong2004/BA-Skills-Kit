@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "product-backlog",
+  "type": "object",
+  "properties": {
+    "epics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "epic_id": {
+            "type": "string",
+            "pattern": "^EPIC-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "business_value": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "epic_id",
+          "title",
+          "business_value"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "feature_id": {
+            "type": "string",
+            "pattern": "^FEAT-[0-9]{3,}$"
+          },
+          "epic_id": {
+            "type": "string",
+            "pattern": "^EPIC-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "requirement_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-[0-9]{3,}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "feature_id",
+          "epic_id",
+          "title",
+          "requirement_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "pbis": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pbi_id": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}$"
+          },
+          "epic_id": {
+            "type": "string",
+            "pattern": "^EPIC-[0-9]{3,}$"
+          },
+          "feature_id": {
+            "type": "string",
+            "pattern": "^FEAT-[0-9]{3,}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "user_story": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "business_value": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "out_of_scope": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "requirement_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-[0-9]{3,}$"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "priority_proposal": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "estimation_status": {
+            "const": "Unestimated"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "open_questions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "invest": {
+            "type": "object",
+            "properties": {
+              "independent": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "negotiable": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "valuable": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "estimable": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "small": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "testable": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            },
+            "required": [
+              "independent",
+              "negotiable",
+              "valuable",
+              "estimable",
+              "small",
+              "testable"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "pbi_id",
+          "epic_id",
+          "feature_id",
+          "title",
+          "user_story",
+          "business_value",
+          "scope",
+          "out_of_scope",
+          "requirement_refs",
+          "dependencies",
+          "priority_proposal",
+          "estimation_status",
+          "confirmation_status",
+          "open_questions",
+          "invest"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "unassigned_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "requirement_id": {
+            "type": "string",
+            "pattern": "^REQ-[0-9]{3,}$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "requirement_id",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "change_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "change": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "affected_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "at",
+          "change",
+          "affected_ids",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "epics",
+    "features",
+    "pbis",
+    "unassigned_requirements",
+    "change_history"
+  ],
+  "additionalProperties": false
+}

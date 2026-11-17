@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "review",
+  "type": "object",
+  "properties": {
+    "pbi_id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}$"
+    },
+    "epic_id": {
+      "type": "string",
+      "pattern": "^EPIC-[0-9]{3,}$"
+    },
+    "feature_id": {
+      "type": "string",
+      "pattern": "^FEAT-[0-9]{3,}$"
+    },
+    "round_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*[1-9][0-9]*$"
+    },
+    "requirement_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^REQ-[0-9]{3,}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "result": {
+      "enum": [
+        "PASS",
+        "CONDITIONAL",
+        "FAIL"
+      ]
+    },
+    "readiness": {
+      "enum": [
+        "Ready",
+        "Needs Refinement",
+        "Blocked"
+      ]
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "finding_id": {
+            "type": "string",
+            "pattern": "^FIND-[0-9]{3,}$"
+          },
+          "severity": {
+            "enum": [
+              "Critical",
+              "Major",
+              "Minor"
+            ]
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "section": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "impact": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "recommendation": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "status": {
+            "enum": [
+              "Open",
+              "Resolved"
+            ]
+          }
+        },
+        "required": [
+          "finding_id",
+          "severity",
+          "file",
+          "section",
+          "evidence",
+          "impact",
+          "recommendation",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "coverage_notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "change_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "change": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "affected_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "at",
+          "change",
+          "affected_ids",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "pbi_id",
+    "epic_id",
+    "feature_id",
+    "requirement_refs",
+    "title",
+    "result",
+    "readiness",
+    "blockers",
+    "findings",
+    "coverage_notes",
+    "change_history"
+  ],
+  "additionalProperties": false
+}

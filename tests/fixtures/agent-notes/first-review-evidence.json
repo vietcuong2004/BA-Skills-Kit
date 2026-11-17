@@ -1,0 +1,59 @@
+{
+  "result": "FAIL",
+  "review_sha256": "1bb4103e440a3d82d5fe1d89f8137d2ead158c8b16b089cbbf427cf1cf098719",
+  "spec_sha256": "bd0f58b03e64c7273812a78cb0cf6dba46e20bd83a4783d11b5930db6a82ce23",
+  "review_data": {
+    "pbi_id": "PBI-001",
+    "epic_id": "EPIC-001",
+    "feature_id": "FEAT-001",
+    "title": "Tạo ghi chú cá nhân",
+    "requirement_refs": [
+      "REQ-001"
+    ],
+    "round_id": "R1",
+    "result": "FAIL",
+    "readiness": "Blocked",
+    "blockers": [
+      "FIND-001",
+      "FIND-002"
+    ],
+    "findings": [
+      {
+        "finding_id": "FIND-001",
+        "severity": "Major",
+        "file": ".specify/_planning/drafts/PBI-001/spec.md",
+        "section": "Acceptance Criteria / AC-005",
+        "evidence": "Giữ nội dung; kiểm tra thao tác cũ trước khi gửi lại, không tạo bản sao",
+        "impact": "AC chưa chứng minh hiển thị lại kết quả server đã lưu như EC-003 yêu cầu.",
+        "recommendation": "Nêu Given thao tác đã lưu nhưng mất phản hồi, Then trả đúng ghi chú đã lưu và không tạo bản sao.",
+        "status": "Open"
+      },
+      {
+        "finding_id": "FIND-002",
+        "severity": "Major",
+        "file": ".specify/_planning/drafts/PBI-001/spec.md",
+        "section": "Exception Flows / EF-004",
+        "evidence": "Tiêu đề và nội dung đang soạn / Giữ nội dung nếu kết quả chưa rõ; kiểm tra thao tác cũ trước khi gửi lại",
+        "impact": "Nhánh đọc trái quyền dùng input/recovery của form tạo; chưa mô tả đúng trạng thái dữ liệu cần bảo vệ.",
+        "recommendation": "Đổi input thành tham chiếu ghi chú và phiên tài khoản đọc; không trả nội dung, ghi chú nguồn không đổi, kết thúc nhánh.",
+        "status": "Open"
+      },
+      {
+        "finding_id": "FIND-003",
+        "severity": "Minor",
+        "file": ".specify/_planning/drafts/PBI-001/business.md",
+        "section": "Giải pháp phần mềm chi tiết",
+        "evidence": "Không gian cá nhân, hành động tạo mới (UI Proposed)",
+        "impact": "Nhãn hành động/bố cục UI chưa được refinement; không thay outcome đã xác định.",
+        "recommendation": "Giữ Proposed trong draft; chốt nhãn khi thiết kế giao diện.",
+        "status": "Open"
+      }
+    ],
+    "coverage_notes": [
+      "So business goal/scope với REQ-001, ba BR, sáu flows, bốn EC và bảy AC; không lẫn công ty/mẫu/search.",
+      "Kiểm whitespace, ownership, phiên thay đổi, cancel, timeout sau success và duplicate submission; không tự đặt SLA/length cap."
+    ],
+    "change_history": []
+  },
+  "publish_blocked": "PUBLISH_BLOCKED"
+}

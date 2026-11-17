@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "project_id": "example-notes",
+  "approvals": [
+    {
+      "checkpoint": "backlog",
+      "decision": "Approved",
+      "actor": "TEST HUMAN DOUBLE",
+      "evidence": "Synthetic approval for automated tests only; no real user approval is asserted.",
+      "decided_at": "2026-11-17T00:00:00+07:00",
+      "pbi_refs": [
+        "PBI-001"
+      ],
+      "documents": [
+        {
+          "path": ".specify/_planning/product-backlog.md",
+          "sha256": "1d39e6d7a3d0f4f939b3b33a265e9d0342aad908d6c45cda609551f9fa01b5da"
+        }
+      ],
+      "resolved_decisions": []
+    },
+    {
+      "checkpoint": "round-plan",
+      "decision": "Proposed Allowed",
+      "actor": "TEST HUMAN DOUBLE",
+      "evidence": "Synthetic approval for automated tests only; no real user approval is asserted.",
+      "decided_at": "2026-11-17T00:00:00+07:00",
+      "pbi_refs": [
+        "PBI-001"
+      ],
+      "documents": [
+        {
+          "path": ".specify/_planning/round-plan.md",
+          "sha256": "5bdb6973f2df49b7290e5fac4c36dc07bad2200a3df5d38568b0b116b298d3d8"
+        }
+      ],
+      "resolved_decisions": []
+    },
+    {
+      "checkpoint": "publish",
+      "decision": "Draft Publication",
+      "actor": "TEST HUMAN DOUBLE",
+      "evidence": "Synthetic approval for automated tests only; no real user approval is asserted.",
+      "decided_at": "2026-11-17T00:00:00+07:00",
+      "pbi_refs": [
+        "PBI-001"
+      ],
+      "documents": [
+        {
+          "path": ".specify/_planning/product-backlog.md",
+          "sha256": "1d39e6d7a3d0f4f939b3b33a265e9d0342aad908d6c45cda609551f9fa01b5da"
+        },
+        {
+          "path": ".specify/_planning/round-plan.md",
+          "sha256": "5bdb6973f2df49b7290e5fac4c36dc07bad2200a3df5d38568b0b116b298d3d8"
+        },
+        {
+          "path": ".specify/_planning/drafts/PBI-001/business.md",
+          "sha256": "eca2c7fa554c750247306edc9902e7cfeb0fe0e744a3d2f8640b48ca4288af15"
+        },
+        {
+          "path": ".specify/_planning/drafts/PBI-001/spec.md",
+          "sha256": "2461a154747c7a50842a0402ed0e13ad5334656294440dbf8ea15a9267a43b64"
+        },
+        {
+          "path": ".specify/_planning/reviews/PBI-001-review.md",
+          "sha256": "a72b64499c4b04675277d6d00fbeca8eb28d9121a389c80da86ae45e044a3d65"
+        }
+      ],
+      "resolved_decisions": []
+    }
+  ]
+}

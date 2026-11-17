@@ -1,0 +1,69 @@
+{
+  "execution": "Primary agent manual in-session execution, serialized by agent_example.py; synthetic approvals only",
+  "before_publish_checkpoint": {
+    "blocked": [
+      {
+        "severity": "ERROR",
+        "code": "MISSING_APPROVAL",
+        "file": "D:\\BA-Skills-Kit\\tests\\fixtures\\agent-notes\\.specify\\_planning\\product-backlog.md",
+        "location": "/",
+        "message": "No current human publish approval covering these bytes",
+        "suggested_fix": "Trình manifest và blockers cho người dùng; ghi approval gắn hash sau quyết định rõ ràng."
+      }
+    ],
+    "target_exists": false
+  },
+  "manifest": {
+    "pbi_id": "PBI-001",
+    "round_id": "R1",
+    "target": ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan",
+    "entries": [
+      {
+        "source": ".specify/_planning/drafts/PBI-001/business.md",
+        "destination": ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan/business.md",
+        "sha256": "b145a0531ccf204e1ae02e21f2ffdaa70caf962bcebe7a54dbdd7bbdf0853eb7",
+        "action": "create"
+      },
+      {
+        "source": ".specify/_planning/drafts/PBI-001/spec.md",
+        "destination": ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan/spec.md",
+        "sha256": "8259f2ab88d4657f0d2b554496a99f09f5e5f1ab927747800de15b10f66652f1",
+        "action": "create"
+      }
+    ],
+    "blocked": [],
+    "snapshot": {
+      ".specify/_planning/brainstorm.md": "938a9a472fe6d3e586528e10b8463a1ddff1e125c3f8b2cc84dd11a9724c941c",
+      "idea.txt": "8958f3b89e4b8ba3001ea88d1a7eb69e06c6e7be7b6bd47146ee6f6b64e09248",
+      "scenario.txt": "b677361b715a3f5d8f19fb47d15ccbf1bbb6bd362414dcd32daa4966f295f0a8",
+      ".specify/_planning/requirements.md": "6b105dd6e09ee90b872a66650ed5b2e3df8fe596f2c5e457498b3dad49284556",
+      ".specify/_planning/product-backlog.md": "9d235920a1ea615bd6420162e3812b9ae1b382bb4576d5cba6ac04c1887d8726",
+      ".specify/_planning/round-plan.md": "87b68678977c83f909b4f28b847b0d947bef9f9e9f4365f13f5a07cf45eea7e1",
+      ".specify/_planning/drafts/PBI-001/business.md": "b145a0531ccf204e1ae02e21f2ffdaa70caf962bcebe7a54dbdd7bbdf0853eb7",
+      ".specify/_planning/drafts/PBI-001/spec.md": "8259f2ab88d4657f0d2b554496a99f09f5e5f1ab927747800de15b10f66652f1",
+      ".specify/_planning/reviews/PBI-001-review.md": "9fb255ad6f973d46e25a4de18f174b333df33171870a65b72841e3da262b1dfb",
+      ".specify/_planning/approvals.json": "36245945f2b1ef4cd0f7e9591cc4032b093fab41bbe0f6dc766cf2eced6c9e58"
+    },
+    "config_sha256": "0c8783dd014ec35a8d86f521ed645fbf865d3d5907fa495bcd60eaef42599d32"
+  },
+  "publish": {
+    "created": [
+      ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan/business.md",
+      ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan/spec.md"
+    ],
+    "updated": [],
+    "skipped": [],
+    "blocked": [],
+    "conflicts": []
+  },
+  "rerun": {
+    "created": [],
+    "updated": [],
+    "skipped": [
+      ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan/business.md",
+      ".specify/R1/PBI-001-tao-ghi-chu-ca-nhan/spec.md"
+    ],
+    "blocked": [],
+    "conflicts": []
+  }
+}

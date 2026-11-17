@@ -1,0 +1,487 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "business",
+  "type": "object",
+  "properties": {
+    "pbi_id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}$"
+    },
+    "epic_id": {
+      "type": "string",
+      "pattern": "^EPIC-[0-9]{3,}$"
+    },
+    "feature_id": {
+      "type": "string",
+      "pattern": "^FEAT-[0-9]{3,}$"
+    },
+    "round_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9_-]*[1-9][0-9]*$"
+    },
+    "requirement_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^REQ-[0-9]{3,}$"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "business_story": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "confirmation_status": {
+          "enum": [
+            "Confirmed",
+            "Proposed",
+            "Open Question"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "text",
+        "confirmation_status",
+        "source_refs"
+      ],
+      "additionalProperties": false
+    },
+    "problems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "target_users": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "business_value": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "confirmation_status": {
+          "enum": [
+            "Confirmed",
+            "Proposed",
+            "Open Question"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "text",
+        "confirmation_status",
+        "source_refs"
+      ],
+      "additionalProperties": false
+    },
+    "as_is": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "to_be": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "text",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "solution": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "entry_point": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "ui_components": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "data_state": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "feedback": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "permission": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "business_rule_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^BR-[0-9]{3,}$"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "confirmation_status": {
+            "enum": [
+              "Confirmed",
+              "Proposed",
+              "Open Question"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "entry_point",
+          "ui_components",
+          "actions",
+          "data_state",
+          "feedback",
+          "permission",
+          "business_rule_refs",
+          "confirmation_status",
+          "source_refs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "out_of_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "business_rule_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^BR-[0-9]{3,}$"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3,}$"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "change_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "change": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "affected_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "required": [
+          "at",
+          "change",
+          "affected_ids",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "pbi_id",
+    "epic_id",
+    "feature_id",
+    "requirement_refs",
+    "title",
+    "business_story",
+    "problems",
+    "target_users",
+    "goals",
+    "business_value",
+    "as_is",
+    "to_be",
+    "solution",
+    "scope",
+    "out_of_scope",
+    "business_rule_refs",
+    "dependencies",
+    "risks",
+    "open_questions",
+    "blockers",
+    "change_history"
+  ],
+  "additionalProperties": false
+}

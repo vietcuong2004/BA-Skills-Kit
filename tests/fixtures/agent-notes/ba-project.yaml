@@ -1,0 +1,11 @@
+config_version: '1.0'
+project_id: agent-notes
+project_name: Example Notes — in-session BA exercise
+repository_root: .
+output_root: .specify
+planning_dir: .specify/_planning
+round_prefix: R
+pbi_prefix: PBI
+language: vi
+skill_runtime: codex
+approval_policy: human_checkpoints
