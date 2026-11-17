@@ -11,6 +11,8 @@ Config, `{planning_dir}/product-backlog.md`, `requirements.md`; goals/capacity/v
 
 ## Input Validation
 
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate hai nguồn bằng `--project-config <config> --file <path> --expected-type <type> --check-refs`. Resolve dependency graph, phát hiện missing node/cycle. Trong workflow phải đã qua backlog checkpoint. Khi chạy độc lập, chưa duyệt backlog chỉ được tạo bản đề xuất nếu user yêu cầu, không ghi approval thay họ.
@@ -45,7 +47,7 @@ Round tham chiếu đúng PBI backlog; không sao chép PBI thành ID mới. Gi�
 
 ## Example Invocation
 
-`$ba-round-plan project_config=./ba-project.yaml` — “Đề xuất các Round, chưa có capacity; giữ allocation Proposed.”
+`$ba-round-plan project_config=./.temp/ba-project.yaml` — “Đề xuất các Round, chưa có capacity; giữ allocation Proposed.”
 
 ## Completion Criteria
 

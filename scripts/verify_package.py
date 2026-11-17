@@ -33,10 +33,11 @@ def main():
         # A disposable smoke document avoids depending on local tests/ in distributed packages.
         project = destination / "smoke-project"
         project.mkdir()
-        config = project / "ba-project.yaml"
+        config = project / ".temp/ba-project.yaml"
+        config.parent.mkdir()
         config.write_bytes((extracted / "templates/ba-project.example.yaml").read_bytes())
         idea = project / ".temp/inputs/idea.txt"
-        idea.parent.mkdir(parents=True)
+        idea.parent.mkdir(parents=True, exist_ok=True)
         idea.write_text("Smoke-check a notes discovery document.", encoding="utf-8")
         fact = {"text": "Synthetic package smoke check", "confirmation_status": "Proposed", "source_refs": [".temp/inputs/idea.txt"]}
         data = {"product_overview": fact, "vision": fact, "target_users": ["User"], "problems": [fact],
@@ -59,8 +60,16 @@ def main():
             result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", timeout=30)
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
+        # Verify the installed helper also discovers the config when no path is passed.
+        installed_auditor = destination / "target/.agents/skills/ba-publish/references/kit/scripts/check_ba_layout.py"
+        detected = subprocess.run([sys.executable, "-X", "utf8", str(installed_auditor)], cwd=project,
+                                  capture_output=True, text=True, encoding="utf-8", timeout=30)
+        if detected.returncode or json.loads(detected.stdout)["planning_dir"] != ".temp":
+            raise RuntimeError(detected.stdout + detected.stderr)
+        if (project / "ba-project.yaml").exists() or (project / ".temp/.temp").exists() or (project / ".temp/.specify").exists():
+            raise ValueError("Config discovery created an incorrect nested/root project layout")
         report = {"result": "PASS", "archive_sha256": sha(archive), "manifest_files": len(manifest["files"]),
-                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor"]}
+                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor", "auto-discovered .temp config without root config"]}
     (KIT / "dist/package-verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

@@ -9,11 +9,13 @@ description: "Tạo một PBI mới để bổ sung tính năng cho dự án hi�
 
 ## Input Contract
 
-Bắt buộc: mô tả tính năng/thay đổi và project đang làm việc. Optional: `project_config` (mặc định kiểm tra `./ba-project.yaml`), Epic/Feature/REQ có sẵn, Round mong muốn, tài liệu/mockup/rules và mức đầu ra mong muốn.
+Bắt buộc: mô tả tính năng/thay đổi và project đang làm việc. Optional: `project_config` (mặc định kiểm tra `./.temp/ba-project.yaml`), Epic/Feature/REQ có sẵn, Round mong muốn, tài liệu/mockup/rules và mức đầu ra mong muốn.
 
 Đọc [conventions](../../conventions/BA-CONVENTIONS.md) và [quy trình cập nhật](references/incremental-guide.md). Xác định KIT_ROOT và project root theo conventions. Chỉ đọc nguồn/repository liên quan đến tính năng; khảo sát toàn sản phẩm thuộc ba-explore-project.
 
 ## Input Validation
+
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 

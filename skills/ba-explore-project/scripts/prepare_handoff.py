@@ -179,7 +179,7 @@ def prepare(project, inventory_path, write=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", required=True)
+    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
     parser.add_argument("--inventory", required=True)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()

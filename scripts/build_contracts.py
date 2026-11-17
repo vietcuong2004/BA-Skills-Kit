@@ -59,7 +59,7 @@ def write(name, schema):
 
 def main():
     write("project-config", obj({"config_version": {"const": "1.0"}, "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
-        "project_name": S, "repository_root": S,
+        "project_name": S, "repository_root": {**S, "default": ".", "description": "For .temp/ba-project.yaml, relative to the project above .temp; for legacy configs, relative to the config directory. Parent traversal is forbidden."},
         "output_root": {**S, "default": ".specify", "description": "Published Round/PBI pairs only; must be disjoint from .temp."},
         "planning_dir": {**S, "default": ".temp", "description": "Must resolve to project/.temp or a directory below it. Never inside output_root."},
         "round_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},

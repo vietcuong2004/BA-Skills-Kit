@@ -18,7 +18,9 @@
     "repository_root": {
       "type": "string",
       "minLength": 1,
-      "pattern": "\\S"
+      "pattern": "\\S",
+      "default": ".",
+      "description": "For .temp/ba-project.yaml, relative to the project above .temp; for legacy configs, relative to the config directory. Parent traversal is forbidden."
     },
     "output_root": {
       "type": "string",

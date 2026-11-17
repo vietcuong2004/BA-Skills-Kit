@@ -11,6 +11,8 @@ description: Điều phối toàn bộ pipeline BA từ ý tưởng đến backl
 
 ## Input Validation
 
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Load config (chưa có → đề xuất template và xác nhận giá trị thiết yếu). Đọc files/state đang có, validate trước dùng; không chạy lại bước còn fresh. SINGLE-PBI cần exact ID; SINGLE-ROUND cần exact Round ID rồi resolve pbi_refs, không đoán. RESUME dùng `python <KIT_ROOT>/scripts/workflow_state.py --project-config <config>` và đọc [recovery guide](references/recovery-guide.md).
@@ -49,10 +51,10 @@ RESUME so hash toàn chain và invalidated downstream; không tự refresh hash 
 
 ## Example Invocation
 
-- `$ba-workflow mode=INTERACTIVE project_config=./ba-project.yaml` — “Tôi muốn website ghi chú; dừng để duyệt backlog và Round.”
-- `$ba-workflow mode=RESUME project_config=./ba-project.yaml` — “Tiếp tục từ state.”
-- `$ba-workflow mode=SINGLE-PBI pbi_id=PBI-001 project_config=./ba-project.yaml` — “Làm bộ tài liệu draft cho PBI này.”
-- `$ba-workflow mode=SINGLE-ROUND round_id=R1 project_config=./ba-project.yaml` — “Review các PBI trong Round đã chọn.”
+- `$ba-workflow mode=INTERACTIVE project_config=./.temp/ba-project.yaml` — “Tôi muốn website ghi chú; dừng để duyệt backlog và Round.”
+- `$ba-workflow mode=RESUME project_config=./.temp/ba-project.yaml` — “Tiếp tục từ state.”
+- `$ba-workflow mode=SINGLE-PBI pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` — “Làm bộ tài liệu draft cho PBI này.”
+- `$ba-workflow mode=SINGLE-ROUND round_id=R1 project_config=./.temp/ba-project.yaml` — “Review các PBI trong Round đã chọn.”
 
 ## Completion Criteria
 

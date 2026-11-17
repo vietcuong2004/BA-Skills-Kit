@@ -28,7 +28,7 @@ def resume(project, state_path=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", required=True)
+    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
     parser.add_argument("--state")
     args = parser.parse_args()
     try:

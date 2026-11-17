@@ -41,7 +41,7 @@ Người dùng có thể chỉ định đọc root này bằng đường dẫn, 
 ```text
 Đọc D:/BA-Skills-Kit/AGENTS.md và D:/BA-Skills-Kit/SKILL.md.
 Dùng hướng dẫn ba-workflow trong Kit để phân tích project đang mở,
-với config ./ba-project.yaml và nhu cầu: [mô tả].
+với config ./.temp/ba-project.yaml và nhu cầu: [mô tả].
 Đi đến backlog và dừng để tôi duyệt phạm vi.
 ```
 

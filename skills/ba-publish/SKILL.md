@@ -11,6 +11,8 @@ Config, selected PBI IDs rõ ràng, backlog, Round plan, draft business/spec, re
 
 ## Input Validation
 
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Dùng `scripts/publish_ba.py` để kiểm tất cả inputs/recursive source hashes/đúng project-PBI-Round. Review FAIL hoặc business/spec blockers → chặn. CONDITIONAL chỉ cho draft khi có quyết định Draft Publication. Kiểm backlog checkpoint và Round Approved/Proposed Allowed gắn đúng bytes; không suy approval từ PASS hoặc front matter approved.
@@ -45,7 +47,7 @@ Review phải hash đúng hai drafts; approval gắn bytes hiện tại. Recompu
 
 ## Example Invocation
 
-`$ba-publish pbi_id=PBI-001 project_config=./ba-project.yaml` — “Kiểm tra và cho tôi xem dry-run trước publish.”
+`$ba-publish pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` — “Kiểm tra và cho tôi xem dry-run trước publish.”
 
 ## Completion Criteria
 

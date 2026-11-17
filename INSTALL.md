@@ -88,7 +88,7 @@ Theo [tài liệu Claude Code](https://code.claude.com/docs/en/skills#choose-whe
 ```text
 MyProject/.claude/skills/ba-workflow/SKILL.md
 MyProject/.claude/skills/ba-spec/SKILL.md
-... cùng 7 skill còn lại
+... cùng 9 skill còn lại
 ```
 
 Mở Claude Code tại project. Nếu dùng CLI đã cài, chạy ở terminal:
@@ -101,7 +101,7 @@ claude
 Sau khi tạo cấu hình theo mục 4, gửi trong chat Claude Code:
 
 ```text
-/ba-workflow mode=INTERACTIVE project_config=./ba-project.yaml
+/ba-workflow mode=INTERACTIVE project_config=./.temp/ba-project.yaml
 
 Tôi muốn website ghi chú cá nhân và công ty, tạo tài liệu từ mẫu và tìm kiếm.
 Hãy bắt đầu từ brainstorm, dừng để tôi duyệt backlog, Round và trước publish.
@@ -136,7 +136,7 @@ codex
 Sau khi tạo cấu hình theo mục 4, gửi trong chat:
 
 ```text
-$ba-workflow mode=INTERACTIVE project_config=./ba-project.yaml
+$ba-workflow mode=INTERACTIVE project_config=./.temp/ba-project.yaml
 
 Tôi muốn website ghi chú cá nhân và công ty, tạo tài liệu từ mẫu và tìm kiếm.
 Hãy bắt đầu từ brainstorm, dừng để tôi duyệt backlog, Round và trước publish.
@@ -165,7 +165,7 @@ Mở `D:\Projects\MyProject` trong Antigravity. Với IDE, xem skill đang hoạ
 
 ```text
 Hãy dùng skill ba-workflow trong workspace này.
-mode=INTERACTIVE project_config=./ba-project.yaml
+mode=INTERACTIVE project_config=./.temp/ba-project.yaml
 
 Tôi muốn website ghi chú cá nhân và công ty, tạo tài liệu từ mẫu và tìm kiếm.
 Hãy bắt đầu từ brainstorm, dừng để tôi duyệt backlog, Round và trước publish.
@@ -176,18 +176,20 @@ Antigravity App/CLI cũng hỗ trợ `/ba-workflow`; CLI có `/skills reload` đ
 
 ## 4. Tạo cấu hình dự án — áp dụng cho cả ba
 
-Từ thư mục Kit, copy mẫu sang project **nếu chưa có** `ba-project.yaml`. Nếu đã có, mở kiểm tra bản hiện tại thay vì ghi đè.
+Với project chưa có cấu hình BA, tạo `.temp` rồi copy mẫu từ Kit vào đó. Nếu đã có `ba-project.yaml` ở root hoặc trong `.temp`, kiểm tra bản hiện tại; xem phần chuyển cấu hình cũ bên dưới, không tạo thêm bản mới hay ghi đè.
 
 Windows:
 
 ```powershell
-Copy-Item -LiteralPath ".\templates\ba-project.example.yaml" -Destination "D:\Projects\MyProject\ba-project.yaml"
+New-Item -ItemType Directory -Force -Path "D:\Projects\MyProject\.temp"
+Copy-Item -LiteralPath ".\templates\ba-project.example.yaml" -Destination "D:\Projects\MyProject\.temp\ba-project.yaml"
 ```
 
 macOS/Linux:
 
 ```bash
-cp -n templates/ba-project.example.yaml "$HOME/Projects/MyProject/ba-project.yaml"
+mkdir -p "$HOME/Projects/MyProject/.temp"
+cp -n templates/ba-project.example.yaml "$HOME/Projects/MyProject/.temp/ba-project.yaml"
 ```
 
 Mở file, sửa ít nhất mã và tên dự án:
@@ -210,7 +212,7 @@ approval_policy: human_checkpoints
 | --- | --- |
 | `project_id` | Mã riêng: chữ thường không dấu, có thể dùng `-`, ví dụ `my-notes` |
 | `project_name` | Tên sản phẩm hiển thị |
-| `repository_root` | Giữ `.`; đặt file cấu hình tại root project |
+| `repository_root` | Giữ `.`; với config trong `.temp`, đây vẫn là root project chứa `.temp` |
 | `output_root` | Giữ `.specify` nếu muốn dùng vị trí mặc định |
 | `planning_dir` | Giữ `.temp`; chứa phân tích, nháp, review và tiến độ |
 | `round_prefix` / `pbi_prefix` | Giữ `R` / `PBI` khi mới dùng |
@@ -222,6 +224,10 @@ approval_policy: human_checkpoints
 
 Các đường dẫn được resolve từ root project, không từ nơi cài skill hay nơi giữ Kit nguồn. Với ví dụ này, chỉ cặp tài liệu publish nằm dưới `D:\Projects\MyProject\.specify`; hồ sơ trung gian nằm trong `.temp`.
 
+Các helper tự tìm `.temp/ba-project.yaml` khi chạy tại root project; không cần truyền `project_config` trong mọi câu nhắn. File `ba-project.yaml` cũ ở root vẫn đọc được khi chưa có bản trong `.temp`. Nếu cả hai tồn tại thì bản trong `.temp` được ưu tiên; nếu bản đó có lỗi, helper báo lỗi để sửa.
+
+**Chuyển riêng file cấu hình cũ:** cập nhật skill theo mục 8, rồi chuyển `ba-project.yaml` từ root vào `.temp/ba-project.yaml` nếu chưa có file ở đích. Giữ `repository_root: .`, `planning_dir: .temp`, `output_root: .specify`. Không cần chuyển hay tạo lại tài liệu PBI. Kiểm tra bằng lệnh audit bên dưới; nếu config cũng được dùng làm nguồn có hash, kiểm lại nguồn đó theo [quy ước cấu hình](conventions/BA-CONVENTIONS.md#kit-root-project-root-và-an-toàn-đường-dẫn).
+
 **Phân vùng bắt buộc:** `.specify` chỉ chứa Round/PBI-ID-slug/{business.md,spec.md}; toàn bộ hồ sơ làm việc nằm dưới `D:\Projects\MyProject\.temp`. Helper chặn planning_dir ở ngoài `.temp` hoặc output_root chồng lên `.temp`. Không xóa `.temp` sau publish vì source refs/hash và RESUME cần các file ở đó.
 
 **Project đã dùng bản cũ:** nếu config còn `planning_dir: .specify/_planning` hoặc `_planing`, đổi đường dẫn phải đi cùng chuyển dữ liệu và sửa refs/hash có kiểm soát theo [quy trình migration](conventions/BA-CONVENTIONS.md#chuyển-dự-án-đang-dùng-layout-cũ). Installer chỉ cập nhật skills, không tự di chuyển hồ sơ dự án. Có thể yêu cầu agent: “Chuyển hồ sơ BA trung gian từ layout cũ sang .temp, giữ các cặp Round/PBI, kiểm conflicts và refs/hash, không xóa dữ liệu; báo review/approval cần xác nhận lại.”
@@ -229,7 +235,7 @@ Các đường dẫn được resolve từ root project, không từ nơi cài s
 Kiểm cấu trúc sau khi chuyển:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/check_ba_layout.py --project-config "D:/Projects/MyProject/ba-project.yaml" --check-documents
+.\.venv\Scripts\python.exe scripts/check_ba_layout.py --project-config "D:/Projects/MyProject/.temp/ba-project.yaml" --check-documents
 ```
 
 ## 5. Kiểm tra đã cài thành công
@@ -240,19 +246,19 @@ Trong **Kit nguồn**, [AGENTS.md](AGENTS.md) là chỉ dẫn workspace, [SKILL.
 
 Installer cài các skill trong `skills/` và tài nguyên riêng (hiện có 11 skill), không ghi đè AGENTS.md/CLAUDE.md hay cấu hình chỉ dẫn của project đích. Mỗi skill có SKILL.md trong thư mục discovery ở mục 1; đó là điểm vào khi gọi skill đã cài. Root SKILL.md của Kit không tự được discovery chỉ vì Kit nằm đâu đó trên máy.
 
-Nếu không cài mà yêu cầu đọc Kit trực tiếp, chỉ định đường dẫn AGENTS.md và SKILL.md như ví dụ trong README. Nếu Kit ở ngoài workspace, agent cần quyền đọc vị trí đó theo môi trường của bạn. Mở Codex trong project con không làm nó tự quét mọi Kit bên cạnh.
+Nếu không cài mà yêu cầu đọc Kit trực tiếp, chỉ định đường dẫn AGENTS.md và SKILL.md theo [ví dụ trong điểm vào cho agent](SKILL.md#khi-kit-chưa-được-cài-vào-runtime). Nếu Kit ở ngoài workspace, agent cần quyền đọc vị trí đó theo môi trường của bạn. Mở Codex trong project con không làm nó tự quét mọi Kit bên cạnh.
 
 ### Kiểm tra bản đã cài
 
 1. Thư mục skill của công cụ có đủ 11 thư mục `ba-*`, bao gồm `ba-explore-project` và `ba-pbi`; mỗi thư mục có `SKILL.md`.
 2. Ví dụ `ba-workflow/references/kit/` có `contracts/`, `conventions/`, `templates/`, `scripts/`. Installer đóng gói các tài nguyên này để skill không bị mất liên kết khi sang project khác. Chỉ copy riêng SKILL.md sẽ thiếu tài nguyên.
-3. Root project có `ba-project.yaml` và bạn đã xác nhận tên/đường dẫn.
+3. Cấu hình nằm tại `<project>/.temp/ba-project.yaml` và bạn đã xác nhận tên/đường dẫn.
 4. Agent đọc được skill và chạy được Python đã cài thư viện.
 
 Có thể thử trước khi tạo hồ sơ thật bằng lời nhắn:
 
 ```text
-Hãy đọc skill ba-workflow đã cài và kiểm tra ba-project.yaml.
+Hãy đọc skill ba-workflow đã cài và kiểm tra .temp/ba-project.yaml.
 Dùng Python D:/BA-Skills-Kit/.venv/Scripts/python.exe để chạy công cụ Kit.
 Cho biết đường dẫn planning/output đã resolve và skill nào còn thiếu.
 Chưa tạo hồ sơ phân tích cho tới khi tôi gửi ý tưởng.
@@ -264,9 +270,9 @@ Sau đó chọn [luồng project hiện có](GUIDE_EXISTING_PROJECT.md) để b�
 
 | Công cụ | Ví dụ tiếp tục workflow | Ví dụ viết spec đúng một PBI |
 | --- | --- | --- |
-| Claude Code | `/ba-workflow mode=RESUME project_config=./ba-project.yaml` | `/ba-spec pbi_id=PBI-001 project_config=./ba-project.yaml` |
-| Codex | `$ba-workflow mode=RESUME project_config=./ba-project.yaml` | `$ba-spec pbi_id=PBI-001 project_config=./ba-project.yaml` |
-| Antigravity | “Dùng ba-workflow, mode=RESUME, project_config=./ba-project.yaml” | “Dùng ba-spec, pbi_id=PBI-001, project_config=./ba-project.yaml” |
+| Claude Code | `/ba-workflow mode=RESUME project_config=./.temp/ba-project.yaml` | `/ba-spec pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` |
+| Codex | `$ba-workflow mode=RESUME project_config=./.temp/ba-project.yaml` | `$ba-spec pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` |
+| Antigravity | “Dùng ba-workflow, mode=RESUME, project_config=./.temp/ba-project.yaml” | “Dùng ba-spec, pbi_id=PBI-001, project_config=./.temp/ba-project.yaml” |
 
 Gửi trong chat và nhắc đường dẫn Python nếu phiên mới chưa có thông tin. Skill đơn lẻ cần đủ input hợp lệ. `ba-workflow` có thể điều phối nhiều bước khi bạn yêu cầu; review PASS vẫn cần quyết định publish của bạn.
 
@@ -285,7 +291,7 @@ Windows, từ thư mục Kit, **chọn một** lệnh theo công cụ. Chạy b�
 .\.venv\Scripts\python.exe scripts/install_skills.py --skills-dir "$env:USERPROFILE/.gemini/config/skills" --apply
 ```
 
-macOS/Linux: dùng `./.venv/bin/python` và thay `$env:USERPROFILE` bằng `$HOME` trong đường dẫn. Mỗi project vẫn cần `ba-project.yaml` riêng. Nơi cài cá nhân được mô tả trong tài liệu chính thức liên kết ở mục 1; tránh cài trùng cùng tên ở cả phạm vi cá nhân/project khi chưa cần.
+macOS/Linux: dùng `./.venv/bin/python` và thay `$env:USERPROFILE` bằng `$HOME` trong đường dẫn. Mỗi project vẫn cần `.temp/ba-project.yaml` riêng. Nơi cài cá nhân được mô tả trong tài liệu chính thức liên kết ở mục 1; tránh cài trùng cùng tên ở cả phạm vi cá nhân/project khi chưa cần.
 
 Nếu dùng Codex và Antigravity trên cùng project, có thể dùng chung bản cài `.agents/skills`. Claude Code có bản cài ở `.claude/skills`. Khi chuyển công cụ, chỉ cho một agent cập nhật cùng hồ sơ tại một thời điểm và dùng RESUME để kiểm tra nguồn.
 
@@ -293,7 +299,7 @@ Nếu dùng Codex và Antigravity trên cùng project, có thể dùng chung b�
 
 **BA-PBI** là skill phụ để thêm một PBI mới và tạo bộ tài liệu draft sau duyệt scope. Installer tự thêm `ba-pbi` khi cập nhật. Gọi `$ba-pbi` trong Codex hoặc `/ba-pbi` trong Claude Code, rồi mô tả tính năng; không cần sửa SKILL.md cũ. Cài theo project/global thì dùng lại thư mục đã chọn ở lần cài trước.
 
-Bản Kit hiện có thêm **BA-explore-project** để khảo sát tính năng hiện hữu trước khi tài liệu hóa. Installer tự thêm thư mục `ba-explore-project` khi cài/cập nhật; không cần sửa chín SKILL.md cũ. Cài global hay project thì dùng lại đúng `--skills-dir` trước đây, mở phiên agent mới để thấy skill phụ. Gọi `$ba-explore-project` trong Codex hoặc `/ba-explore-project` trong Claude Code. Skill dừng ở báo cáo/brief; sau khi bạn chọn phạm vi, chuyển sang ba-workflow theo mẫu trong README.
+Bản Kit hiện có thêm **BA-explore-project** để khảo sát tính năng hiện hữu trước khi tài liệu hóa. Installer tự thêm thư mục `ba-explore-project` khi cài/cập nhật; không cần sửa chín SKILL.md cũ. Cài global hay project thì dùng lại đúng `--skills-dir` trước đây, mở phiên agent mới để thấy skill phụ. Gọi `$ba-explore-project` trong Codex hoặc `/ba-explore-project` trong Claude Code. Skill dừng ở báo cáo/brief; sau khi bạn chọn phạm vi, chuyển sang ba-workflow theo [hướng dẫn project hiện có](GUIDE_EXISTING_PROJECT.md).
 
 Tại Kit nguồn mới, dùng **đúng thư mục đã cài trước đó**, thêm `--update`:
 
@@ -328,9 +334,9 @@ Tại Kit nguồn mới, dùng **đúng thư mục đã cài trước đó**, th
 Các lệnh sau dùng Python của Kit, chạy tại thư mục Kit:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts/validate_ba_document.py --project-config "D:/Projects/MyProject/ba-project.yaml" --file ".temp/drafts/PBI-001/spec.md" --expected-type spec --pbi-id PBI-001 --check-refs --format json
-.\.venv\Scripts\python.exe scripts/workflow_state.py --project-config "D:/Projects/MyProject/ba-project.yaml"
-.\.venv\Scripts\python.exe scripts/publish_ba.py --project-config "D:/Projects/MyProject/ba-project.yaml" --pbi-id PBI-001
+.\.venv\Scripts\python.exe scripts/validate_ba_document.py --project-config "D:/Projects/MyProject/.temp/ba-project.yaml" --file ".temp/drafts/PBI-001/spec.md" --expected-type spec --pbi-id PBI-001 --check-refs --format json
+.\.venv\Scripts\python.exe scripts/workflow_state.py --project-config "D:/Projects/MyProject/.temp/ba-project.yaml"
+.\.venv\Scripts\python.exe scripts/publish_ba.py --project-config "D:/Projects/MyProject/.temp/ba-project.yaml" --pbi-id PBI-001
 ```
 
 Lệnh publish trên chỉ dry-run; `--apply` chỉ thực hiện khi đã có phê duyệt thật theo hợp đồng Kit. Nếu máy bảo trì còn `tests/`, có thể chạy `python -m unittest discover -s tests -v` để kiểm thử local. Các fixture chứa phê duyệt mô phỏng, không dùng làm phê duyệt dự án thật.

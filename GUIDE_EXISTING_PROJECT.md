@@ -10,7 +10,7 @@ Dùng luồng này khi `your-project` đã có giao diện, mã nguồn hoặc c
 
 - Cài Kit theo [INSTALL.md](INSTALL.md), rồi mở agent tại root `your-project`.
 - Agent cần đọc được repository và chạy Python có thư viện của Kit.
-- Kiểm tra `ba-project.yaml`. Nếu chưa có, để agent đề xuất từ template và hỏi bạn xác nhận trước khi ghi hồ sơ.
+- Kiểm tra `.temp/ba-project.yaml`. Nếu đang có `ba-project.yaml` cũ ở root, cập nhật skill và chuyển file theo [INSTALL.md](INSTALL.md), không tạo thêm cấu hình mới. Nếu chưa có cấu hình nào, để agent đề xuất từ template và hỏi bạn xác nhận trước khi ghi hồ sơ.
 - Mặc định hồ sơ làm việc nằm trong `.temp`; `.specify` chỉ chứa các cặp tài liệu đã được phép xuất.
 
 Các đoạn dưới gửi vào **ô chat agent**. Ví dụ dùng cú pháp Codex `$ba-…`; Claude Code thay bằng `/ba-…`, Antigravity có thể dùng câu “Dùng skill ba-…”. Thay `[nội dung]`, `EXF-001`, `PBI-001`, `R1` bằng giá trị thật sau khi khảo sát.
@@ -46,7 +46,7 @@ Ghi bằng chứng từ file/symbol; phân biệt chỉ có UI, dữ liệu mock
 có xử lý trong code và hành vi thực sự đã chạy thử.
 Không kết luận tính năng hoàn thiện chỉ vì có màn hình.
 
-Kiểm tra ba-project.yaml; nếu chưa có thì đề xuất cấu hình để tôi xác nhận.
+Kiểm tra .temp/ba-project.yaml; nếu chưa có thì đề xuất cấu hình để tôi xác nhận.
 Chuẩn bị hồ sơ khảo sát dưới .temp và dừng để tôi xem danh mục.
 ```
 
@@ -195,7 +195,7 @@ Mỗi Round có thể chứa nhiều PBI; mỗi PBI xuất ra chỉ có đúng h
 Lần sau mở lại cùng project:
 
 ```text
-$ba-workflow mode=RESUME project_config=./ba-project.yaml
+$ba-workflow mode=RESUME project_config=./.temp/ba-project.yaml
 Đọc state và các nguồn hiện tại, cho biết phần nào đã xong,
 phần nào bị ảnh hưởng bởi thay đổi code và quyết định nào còn chờ tôi.
 Tiếp tục phần hợp lệ trong phạm vi đã chọn.

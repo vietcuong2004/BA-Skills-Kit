@@ -1,7 +1,7 @@
 # Dry-run và checkpoint
 
 ```powershell
-python "<KIT_ROOT>/scripts/publish_ba.py" --project-config "<PROJECT>/ba-project.yaml" --pbi-id PBI-001
+python "<KIT_ROOT>/scripts/publish_ba.py" --project-config "<PROJECT>/.temp/ba-project.yaml" --pbi-id PBI-001
 ```
 
 Kết quả có pbi_id, round_id, target, entries (`source`, `destination`, `sha256`, `action`), blocked, snapshot, config_sha256. Chưa có approval → vẫn trả manifest khi các tài liệu hợp lệ, blocked=MISSING_APPROVAL và exit code 1; không ghi gì.

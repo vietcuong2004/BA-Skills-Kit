@@ -64,7 +64,7 @@ Chuẩn bị công cụ AI đã đăng nhập, Python 3.10 trở lên và thư m
 1. Tải/clone [BA-Skills-Kit](https://github.com/vietcuong2004/BA-Skills-Kit) về máy.
 2. Làm theo **[INSTALL.md — Cài cho Claude Code, Codex và Antigravity](INSTALL.md)** để tạo môi trường Python, cài thư viện và cài các skill vào đúng công cụ. Có thể cài cá nhân một lần cho nhiều project hoặc cài riêng từng project.
 3. Mở agent tại thư mục gốc `your-project`, kiểm tra nhận diện được `ba-workflow`, `ba-explore-project` và `ba-pbi`. Nếu chưa thấy sau khi cài, mở phiên mới.
-4. Chuẩn bị `ba-project.yaml` theo mẫu trong INSTALL. Nếu chưa biết cấu hình, yêu cầu agent đề xuất và hỏi bạn xác nhận tên dự án cùng nơi lưu output.
+4. Chuẩn bị `.temp/ba-project.yaml` theo mẫu trong INSTALL. Nếu chưa biết cấu hình, yêu cầu agent đề xuất và hỏi bạn xác nhận tên dự án cùng nơi lưu output.
 
 Chỉ đặt Kit trên ổ đĩa chưa có nghĩa agent đã nhận diện skill. Hướng dẫn cài đặt cũng chỉ rõ cách cập nhật và xử lý lỗi thiếu thư viện.
 
@@ -83,9 +83,10 @@ Hai hướng dẫn có câu nhắn để copy vào agent, thứ tự thực hi�
 
 ```text
 your-project/
-├── ba-project.yaml
-├── .temp/                         # Hồ sơ làm việc: khảo sát, yêu cầu, backlog,
-│                                  # Round plan, drafts, reviews và tiến độ
+├── .temp/                         # Cấu hình và hồ sơ làm việc
+│   ├── ba-project.yaml
+│   └── ...                        # Khảo sát, yêu cầu, backlog, Round plan,
+│                                  # drafts, reviews và tiến độ
 └── .specify/                      # Tài liệu được phép bàn giao
     └── R1/
         └── PBI-001-ten-tinh-nang/

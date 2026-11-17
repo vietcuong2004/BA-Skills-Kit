@@ -11,6 +11,8 @@ description: Tạo đặc tả Dev/QA cho một PBI từ business draft hợp l�
 
 ## Input Validation
 
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng nguồn bằng `--check-refs --expected-type <type>`; business thêm `--pbi-id <requested-id>`. Business PBI = requested PBI = backlog PBI; cùng project/version, source hashes fresh. Business thiếu → báo ba-business và exact path, dừng; không tự tạo business thay.
@@ -46,7 +48,7 @@ AC/EC/Flow định danh theo PBI; update giữ IDs, history, quyết định Con
 
 ## Example Invocation
 
-`$ba-spec pbi_id=PBI-001 project_config=./ba-project.yaml` — “Đọc business đúng PBI và viết flows, edge cases, AC.”
+`$ba-spec pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` — “Đọc business đúng PBI và viết flows, edge cases, AC.”
 
 ## Completion Criteria
 

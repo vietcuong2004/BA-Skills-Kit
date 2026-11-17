@@ -7,7 +7,7 @@ from ba_core import BAError, Project, Validator, check_output_layout
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", required=True)
+    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
     parser.add_argument("--check-documents", action="store_true", help="Also validate published metadata, refs and source freshness")
     args = parser.parse_args()
     try:

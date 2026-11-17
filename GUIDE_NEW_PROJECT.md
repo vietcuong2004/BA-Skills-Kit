@@ -11,7 +11,7 @@ Dùng luồng này khi `your-project` chưa có sản phẩm hoàn chỉnh và b
 - Cài Kit theo [INSTALL.md](INSTALL.md).
 - Tạo/mở thư mục `your-project` trong agent. Thư mục có thể chưa có mã nguồn.
 - Chuẩn bị một vài câu về người cần dùng sản phẩm và vấn đề họ gặp. Nếu chưa biết, cứ nêu điều bạn đang hình dung.
-- Chuẩn bị `ba-project.yaml`; nếu chưa có, để agent đề xuất và hỏi bạn xác nhận. Mặc định hồ sơ trung gian vào `.temp`, cặp tài liệu bàn giao vào `.specify`.
+- Chuẩn bị `.temp/ba-project.yaml`; nếu đang có bản cũ ở root, cập nhật skill và chuyển file theo [INSTALL.md](INSTALL.md), không tạo thêm cấu hình mới. Nếu chưa có cấu hình nào, để agent đề xuất và hỏi bạn xác nhận. Mặc định hồ sơ trung gian vào `.temp`, cặp tài liệu bàn giao vào `.specify`.
 
 Các đoạn dưới gửi vào **chat agent**. Ví dụ dùng Codex `$ba-…`; Claude Code thay bằng `/ba-…`, Antigravity có thể dùng câu “Dùng skill ba-…”. Thay `[nội dung]`, `PBI-001` và `R1` bằng nhu cầu và ID thật trong dự án.
 
@@ -47,7 +47,7 @@ Hãy hỏi các câu ảnh hưởng lớn đến phạm vi, làm rõ người d�
 vấn đề, mục tiêu và kết quả mong muốn. Phần chưa xác nhận
 phải được ghi rõ là Proposed hoặc Open Question.
 
-Kiểm tra ba-project.yaml; nếu chưa có, đề xuất cấu hình để tôi xác nhận.
+Kiểm tra .temp/ba-project.yaml; nếu chưa có, đề xuất cấu hình để tôi xác nhận.
 Thực hiện ba-brainstorm → ba-requirements → ba-product-backlog,
 tạo file và kiểm tra sau từng bước. Dừng để tôi duyệt backlog.
 ```
@@ -199,7 +199,7 @@ Mỗi Round chứa các PBI đã được chọn; mỗi thư mục PBI xuất ra
 Lần sau mở lại `your-project`:
 
 ```text
-$ba-workflow mode=RESUME project_config=./ba-project.yaml
+$ba-workflow mode=RESUME project_config=./.temp/ba-project.yaml
 Kiểm tra state và nguồn, báo bước đã xong, bước còn chờ và các tài liệu stale.
 Tiếp tục phần hợp lệ trong phạm vi đã chọn, giữ ID và quyết định còn hiệu lực.
 ```

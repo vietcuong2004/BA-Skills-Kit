@@ -123,18 +123,36 @@ class Project:
     root: Path
     config: dict
 
+    @staticmethod
+    def find_config(start=None):
+        """Look only in the working project, preferring its .temp config over legacy root config."""
+        directory = Path(start or Path.cwd()).absolute()
+        preferred = directory / ".temp" / "ba-project.yaml"
+        legacy = directory / "ba-project.yaml"
+        for candidate in (preferred, legacy):
+            if candidate.exists() or candidate.is_symlink():
+                return candidate
+        return preferred
+
     @classmethod
-    def load(cls, config_path):
-        path = Path(config_path).resolve()
+    def load(cls, config_path=None):
+        requested = Path(config_path if config_path is not None else cls.find_config()).absolute()
+        # Recognize only the canonical .temp/ba-project.yaml layout. Anchor before resolving
+        # the file so a .temp symlink cannot silently change the chosen project boundary.
+        # Path.match follows the platform's case rules (Windows accepts .TEMP/BA-PROJECT.YAML).
+        in_temp = requested.match(".temp/ba-project.yaml")
+        anchor = requested.parent.parent.resolve() if in_temp else requested.resolve().parent
+        path = safe_path(anchor, requested) if in_temp else requested.resolve()
         if not path.is_file():
             raise BAError("MISSING_CONFIG", "Project config not found", path,
-                          fix="Tạo ba-project.yaml từ template và xác nhận các giá trị thiết yếu với người dùng.")
+                          fix="Tạo .temp/ba-project.yaml từ template tại project đang mở và xác nhận các giá trị thiết yếu với người dùng.")
         cfg = yaml_load(path.read_text(encoding="utf-8-sig"), path)
         issues = errors_for("project-config", cfg, path)
         if issues:
             raise BAError("INVALID_CONFIG", issues[0]["message"], path)
-        # The explicit config file is the trust anchor. A relative root is relative to its directory.
-        root = safe_path(path.parent, cfg["repository_root"])
+        # Canonical config: repository_root is relative to the project above .temp.
+        # Legacy config: preserve its original directory-based resolution.
+        root = safe_path(anchor, cfg["repository_root"])
         if not root.is_dir():
             raise BAError("INVALID_CONFIG", "repository_root must be an existing directory", root)
         output = safe_path(root, cfg["output_root"])

@@ -1,3 +1,6 @@
+# Copy to <project>/.temp/ba-project.yaml.
+# repository_root: . means <project>, the directory containing .temp.
+# All other paths remain relative to <project>; do not use repository_root: ..
 config_version: '1.0'
 project_id: example-notes
 project_name: Example Notes

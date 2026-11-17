@@ -11,6 +11,8 @@ Bắt buộc `{planning_dir}/brainstorm.md`, config. Đọc [conventions](../../
 
 ## Input Validation
 
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Load config; chạy validator với `--file <brainstorm-path> --expected-type brainstorm --check-refs --project-config <config>`. Chỉ tiếp tục khi đúng project/version và không ERROR/STALE_INPUT. Thiếu input thì nêu ba-brainstorm và đường dẫn cần tạo, không tự chạy nó.
@@ -45,7 +47,7 @@ Giữ REQ/BR/Flow/EC IDs qua update; ghi added/changed/deprecated trong change_h
 
 ## Example Invocation
 
-`$ba-requirements project_config=./ba-project.yaml` — “Phân tích CAP trong brainstorm thành requirements.” Ví dụ cấu trúc: CAP-001 → REQ-001 tạo tài liệu, REQ-002 tìm lại; quan hệ thực tế theo input.
+`$ba-requirements project_config=./.temp/ba-project.yaml` — “Phân tích CAP trong brainstorm thành requirements.” Ví dụ cấu trúc: CAP-001 → REQ-001 tạo tài liệu, REQ-002 tìm lại; quan hệ thực tế theo input.
 
 ## Completion Criteria
 

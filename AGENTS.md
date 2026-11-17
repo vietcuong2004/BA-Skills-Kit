@@ -8,12 +8,11 @@
 - Giới thiệu/thuật ngữ/cài đặt cho người dùng: [README.md](README.md). Quy trình và mẫu câu nhắn tách theo hai luồng: [project hiện có](GUIDE_EXISTING_PROJECT.md), [project mới từ ý tưởng](GUIDE_NEW_PROJECT.md).
 - Cài/cập nhật theo runtime: [INSTALL.md](INSTALL.md).
 - Khi tạo/sửa tài liệu BA hoặc xử lý contract: đọc [BA-CONVENTIONS.md](conventions/BA-CONVENTIONS.md) và schema tương ứng trong `contracts/`.
-- `SKILL_CREATION_PROMPTS.md` là tài liệu xây dựng/bảo trì; các câu yêu cầu chờ xác nhận trong bootstrap mẫu không tự áp dụng cho mọi nhiệm vụ. Thực hiện phạm vi người dùng đã yêu cầu.
 
 ## Nếu phân tích project đích
 
-1. Xác định root project và config người dùng chọn. Nếu không chỉ định, kiểm tra `./ba-project.yaml` tại thư mục làm việc; không chọn ngẫu nhiên config trong fixtures hoặc project khác.
-2. Chưa có config: đề xuất từ template, xác nhận project ID/tên, root và vị trí output trước khi ghi hồ sơ BA. Schema hiện yêu cầu `skill_runtime: codex` dù host là Claude Code/Antigravity; trường này chưa chọn runtime thực thi.
+1. Xác định root project và config người dùng chọn. Nếu không chỉ định, dùng `Project.load()` để ưu tiên `./.temp/ba-project.yaml`, rồi mới dùng `./ba-project.yaml` cũ tại thư mục làm việc; không tìm đệ quy hay chọn config trong fixtures/project khác. Với config trong `.temp`, `repository_root: .` trỏ tới project chứa `.temp`, không trỏ vào `.temp`.
+2. Chưa có config: đề xuất từ template tại `.temp/ba-project.yaml`, xác nhận project ID/tên, root và vị trí output trước khi ghi hồ sơ BA. Không tạo config mới ở root, không đổi `repository_root` thành `..`. Schema hiện yêu cầu `skill_runtime: codex` dù host là Claude Code/Antigravity; trường này chưa chọn runtime thực thi.
 3. Chưa biết dự án hiện có tính năng gì, cần bổ sung tài liệu → đọc `skills/ba-explore-project/SKILL.md`, bàn giao brief cho pipeline sau khi người dùng chọn phạm vi. Ý tưởng mới hoặc nhiều bước → đọc `skills/ba-workflow/SKILL.md`. Yêu cầu một bước → đọc skill đúng nhiệm vụ. Skill đơn lẻ thiếu input thì báo upstream; workflow chỉ điều phối upstream trong phạm vi yêu cầu.
 4. Dùng file upstream thật, validate schema/refs/hash trước và sau handoff. Không thay file thiếu bằng dữ liệu tự đoán. Giữ IDs và quyết định Confirmed khi cập nhật.
    Mọi output trung gian nằm dưới project/.temp (planning_dir mặc định .temp). `.specify` chỉ có Round/PBI/{business.md,spec.md}; không tạo `_planning`, `_planing`, exploration/log/state trong đó. Config cũ phải chuyển có kiểm soát theo conventions trước khi chạy tiếp; không tự xóa hồ sơ cũ.

@@ -11,6 +11,8 @@ description: Review độc lập business/spec của một PBI về scope, hành
 
 ## Input Validation
 
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng input với `--check-refs --expected-type <type>` và requested PBI cho business/spec. Cùng project/version/identity; nguồn fresh. Nếu lỗi schema, dừng và xuất diagnostic ra báo cáo trả lời, không làm giả review PASS. File review cuối phải đủ contract, không ghi lỗi parser thành verdict nghiệp vụ.
@@ -45,7 +47,7 @@ Giữ finding ID/history qua vòng review; finding đã giải quyết chuyển 
 
 ## Example Invocation
 
-`$ba-review pbi_id=PBI-001 project_config=./ba-project.yaml` — “Review tài liệu, chỉ báo findings và readiness.”
+`$ba-review pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` — “Review tài liệu, chỉ báo findings và readiness.”
 
 ## Completion Criteria
 

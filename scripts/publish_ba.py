@@ -164,7 +164,7 @@ def publish(project, manifest):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", required=True)
+    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
     parser.add_argument("--pbi-id", required=True)
     parser.add_argument("--approvals")
     parser.add_argument("--apply", action="store_true")

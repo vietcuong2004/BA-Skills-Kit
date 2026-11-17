@@ -9,11 +9,13 @@ Skill phụ đứng **trước** pipeline BA hiện có. Khảo sát và tạo h
 
 ## Input Contract
 
-Project repository đọc được, phạm vi khảo sát nếu người dùng chọn, `project_config` hoặc `./ba-project.yaml`. Người dùng không cần biết trước chức năng. Docs, source, tests, app đang chạy và dữ liệu demo là evidence tùy chọn; không yêu cầu người dùng điền form chức năng.
+Project repository đọc được, phạm vi khảo sát nếu người dùng chọn, `project_config` hoặc `./.temp/ba-project.yaml`. Người dùng không cần biết trước chức năng. Docs, source, tests, app đang chạy và dữ liệu demo là evidence tùy chọn; không yêu cầu người dùng điền form chức năng.
 
 Đọc [conventions](../../conventions/BA-CONVENTIONS.md), [hướng dẫn khảo sát](references/exploration-guide.md) và [hợp đồng inventory](references/exploration.schema.json). KIT_ROOT resolve theo conventions. Bản cài có helper chung trong `references/kit/scripts/`, helper riêng của skill trong `scripts/`.
 
 ## Input Validation
+
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 

@@ -7,9 +7,11 @@ description: Phân tích ý tưởng phần mềm thành product discovery có C
 
 ## Input Contract
 
-Ý tưởng tự nhiên của người dùng là bắt buộc; research, tài liệu sản phẩm hiện có và repo context là tùy chọn. Đọc [quy ước chung](../../conventions/BA-CONVENTIONS.md). Resolve KIT_ROOT theo quy ước, project_config từ tham số hoặc `./ba-project.yaml`; mọi output theo repository root.
+Ý tưởng tự nhiên của người dùng là bắt buộc; research, tài liệu sản phẩm hiện có và repo context là tùy chọn. Đọc [quy ước chung](../../conventions/BA-CONVENTIONS.md). Resolve KIT_ROOT theo quy ước, project_config từ tham số hoặc `./.temp/ba-project.yaml`; mọi output theo repository root.
 
 ## Input Validation
+
+Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
 Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
@@ -43,7 +45,7 @@ Lưu path + raw-byte SHA-256 các nguồn đã dùng. Update giữ CAP IDs, Conf
 
 ## Example Invocation
 
-`$ba-brainstorm project_config=./ba-project.yaml` — “Tôi muốn website ghi chú cá nhân/công ty, soạn từ mẫu và tìm kiếm. Hãy làm discovery.”
+`$ba-brainstorm project_config=./.temp/ba-project.yaml` — “Tôi muốn website ghi chú cá nhân/công ty, soạn từ mẫu và tìm kiếm. Hãy làm discovery.”
 
 ## Completion Criteria
 
