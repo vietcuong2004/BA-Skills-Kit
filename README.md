@@ -1,146 +1,262 @@
-# BA Skills Kit — Mở dự án trong Codex rồi yêu cầu phân tích thế nào?
+# BA Skills Kit
 
-**README này là bộ câu nhắn để bạn copy vào ô chat Codex khi đang mở một dự án.** Bạn mô tả nhu cầu bằng tiếng Việt và nói rõ muốn dùng skill nào; Codex sẽ tạo các file phân tích trong dự án.
+**Biến một ý tưởng phần mềm thành bộ tài liệu yêu cầu và PBI có cấu trúc, sẵn sàng để nhóm phát triển cùng xem xét.**
 
-Cài đặt cho Claude Code, Codex và Antigravity xem tại **[INSTALL.md](INSTALL.md)**. Các ví dụ dưới đây dành cho Codex, giả sử bộ skill đã được cài. Nếu chưa có `ba-project.yaml`, câu nhắn đầu tiên sẽ yêu cầu Codex hỗ trợ chuẩn bị cấu hình trước.
+BA Skills Kit là bộ **9 kỹ năng (AI Skills)** dành cho các AI coding agent như Codex và Claude Code. Bộ công cụ hỗ trợ Business Analyst (BA), Product Owner (PO) và nhóm phát triển đi từ một mô tả sản phẩm ban đầu đến danh sách công việc phát triển (**Product Backlog**), kế hoạch theo **Round** và tài liệu chi tiết cho từng **Product Backlog Item (PBI)**.
 
-### Agent bắt đầu đọc từ đâu?
+Bạn **không cần biết cách viết PBI ngay từ đầu**. Hãy mô tả sản phẩm muốn xây dựng bằng ngôn ngữ thông thường; bộ Skills sẽ hỗ trợ phân tích từng bước, tạo tài liệu để bạn đọc, chỉnh sửa và phê duyệt. **AI không thay thế người quyết định nghiệp vụ.**
 
-Kit có [AGENTS.md](AGENTS.md) làm hướng dẫn chung và [SKILL.md](SKILL.md) chỉ đường tới chín skill. [CLAUDE.md](CLAUDE.md) import hướng dẫn chung cho Claude Code. Khi mở Kit làm workspace, agent dùng hướng dẫn workspace phù hợp; nếu Kit chỉ nằm trong thư mục con hoặc ở nơi khác, hãy chỉ rõ đường dẫn để agent đọc.
+> **Ví dụ:** “Tôi muốn làm website MISA Note, có ghi chú cá nhân, ghi chú công ty, tạo tài liệu từ mẫu, tìm kiếm và chia sẻ tài liệu.”
+>
+> Từ mô tả này, bộ Kit giúp làm rõ yêu cầu, chia nhỏ thành PBI, đề xuất PBI nào thực hiện ở R1/R2, rồi tạo `business.md` và `spec.md` cho từng PBI được chọn.
 
-Sau khi cài, mỗi skill có SKILL.md riêng trong thư mục discovery của runtime. Không cần chép đè AGENTS.md/CLAUDE.md của Kit vào project sản phẩm. Nếu chưa cài nhưng muốn agent đọc Kit trực tiếp, gửi:
+## 1. BA Skills Kit giải quyết vấn đề gì?
 
-```text
-Đọc D:/BA-Skills-Kit/AGENTS.md và D:/BA-Skills-Kit/SKILL.md.
-Dùng hướng dẫn ba-workflow trong Kit để phân tích dự án hiện tại.
-Nhu cầu của tôi: [mô tả]. Dùng ./ba-project.yaml nếu đã có;
-nếu chưa có thì đề xuất cấu hình để tôi xác nhận trước khi tạo hồ sơ BA.
-Đi đến backlog và dừng để tôi duyệt phạm vi.
-```
+Khi bắt đầu một dự án, ý tưởng thường mới chỉ là một vài câu: *“Tôi muốn có tính năng tạo ghi chú, quản lý thư mục, chia sẻ tài liệu…”* Nhưng để Developer xây dựng và QA kiểm thử, nhóm dự án còn phải làm rõ:
 
-Thay đường dẫn bằng nơi giữ Kit trên máy bạn. Đọc file trực tiếp không đồng nghĩa skill đã được cài hoặc xuất hiện trong selector.
+- **Ai** sử dụng tính năng và **vì sao** họ cần nó?
+- Người dùng sẽ thao tác **như thế nào**? Phần mềm phải phản hồi ra sao?
+- Có những **quy tắc nghiệp vụ**, quyền truy cập và tình huống lỗi nào?
+- Một tính năng lớn cần chia thành **những phần việc nhỏ nào**?
+- **Làm phần nào trước**, phần nào sau?
+- **Điều kiện nào** chứng minh PBI đã được triển khai đúng?
 
-## 1. Chưa biết bắt đầu từ đâu? Copy câu này
+Nếu yêu cầu chưa rõ, nhóm phát triển dễ hiểu khác nhau, thiếu các trường hợp đặc biệt (*edge cases*) hoặc phải sửa lại sau khi đã lập trình. BA Skills Kit tạo một **quy trình phân tích có thể kiểm tra lại**, thay vì yêu cầu AI viết tất cả tài liệu trong một lần.
 
-Mở Codex tại thư mục dự án cần phân tích, thay phần trong ngoặc vuông rồi gửi:
+### Những thuật ngữ cần biết
 
-```text
-Dùng skill ba-workflow để phân tích nghiệp vụ cho dự án hiện tại.
+| Thuật ngữ | Hiểu đơn giản |
+|---|---|
+| **BA** | Người phân tích nhu cầu, quy trình và yêu cầu phần mềm. |
+| **Skill** | Bộ hướng dẫn để AI thực hiện một công việc cụ thể theo quy tắc đã định. |
+| **Epic** | Nhóm công việc lớn, ví dụ *Quản lý ghi chú*. |
+| **Feature** | Một nhóm chức năng thuộc Epic, ví dụ *Ghi chú cá nhân*. |
+| **PBI** | Một phần việc cụ thể trong Product Backlog, có phạm vi và kết quả kiểm chứng được; ví dụ *Tạo ghi chú cá nhân*. |
+| **Product Backlog** | Danh sách các PBI cần xem xét, ưu tiên và thực hiện. |
+| **Round** | Đợt triển khai gồm các PBI được chọn. Đây là cách tổ chức của nhóm dự án; không mặc định giống hoàn toàn Scrum Sprint. |
+| **Acceptance Criteria (AC)** | Các điều kiện nghiệm thu: làm thế nào để biết tính năng đáp ứng yêu cầu. |
+| **Edge Case** | Trường hợp đặc biệt hoặc sát giới hạn, ví dụ bấm Lưu hai lần, mất mạng khi đang lưu, quyền truy cập bị thu hồi. |
 
-Tôi muốn: [mô tả sản phẩm hoặc tính năng bạn cần].
+## 2. Quy trình hoạt động: từ ý tưởng đến PBI
 
-Hãy đọc README và các tài liệu liên quan trong dự án để hiểu bối cảnh.
-Nếu đã có mã nguồn, khảo sát phần liên quan để phân biệt tính năng hiện có
-với nhu cầu mới; dẫn nguồn cho những gì đã xác minh.
-
-Kiểm tra ba-project.yaml. Nếu chưa có, đề xuất cấu hình từ template của Kit
-và hỏi tôi xác nhận tên dự án, thư mục gốc và nơi lưu tài liệu trước khi tạo hồ sơ BA.
-
-Sau đó thực hiện brainstorm → requirements → product backlog.
-Ghi tài liệu vào planning_dir theo cấu hình, kiểm tra output từng bước
-và dừng để tôi duyệt backlog trước khi lập kế hoạch Round.
-```
-
-**Bạn nhận được gì?** Với cấu hình mặc định, Codex tạo `brainstorm.md`, `requirements.md`, `product-backlog.md` và lưu tiến độ trong `workflow-state.md`, dưới `.specify/_planning/`.
-
-Bạn không cần tự gọi từng skill khi dùng `ba-workflow` cho chuỗi công việc này. Nếu có câu hỏi ảnh hưởng phạm vi hoặc hành vi quan trọng, Codex sẽ hỏi; phần chưa xác nhận phải được ghi là đề xuất hoặc câu hỏi mở.
-
-Bạn cũng có thể mở đầu bằng `$ba-workflow` thay cho câu “Dùng skill ba-workflow”. Ví dụ rút gọn:
+BA Skills Kit có **8 bước nghiệp vụ** và **1 Skill điều phối** tên `ba-workflow`.
 
 ```text
-$ba-workflow
-Phân tích nghiệp vụ dự án hiện tại cho nhu cầu: [mô tả nhu cầu].
-Dùng ba-project.yaml ở root dự án. Làm từ brainstorm đến backlog,
-kiểm tra các file đầu ra và dừng để tôi duyệt phạm vi.
+BẠN NHẬP Ý TƯỞNG SẢN PHẨM
+   │
+   ▼
+01. ba-brainstorm        → brainstorm.md
+    Làm rõ sản phẩm, người dùng, vấn đề, mục tiêu
+   │
+   ▼
+02. ba-requirements      → requirements.md
+    Phân tích yêu cầu, quy tắc, luồng và tình huống đặc biệt
+   │
+   ▼
+03. ba-product-backlog   → product-backlog.md
+    Chia yêu cầu thành Epic → Feature → PBI
+   │
+   ├── BẠN XEM VÀ XÁC NHẬN BACKLOG
+   ▼
+04. ba-round-plan        → round-plan.md
+    Đề xuất PBI cho R1, R2, R3…
+   │
+   ├── BẠN XEM VÀ XÁC NHẬN KẾ HOẠCH
+   ▼
+    LẶP LẠI VỚI TỪNG PBI ĐƯỢC CHỌN
+   │
+05. ba-business          → business.md (bản nháp)
+    Giải thích bối cảnh, mục tiêu, giá trị, giải pháp nghiệp vụ
+   │
+   ▼
+06. ba-spec              → spec.md (bản nháp)
+    Mô tả luồng xử lý, quy tắc, edge cases, AC
+   │
+   ▼
+07. ba-review            → báo cáo review
+    Kiểm tra thiếu sót, mâu thuẫn và khả năng kiểm thử
+   │
+   ├── BẠN XỬ LÝ CÁC VẤN ĐỀ VÀ CHO PHÉP XUẤT
+   ▼
+08. ba-publish           → .specify/R1/PBI-001-.../
+    Xuất 2 file business.md và spec.md vào thư mục PBI
 ```
 
-Các đoạn này gửi vào **chat Codex**, không chạy trong PowerShell. Tên kỹ thuật của skill viết thường, có dấu gạch nối: `ba-workflow`, `ba-spec`…
+**Điểm cốt lõi:** File do bước trước tạo ra là **đầu vào thực tế** của bước sau. Ví dụ, `ba-product-backlog` đọc `requirements.md` để tạo PBI; `ba-spec` đọc `business.md` và các yêu cầu liên quan để viết đặc tả. Bộ Kit dùng **Data Contracts** (quy ước cấu trúc dữ liệu) và chương trình kiểm tra (*validator*) để phát hiện file thiếu trường, sai ID hoặc tham chiếu không hợp lệ.
 
-## 2. Ví dụ điền nhu cầu cho dự án của bạn
+### Mỗi Skill làm gì?
 
-### Dự án mới, chưa có mã nguồn
+| Bước | Skill | Việc cần làm | Kết quả |
+|---|---|---|---|
+| 1 | `ba-brainstorm` | Hiểu ý tưởng, xác định người dùng, vấn đề, nhóm chức năng, mục tiêu | `brainstorm.md` |
+| 2 | `ba-requirements` | Chuyển ý tưởng thành yêu cầu chức năng, quy tắc, quyền, luồng, ngoại lệ | `requirements.md` |
+| 3 | `ba-product-backlog` | Nhóm yêu cầu thành Epic, Feature, các PBI nhỏ có giá trị | `product-backlog.md` |
+| 4 | `ba-round-plan` | Đề xuất ưu tiên, phụ thuộc và phân bổ PBI theo Round | `round-plan.md` |
+| 5 | `ba-business` | Viết câu chuyện nghiệp vụ, mục tiêu, giá trị và giải pháp cho một PBI | `business.md` |
+| 6 | `ba-spec` | Viết User Story, luồng chính/nhánh khác/lỗi, edge cases, AC | `spec.md` |
+| 7 | `ba-review` | Đối chiếu hai file, tìm lỗi và câu hỏi còn mở | Báo cáo review |
+| 8 | `ba-publish` | Kiểm tra điều kiện, xuất tài liệu đã được cho phép vào đúng Round | Thư mục PBI |
+| Điều phối | `ba-workflow` | Gọi/điều phối các bước trên, ghi tiến độ và dừng tại điểm cần duyệt | Quy trình xuyên suốt |
+
+Bạn có thể dùng **`ba-workflow`** để đi qua nhiều bước hoặc gọi **từng Skill riêng** khi chỉ cần làm một việc.
+
+## 3. Ví dụ xuyên suốt: xây dựng MISA Note
+
+Giả sử bạn nhập:
+
+> Tôi muốn xây dựng website MISA Note cho cá nhân và doanh nghiệp. Người dùng có thể tạo ghi chú cá nhân, ghi chú công ty, tạo tài liệu nhanh từ mẫu, soạn thảo nội dung, tìm kiếm, tổ chức theo thư mục và chia sẻ tài liệu.
+
+**Bước 1 – Làm rõ ý tưởng.** AI lập `brainstorm.md`, nhóm các năng lực như *Quản lý ghi chú*, *Soạn thảo tài liệu*, *Tìm kiếm*, *Chia sẻ*. Đồng thời ghi câu hỏi còn thiếu: ai được tạo ghi chú công ty, có cho phép chia sẻ ngoài công ty không, v.v.
+
+**Bước 2 – Phân tích yêu cầu.** AI lập `requirements.md`. Ví dụ, từ nhóm *Quản lý ghi chú* có yêu cầu `REQ-001 – Tạo ghi chú cá nhân`, `REQ-002 – Chỉnh sửa ghi chú cá nhân`. Với mỗi yêu cầu, tài liệu mô tả hành vi, quy tắc và tình huống cần làm rõ.
+
+**Bước 3 – Lấy PBI từ yêu cầu.** AI lập `product-backlog.md`, ví dụ:
 
 ```text
-Dùng skill ba-workflow để phân tích ý tưởng sản phẩm mới.
-
-Tôi muốn website ghi chú cho cá nhân và công ty. Người dùng có thể tạo ghi chú,
-soạn tài liệu từ mẫu, tìm kiếm và chia sẻ trong phạm vi được cho phép.
-
-Dùng ba-project.yaml của dự án; nếu chưa có thì đề xuất cấu hình để tôi xác nhận.
-Làm rõ người dùng, vấn đề, phạm vi và các câu hỏi cần quyết định.
-Tạo brainstorm, requirements và backlog; dừng để tôi duyệt backlog.
+EPIC-001: Quản lý ghi chú
+└── FEAT-001: Ghi chú cá nhân
+    ├── PBI-001: Tạo ghi chú cá nhân    ← REQ-001
+    └── PBI-002: Chỉnh sửa ghi chú      ← REQ-002
 ```
 
-### Dự án đang có sẵn, muốn bổ sung tính năng
+Đây là bước trả lời câu hỏi **“PBI từ đâu mà có?”**: PBI được phân rã từ yêu cầu đã phân tích, không phải danh sách công việc AI nghĩ ra tùy ý. Bạn kiểm tra và điều chỉnh danh sách trước khi tiếp tục.
+
+**Bước 4 – Lập Round.** AI đề xuất `round-plan.md`, chẳng hạn R1 gồm PBI-001 và PBI-002, R2 gồm những PBI khác. Đây chỉ là **đề xuất** nếu chưa có thông tin về năng lực nhóm, ưu tiên và phê duyệt.
+
+**Bước 5 và 6 – Viết hai tài liệu cho PBI-001.**
+
+- `business.md` trả lời **vì sao cần tính năng này, ai dùng, mang lại giá trị gì và giải pháp nghiệp vụ ra sao**.
+- `spec.md` trả lời **phần mềm phải hoạt động cụ thể thế nào và kiểm tra đúng/sai bằng tiêu chí gì**.
+
+Ví dụ `spec.md` có thể yêu cầu kiểm tra: tạo ghi chú thành công; nhập tiêu đề rỗng; bấm tạo nhiều lần; mất mạng khi lưu. Hành vi chưa được quyết định sẽ được ghi thành câu hỏi, **không tự coi là quy tắc đã duyệt**.
+
+**Bước 7 – Review.** AI so sánh tài liệu với yêu cầu gốc, phát hiện AC còn thiếu hoặc các luồng mâu thuẫn. Bạn xử lý những điểm cần quyết định.
+
+**Bước 8 – Xuất tài liệu.** Khi đủ điều kiện và được phép, bộ Kit tạo:
 
 ```text
-Dùng skill ba-workflow để phân tích nhu cầu bổ sung chức năng chia sẻ ghi chú
-trong dự án hiện tại.
-
-Hãy đọc tài liệu và mã nguồn liên quan đến ghi chú, tài khoản và phân quyền.
-Chỉ ghi nhận tính năng đang có khi có bằng chứng từ repository;
-phần chưa xác minh phải nêu rõ.
-
-Đối chiếu với hồ sơ BA hiện có. Nếu cần cập nhật, giữ ID và quyết định đã xác nhận,
-chỉ ra phạm vi bị ảnh hưởng và đề xuất thay đổi trước khi sửa phần có xung đột.
-Nếu chưa có hồ sơ BA, bắt đầu từ brainstorm.
-
-Dùng ba-project.yaml. Đi đến backlog và dừng để tôi duyệt phạm vi mới.
+MISA-Note/
+└── .specify/
+    ├── _planning/
+    │   ├── brainstorm.md
+    │   ├── requirements.md
+    │   ├── product-backlog.md
+    │   ├── round-plan.md
+    │   ├── drafts/
+    │   └── reviews/
+    ├── R1/
+    │   ├── PBI-001-tao-ghi-chu-ca-nhan/
+    │   │   ├── business.md
+    │   │   └── spec.md
+    │   └── PBI-002-chinh-sua-ghi-chu/
+    │       ├── business.md
+    │       └── spec.md
+    └── R2/
 ```
 
-Khảo sát repository giúp hiểu hiện trạng; các bước này tạo **tài liệu BA**. Việc lập trình tính năng là công việc tiếp theo.
+**Mỗi thư mục PBI chính thức chỉ có hai file `business.md` và `spec.md`.** Báo cáo review và tài liệu phân tích tổng thể nằm riêng trong `_planning/`.
 
-## 3. Sau câu đầu tiên, tiếp tục nói gì?
+## 4. Cần chuẩn bị gì trước khi sử dụng?
 
-Làm theo thứ tự dưới đây. **PBI** là một phần việc có thể mô tả và nghiệm thu; **Round** là một đợt thực hiện các PBI đã chọn. Thay `PBI-001`, `PBI-002`, `R1` bằng ID thật Codex đã tạo cho dự án của bạn.
+- Một **dự án phần mềm**: có thể là repository đã có mã nguồn hoặc một thư mục dự án mới.
+- Một **AI Agent tương thích** đã được thiết lập, ví dụ Codex hoặc Claude Code.
+- Bộ **BA Skills Kit đã được cài** cho Agent bạn sử dụng.
+- **Python và các thư viện phụ thuộc** nếu bộ cài/script trong phiên bản Kit của bạn yêu cầu.
+- Một **mô tả nhu cầu** bằng tiếng Việt. Không cần viết sẵn Epic, PBI hay AC.
 
-### Bước 1 — Đọc backlog, yêu cầu sửa hoặc duyệt
+Bộ Kit **không phải** một website có nút bấm riêng. Bạn sử dụng nó bằng cách trò chuyện với Agent đang mở dự án; Agent sẽ đọc hướng dẫn Skill và tạo/cập nhật file Markdown trong dự án.
 
-Mở `.specify/_planning/product-backlog.md`. Xem có đúng nhu cầu, thiếu phần việc hoặc chia quá lớn không.
+## 5. Cài đặt BA Skills Kit
 
-Nếu cần sửa:
+**Cài một lần trên mỗi máy**, sau đó dùng chung cho nhiều project. Bạn không cần sao chép toàn bộ `skills/`, `contracts/`, `scripts/`, `templates/` vào từng repository sản phẩm.
+
+### Bước 1: Lấy bộ Kit
+
+Tải hoặc clone repository [BA-Skills-Kit](https://github.com/vietcuong2004/BA-Skills-Kit) về máy.
+
+### Bước 2: Cài cho Agent bạn đang dùng
+
+Mở **[INSTALL.md](INSTALL.md)** và làm theo hướng dẫn dành cho **Codex**, **Claude Code** hoặc **Antigravity**. Hướng dẫn cài đặt có thể khác nhau giữa các Agent và phiên bản. Nếu phiên bản Kit có script cài đặt, hãy đọc `INSTALL.md` trước khi chạy; không mặc định rằng script tồn tại hoặc chạy được trên mọi máy.
+
+### Bước 3: Kiểm tra Agent nhận diện được Skill
+
+Mở Agent, yêu cầu:
 
 ```text
-Dùng skill ba-product-backlog để điều chỉnh backlog hiện tại:
-[ghi rõ các phần cần thêm, tách, gộp hoặc làm rõ].
-
-Giữ các ID và quyết định đã xác nhận, chỉ ra ảnh hưởng tới tài liệu liên quan.
-Nếu thay đổi vượt requirements hiện tại, báo nguồn cần cập nhật trước.
-Cho tôi xem lại backlog sau khi kiểm tra.
+Hãy kiểm tra BA Skills Kit đã được cài chưa.
+Liệt kê các BA Skills có thể sử dụng, đặc biệt là ba-workflow.
+Chưa tạo hoặc sửa tài liệu dự án.
 ```
 
-Khi đồng ý và muốn đi tiếp:
+Nếu Agent không thấy Skill, kiểm tra đường dẫn cài đặt theo `INSTALL.md`. Chỉ đặt thư mục Kit ở đâu đó trên ổ đĩa **không đồng nghĩa** Agent đã nhận diện Skills.
+
+### Bước 4: Mở dự án muốn phân tích
+
+Mở Codex/Claude Code tại **thư mục gốc của dự án sản phẩm**, không phải thư mục gốc BA-Skills-Kit. Mỗi dự án có cấu hình `ba-project.yaml` riêng. Nếu chưa có, yêu cầu Agent đề xuất cấu hình từ mẫu và hỏi bạn xác nhận trước khi tạo.
+
+> **Lưu ý:** `README.md` dành cho người đọc; `AGENTS.md`, `CLAUDE.md` và các `SKILL.md` là hướng dẫn cho Agent. Các file hướng dẫn ở root Kit không nhất thiết tự được đọc khi Agent đang làm việc ở repository khác. Cài đặt đúng là bước cần thiết.
+
+## 6. Dùng lần đầu: chỉ cần gửi một câu lệnh
+
+Sau khi cài, mở Agent tại project và gửi **đoạn sau vào ô chat** (không phải PowerShell hoặc Terminal):
 
 ```text
-Tôi duyệt phạm vi và backlog hiện tại.
-Dùng skill ba-workflow để tiếp tục bước ba-round-plan.
-Đề xuất mục tiêu từng Round và các PBI tương ứng, giải thích thứ tự ưu tiên.
-Nếu chưa có capacity hoặc ước lượng, giữ kế hoạch là Proposed,
-chưa cam kết khối lượng. Dừng để tôi xem và duyệt kế hoạch.
+Dùng skill ba-workflow để phân tích dự án hiện tại.
+
+Ý tưởng của tôi: Tôi muốn xây dựng website ghi chú cho cá nhân và công ty,
+có tạo ghi chú, tạo tài liệu từ mẫu, tìm kiếm, quản lý thư mục và chia sẻ.
+
+Hãy đọc tài liệu dự án hiện có để hiểu bối cảnh.
+Nếu có mã nguồn, phân biệt tính năng đã tồn tại và tính năng mới.
+Kiểm tra ba-project.yaml; nếu chưa có, đề xuất cấu hình để tôi xác nhận.
+
+Thực hiện ba-brainstorm → ba-requirements → ba-product-backlog.
+Tạo các file đầu ra, kiểm tra dữ liệu sau từng bước.
+Dừng lại để tôi xem và duyệt Product Backlog trước khi lập Round.
 ```
 
-**Output:** `.specify/_planning/round-plan.md`.
-
-### Bước 2 — Cho phép dùng kế hoạch và chọn PBI để viết tài liệu
-
-Sau khi đọc Round plan:
+**Sau lệnh này bạn sẽ nhận được gì?** Theo cấu hình mặc định, các file sau được tạo trong project:
 
 ```text
-Tôi cho phép dùng kế hoạch Round hiện tại ở dạng Proposed, chưa cam kết khối lượng.
-Dùng skill ba-workflow để tạo bộ tài liệu cho PBI-001 và PBI-002 trong R1.
-
-Với mỗi PBI, thực hiện ba-business → ba-spec → ba-review.
-Viết rõ nghiệp vụ, giải pháp, luồng chính/nhánh khác/lỗi, quyền, dữ liệu,
-tình huống đặc biệt và điều kiện nghiệm thu Given–When–Then.
-
-Nếu review có lỗi quan trọng, báo findings và đề xuất cách sửa;
-không tự quyết các vấn đề nghiệp vụ còn mở.
-Dừng sau review, trước khi xuất tài liệu sang thư mục Round.
+.specify/_planning/brainstorm.md
+.specify/_planning/requirements.md
+.specify/_planning/product-backlog.md
 ```
 
-Nếu bạn đã có cơ sở và thực sự duyệt kế hoạch, thay câu đầu bằng “Tôi duyệt kế hoạch Round hiện tại.”
+Mở `product-backlog.md`, kiểm tra có thiếu PBI, trùng PBI hoặc chia PBI quá lớn không. Nếu chưa đúng, hãy yêu cầu sửa. **Không cần chạy lại từ đầu nếu chỉ cần điều chỉnh một phần**; Agent cần giữ ID và xác định các tài liệu bị ảnh hưởng.
 
-**Output cho từng PBI được chọn:**
+## 7. Sau khi có Backlog, làm tiếp thế nào?
+
+Quy trình thường có **ba lần bạn cần xem xét hoặc ra quyết định**.
+
+### Lần 1: Xác nhận danh sách PBI
+
+Khi backlog phù hợp, gửi:
+
+```text
+Tôi đã xem và đồng ý với phạm vi Product Backlog hiện tại.
+Dùng ba-workflow tiếp tục bước ba-round-plan.
+Đề xuất mục tiêu R1, R2 và các PBI cho từng Round.
+Giải thích thứ tự ưu tiên và các phụ thuộc.
+Dừng để tôi xem kế hoạch trước khi viết tài liệu PBI.
+```
+
+Kết quả: `.specify/_planning/round-plan.md`.
+
+### Lần 2: Chọn PBI cần viết chi tiết
+
+Sau khi xem Round Plan, gửi:
+
+```text
+Tôi cho phép sử dụng kế hoạch Round hiện tại để viết bản nháp.
+Hãy tạo tài liệu cho PBI-001 và PBI-002 trong R1.
+Với từng PBI, chạy ba-business → ba-spec → ba-review.
+Bảo đảm spec có luồng chính, luồng thay thế, luồng lỗi,
+Edge Cases và Acceptance Criteria theo Given–When–Then.
+Dừng sau review; chưa publish.
+```
+
+Kết quả cho mỗi PBI, ví dụ:
 
 ```text
 .specify/_planning/drafts/PBI-001/business.md
@@ -148,162 +264,115 @@ Nếu bạn đã có cơ sở và thực sự duyệt kế hoạch, thay câu đ
 .specify/_planning/reviews/PBI-001-review.md
 ```
 
-### Bước 3 — Xem review và làm rõ điểm cần sửa
+Nếu review báo lỗi nghiêm trọng hoặc câu hỏi nghiệp vụ chưa giải quyết, hãy trả lời và yêu cầu sửa/review lại. **Review PASS không đồng nghĩa PO đã phê duyệt**.
 
-“Finding” là vấn đề được phát hiện khi review; “blocker” là vấn đề bắt buộc giải quyết trước khi đi tiếp.
+### Lần 3: Cho phép xuất vào thư mục Round
 
-| Kết quả review | Bạn làm gì tiếp? |
-| --- | --- |
-| `PASS` | Đọc tài liệu rồi yêu cầu xem trước đường dẫn xuất |
-| `CONDITIONAL` | Xem các điểm còn mở; có thể cho phép xuất draft rõ ràng nếu phù hợp |
-| `FAIL` | Giải quyết lỗi quan trọng hoặc quyết định còn thiếu, rồi review lại |
-
-Ví dụ yêu cầu sửa và review lại:
+Trước tiên yêu cầu xem trước:
 
 ```text
-Dùng skill ba-workflow để xử lý các findings của PBI-001.
-
-Quyết định của tôi cho những điểm cần làm rõ là:
-[ghi quyết định tương ứng từng finding hoặc câu hỏi].
-
-Cập nhật business/spec trong phạm vi cần thiết, giữ ID và ghi lịch sử thay đổi.
-Dùng ba-review để review lại sau khi kiểm tra các file đã sửa.
-Dừng trước publish và báo các finding còn mở.
+Dùng ba-publish kiểm tra PBI-001 của R1 và tạo dry-run.
+Cho tôi xem đường dẫn, các file sẽ tạo và vấn đề còn tồn tại.
+Chưa ghi file chính thức.
 ```
 
-### Bước 4 — Xem trước rồi cho phép xuất tài liệu
-
-Yêu cầu xem trước:
+Nếu đồng ý với kết quả và PBI đủ điều kiện:
 
 ```text
-Dùng skill ba-publish để kiểm tra PBI-001 trong Round R1 và tạo dry-run.
-Cho tôi xem đường dẫn, file sẽ tạo hoặc bỏ qua, các xung đột và điều kiện còn thiếu.
-Chưa ghi cặp tài liệu sang thư mục Round ở bước này.
+Tôi cho phép publish PBI-001 vào R1 theo dry-run vừa trình bày.
+Hãy xuất business.md và spec.md, sau đó kiểm tra lại kết quả.
 ```
 
-Sau khi đọc dry-run, nếu review PASS và bạn đồng ý:
+**Publish ở đây nghĩa là xuất tài liệu vào cấu trúc thư mục của project**, không phải đưa website lên Internet.
+
+## 8. Muốn dùng riêng một Skill thì sao?
+
+Bạn không bắt buộc phải chạy cả quy trình. Ví dụ, khi đã có backlog và chỉ muốn viết đặc tả cho một PBI:
 
 ```text
-Tôi cho phép publish cặp tài liệu hiện tại của PBI-001 vào R1
-đúng theo dry-run vừa trình bày.
-Dùng skill ba-publish để xuất file và kiểm tra kết quả sau khi ghi.
+Dùng skill ba-spec để viết spec.md cho PBI-001.
+Đọc business.md, requirements.md và product-backlog.md tương ứng.
+Phân tích đầy đủ Edge Cases và Acceptance Criteria.
+Kiểm tra cấu trúc đầu ra và báo các câu hỏi chưa được xác nhận.
 ```
 
-**Output mặc định:**
+Hoặc chỉ muốn kiểm tra tài liệu:
 
 ```text
-.specify/R1/PBI-001-ten-ngan/business.md
-.specify/R1/PBI-001-ten-ngan/spec.md
+Dùng skill ba-review để kiểm tra business.md và spec.md của PBI-001.
+Tìm các yêu cầu mơ hồ, thiếu Edge Cases, AC không thể kiểm thử
+và mâu thuẫn giữa hai file. Không tự sửa khi chưa được phép.
 ```
 
-`ten-ngan` được tạo từ tiêu đề PBI. Mỗi thư mục PBI xuất ra chứa **chính xác hai file** trên. Publish là xuất file bàn giao trong dự án, không phải triển khai sản phẩm lên Internet.
+**Điều kiện:** Skill riêng cần có tài liệu đầu vào từ các bước trước. Nếu thiếu hoặc không hợp lệ, nó phải báo rõ thay vì tự bịa dữ liệu. Dùng `ba-workflow` nếu muốn Agent điều phối nhiều bước.
 
-## 4. Nếu chỉ muốn chạy riêng một bước
+## 9. Khi quay lại dự án vào hôm sau
 
-Các câu dưới đây dùng khi bạn đã có đầu vào cần thiết. Skill đơn lẻ sẽ báo file thiếu hoặc nguồn không hợp lệ; dùng `ba-workflow` khi muốn điều phối nhiều bước liên tiếp.
-
-| Bạn muốn | Copy câu này vào Codex | Đầu vào cần có |
-| --- | --- | --- |
-| Làm rõ ý tưởng | Dùng skill ba-brainstorm để phân tích ý tưởng: [mô tả]. Làm rõ người dùng, vấn đề, mục tiêu, phạm vi và câu hỏi mở. | Ý tưởng và cấu hình dự án |
-| Phân tích yêu cầu | Dùng skill ba-requirements để chuyển brainstorm hiện tại thành yêu cầu, quy tắc nghiệp vụ, quyền, flows và edge cases có truy vết. | `brainstorm.md` |
-| Chia phần việc | Dùng skill ba-product-backlog để phân rã yêu cầu hiện tại thành Epic, Feature và PBI có giá trị người dùng; nêu coverage và dependencies. | Brainstorm và requirements |
-| Lập kế hoạch đợt | Dùng skill ba-round-plan để đề xuất các Round từ backlog hiện tại. Nêu mục tiêu, phụ thuộc và capacity còn thiếu. | Backlog và requirements |
-| Viết nghiệp vụ | Dùng skill ba-business để viết business.md cho PBI-001, đúng phạm vi đã có trong backlog. | PBI ID, brainstorm, requirements, backlog; Round nếu dùng |
-| Viết đặc tả | Dùng skill ba-spec để viết spec.md cho PBI-001 từ business draft, bao gồm flows, rules, edge cases và AC Given–When–Then. | Business đúng PBI, requirements và backlog |
-| Kiểm tra tài liệu | Dùng skill ba-review để review business/spec của PBI-001; báo findings có bằng chứng và readiness. | Cặp draft đúng PBI, requirements, backlog và nguồn liên quan |
-| Chuẩn bị xuất file | Dùng skill ba-publish để tạo dry-run cho PBI-001, kiểm review, phê duyệt và Round trước khi ghi. | Round, backlog, cặp draft, review; phê duyệt thật để thực hiện ghi |
-| Điều phối nhiều bước | Dùng skill ba-workflow để thực hiện [các bước mong muốn] cho [phạm vi/PBI/Round], dừng tại checkpoint cần tôi duyệt. | Ý tưởng hoặc hồ sơ/state hiện tại và cấu hình |
-
-Bạn có thể thêm “Dùng cấu hình `./ba-project.yaml`” vào bất kỳ câu nào khi cần chỉ rõ file cấu hình.
-
-## 5. Làm gì khi agent dừng để hỏi bạn?
-
-Hãy đọc câu hỏi và tài liệu tương ứng rồi trả lời bằng quyết định cụ thể. Ba điểm chính cần bạn xác nhận là **backlog/phạm vi → kế hoạch Round → cho phép publish**. Những câu duyệt ở mục 3 chỉ dùng khi bạn thực sự đồng ý với phiên bản tài liệu đang xem.
-
-Các trạng thái giúp bạn phân biệt thông tin:
-
-- **Confirmed**: có căn cứ xác nhận; **Proposed**: đề xuất; **Open Question**: chưa quyết định.
-- **draft / in_review / approved**: trạng thái toàn tài liệu — nháp / đang xem xét / đã duyệt.
-- **Review PASS**: kết quả kiểm tra; không tự thay quyết định phê duyệt của bạn.
-
-Nếu review CONDITIONAL và bạn chỉ muốn bàn giao bản nháp, sau khi xem dry-run có thể nói:
+Không cần mô tả lại toàn bộ ý tưởng. Nếu project đã có hồ sơ và trạng thái workflow, gửi:
 
 ```text
-Tôi cho phép Draft Publication cho cặp tài liệu hiện tại của PBI-001
-đúng dry-run vừa xem. Giữ trạng thái draft và các finding còn mở.
-Dùng skill ba-publish để thực hiện và kiểm tra lại kết quả.
+Dùng ba-workflow ở chế độ RESUME.
+Đọc ba-project.yaml, workflow-state.md và các tài liệu hiện có.
+Cho biết đã hoàn thành bước nào, đang chờ quyết định gì,
+và tiếp tục từ bước hợp lệ gần nhất.
 ```
 
-Review FAIL hoặc blocker nghiệp vụ còn mở phải được xử lý trước. Các quyết định đã có và còn đúng phạm vi/phiên bản có thể được tái sử dụng; khi nguồn thay đổi, Codex sẽ kiểm tra lại ảnh hưởng.
+Nếu yêu cầu sản phẩm thay đổi, hãy nói rõ thay đổi đó. Agent cần kiểm tra tài liệu nào bị ảnh hưởng và giữ các ID/ quyết định còn hiệu lực, thay vì âm thầm viết lại toàn bộ PBI.
 
-## 6. Hôm sau mở lại dự án, nói gì?
+## 10. Bộ Kit gồm những thư mục gì?
 
 ```text
-Dùng skill ba-workflow ở mode RESUME để tiếp tục phân tích dự án hiện tại.
-Đọc ba-project.yaml và workflow-state.md, kiểm tra các file cùng nguồn đầu vào.
-Cho biết bước nào đã xong, bước nào cần cập nhật và quyết định nào còn chờ tôi.
-Tiếp tục phần đang chờ nếu đã đủ đầu vào và phê duyệt phù hợp.
+BA-Skills-Kit/
+├── README.md                # Tài liệu bạn đang đọc
+├── INSTALL.md               # Hướng dẫn cài đặt theo Agent
+├── AGENTS.md                # Hướng dẫn chung cho Agent tương thích
+├── CLAUDE.md                # Hướng dẫn dành cho Claude Code
+├── SKILL.md                 # Điểm dẫn tới các Skills (nếu phiên bản Kit có)
+├── skills/                  # 9 Skills, mỗi Skill có SKILL.md riêng
+├── conventions/             # Quy ước viết tài liệu BA
+├── contracts/               # Cấu trúc dữ liệu chuẩn giữa các bước
+├── scripts/                 # Kiểm tra dữ liệu, quản lý tiến độ, xuất tài liệu
+├── templates/               # Mẫu tài liệu
+└── tests/                   # Dữ liệu mẫu và kiểm thử (nếu có)
 ```
 
-Muốn chỉ làm một PBI hoặc một Round:
+Phân biệt **hai nơi**:
 
-```text
-Dùng skill ba-workflow ở mode SINGLE-PBI để làm bộ tài liệu draft cho PBI-001.
-Dùng hồ sơ hiện có của dự án; kiểm tra đầu vào và dừng trước publish.
-```
+- **BA-Skills-Kit:** bộ công cụ dùng chung; không chứa hồ sơ nghiệp vụ riêng của từng sản phẩm.
+- **Project của bạn:** nơi lưu `ba-project.yaml`, thư mục `.specify/`, backlog, Round và tài liệu PBI.
 
-```text
-Dùng skill ba-workflow ở mode SINGLE-ROUND để review các PBI đã phân vào R1.
-Giữ nguyên phân bổ Round và báo kết quả từng PBI.
-```
+Đó là lý do một máy có thể dùng cùng một BA Skills Kit cho MISA Note, CRM, ERP hoặc dự án khác mà không trộn dữ liệu giữa các project.
 
-## 7. Nếu muốn thay đổi yêu cầu đã phân tích
+## 11. AI tự quyết được những gì?
 
-```text
-Dùng skill ba-workflow để cập nhật phân tích cho thay đổi sau:
-[mô tả thay đổi và các quyết định mới của tôi].
+AI có thể **đề xuất** yêu cầu, cách chia PBI, kế hoạch Round, quy tắc và tình huống đặc biệt. Tuy nhiên, phải phân biệt:
 
-Đọc hồ sơ hiện tại trước khi sửa. Giữ ID và các quyết định còn hiệu lực,
-chỉ ra requirements/PBI/business/spec/review bị ảnh hưởng.
-Cập nhật các tài liệu trong phạm vi thay đổi, kiểm tra lại nguồn,
-và dừng để tôi duyệt các thay đổi về scope, Round hoặc publish.
-```
+- **Confirmed:** đã được xác nhận bằng nguồn hoặc quyết định phù hợp.
+- **Proposed:** phương án AI đề xuất, cần xem xét.
+- **Open Question:** thông tin chưa rõ, cần người phụ trách trả lời.
 
-Nếu gặp `STALE_INPUT`, có nghĩa là tài liệu nguồn đã thay đổi. Bạn có thể nói:
+AI **không được** tự coi đề xuất là quyết định chính thức; tự duyệt phạm vi hoặc kế hoạch; tự đổi PBI ID; tự sửa mã nguồn sản phẩm; tự commit/push; hoặc xuất tài liệu chính thức khi chưa đủ điều kiện và chưa được phép.
 
-```text
-Dùng skill ba-workflow ở mode RESUME để xử lý STALE_INPUT.
-Chỉ ra nguồn nào đổi và tài liệu nào bị ảnh hưởng.
-Đề xuất cập nhật cần thiết, giữ ID và quyết định đã xác nhận;
-kiểm tra/review lại sau khi sửa, không chỉ thay hash để bỏ cảnh báo.
-```
+## 12. Câu hỏi thường gặp
 
-## 8. Tôi đọc file nào sau khi chạy?
+**Tôi chưa biết BA hay Scrum, có dùng được không?** Có. Bạn có thể bắt đầu bằng mô tả nhu cầu thông thường. Tuy nhiên, vẫn cần người hiểu sản phẩm đọc và xác nhận tài liệu trước khi nhóm phát triển sử dụng.
 
-Các đường dẫn dưới đây theo cấu hình mặc định; nếu đổi `planning_dir` hoặc `output_root`, dùng đường dẫn trong `ba-project.yaml`.
+**Tôi có cần viết tất cả PBI trong một lần không?** Không. Nên duyệt backlog trước, rồi chọn từng Round hoặc một vài PBI để viết chi tiết và review.
 
-| File | Nội dung để bạn đọc |
-| --- | --- |
-| `.specify/_planning/brainstorm.md` | Hiểu sản phẩm, người dùng, vấn đề, phạm vi và khả năng cần có |
-| `.specify/_planning/requirements.md` | Các yêu cầu, quy tắc nghiệp vụ, quyền và hành vi cần làm rõ |
-| `.specify/_planning/product-backlog.md` | Epic/Feature/PBI, phạm vi từng phần việc, ưu tiên và phụ thuộc |
-| `.specify/_planning/round-plan.md` | Mục tiêu từng đợt và PBI được chọn hoặc chưa phân bổ |
-| `.specify/_planning/drafts/PBI-001/business.md` | Vì sao cần PBI, giá trị, quy trình và giải pháp nghiệp vụ |
-| `.specify/_planning/drafts/PBI-001/spec.md` | Phần mềm phải hoạt động thế nào để Dev triển khai, QA kiểm thử |
-| `.specify/_planning/reviews/PBI-001-review.md` | Vấn đề phát hiện, bằng chứng, khuyến nghị và kết quả review |
-| `.specify/_planning/workflow-state.md` | Tiến độ thực tế và bước còn chờ |
-| `.specify/_planning/approvals.json` | Ghi nhận các quyết định phê duyệt thực tế |
-| `.specify/R1/PBI-001-ten-ngan/` | Cặp business.md/spec.md đã được cho phép xuất |
+**Bộ Kit có lập trình website giúp tôi không?** Không phải mục đích chính. Bộ Kit tạo và kiểm tra **tài liệu phân tích nghiệp vụ**. Developer hoặc Agent lập trình có thể dùng các tài liệu đã duyệt làm đầu vào cho công việc tiếp theo.
 
-File `.md` là văn bản Markdown; có thể đọc trực tiếp hoặc dùng Open Preview trong trình soạn thảo. Metadata và khối YAML giúp máy kiểm tra liên kết giữa các bước; bạn tập trung đọc các mục nội dung và câu hỏi nghiệp vụ.
+**Có cần cài Kit vào mỗi project không?** Không, nếu đã thiết lập chế độ dùng chung đúng theo `INSTALL.md`. Mỗi project chỉ cần cấu hình và thư mục tài liệu riêng.
 
-## 9. Khi câu nhắn chưa chạy được
+**Tại sao Skill sau không tự chạy khi Skill trước xong?** Các Skills là những đơn vị công việc độc lập. `ba-workflow` đảm nhận việc điều phối theo trình tự, kiểm tra đầu ra và dừng ở những điểm cần bạn duyệt.
 
-- **Không thấy skill**: kiểm tra đã cài cho project chưa; xem [INSTALL.md](INSTALL.md).
-- **Thiếu cấu hình**: nhắn “Đề xuất ba-project.yaml từ template và hỏi tôi xác nhận các giá trị thiết yếu.”
-- **Thiếu file đầu vào**: xem skill upstream được báo; dùng `ba-workflow` nếu muốn làm chuỗi bước cần thiết.
-- **Thiếu thư viện Python**: cung cấp Python đã cài thư viện cho Codex, ví dụ “Dùng `D:/BA-Skills-Kit/.venv/Scripts/python.exe` để chạy công cụ Kit.” Thay bằng vị trí thật trên máy.
-- **Sai PBI**: chọn ID thật từ backlog, không lấy số trong ví dụ nếu chưa tồn tại.
-- **Xung đột khi publish**: yêu cầu so bản cũ/mới và thống nhất cách giữ lịch sử trước khi ghi tiếp.
+**Tôi không thấy Skill trong Codex/Claude Code?** Xem [INSTALL.md](INSTALL.md), kiểm tra đường dẫn cài đặt và khả năng nhận diện Skill của Agent đang sử dụng. Không mặc định mọi Agent đọc cùng một loại file hướng dẫn.
 
-Tham khảo thêm: [quy ước tài liệu](conventions/BA-CONVENTIONS.md), [hướng dẫn từng skill](skills/), [báo cáo kiểm thử](tests/INTEGRATION_REPORT.md). Các file trong `tests/fixtures` là ví dụ giả lập, không phải hồ sơ hay phê duyệt cho dự án thật của bạn.
+---
+
+## Bắt đầu ngay
+
+**Người mới:** Đọc [INSTALL.md](INSTALL.md) để cài BA Skills Kit → mở project trong Agent → gửi prompt ở [Mục 6](#6-dùng-lần-đầu-chỉ-cần-gửi-một-câu-lệnh) → đọc và duyệt Product Backlog → tiếp tục lập Round và viết PBI.
+
+**Người đã cài:** Gọi `ba-workflow` với mô tả sản phẩm và cho biết muốn dừng ở bước nào.
+
+**Mục tiêu cuối cùng:** Mỗi PBI được chọn có một cặp tài liệu **`business.md` + `spec.md`** nhất quán, truy vết được về yêu cầu ban đầu và được tổ chức đúng Round để nhóm dự án cùng sử dụng.
