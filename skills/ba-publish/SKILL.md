@@ -13,7 +13,7 @@ Config, selected PBI IDs rõ ràng, backlog, Round plan, draft business/spec, re
 
 Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Dùng `scripts/publish_ba.py` để kiểm tất cả inputs/recursive source hashes/đúng project-PBI-Round. Review FAIL hoặc business/spec blockers → chặn. CONDITIONAL chỉ cho draft khi có quyết định Draft Publication. Kiểm backlog checkpoint và Round Approved/Proposed Allowed gắn đúng bytes; không suy approval từ PASS hoặc front matter approved.
 
@@ -26,16 +26,16 @@ Lấy PBI title/ID đúng backlog, Round duy nhất từ allocation, draft/revie
 1. Chạy dry-run: `python <KIT_ROOT>/scripts/publish_ba.py --project-config <config> --pbi-id <id>` (optional `--approvals <path>`). Trình manifest paths/action/hash và blockers; xem [ví dụ](references/dry-run-example.md).
 2. Hoàn thành toàn bộ kiểm tra trước khi hỏi quyền còn thiếu. Nếu đã có authorization đúng selected IDs và bytes trong phiên, ghi audit record, không hỏi lại. Nếu thiếu, xin quyết định checkpoint, giải thích theo quy ước Kit; không tự approve.
 3. Ghi `{planning_dir}/approvals.json` đúng schema sau quyết định thật. Publish record bao phủ backlog, Round, business, spec và review hiện tại. Quyết định critical chưa chốt phải được xử lý trong nguồn và review lại; ghi tên quyết định ở resolved_decisions.
-4. Chạy lại dry-run để đảm bảo approvals/hash current rồi `--apply`. Helper stage cặp file, kiểm hash trước/sau và refs. Không tự copy thủ công để bỏ qua gate.
+4. Xem preview business/spec bằng scripts/ba_public.py --project-config <config> --file <draft> --write-preview. Chạy lại dry-run để đảm bảo approvals/hash current rồi `--apply`. Helper render bản đọc được, stage cặp file và kiểm hash/nguồn trước/sau. Không copy draft có metadata vào thư mục PBI.
 5. Với nhiều PBI, xử lý từng cặp theo dependency order, báo partial completion trung thực. Đây không phải transaction toàn Round. Không chạy nhiều publisher đồng thời cùng PBI.
 
 ## Output Contract
 
-`{output_root}/{round_id}/{pbi_id}-{slug}/business.md` và `spec.md`, chính xác hai file. Giữ nguyên IDs/metadata/bytes; refs được resolve từ root, không phụ thuộc vị trí file mới. Không nhét review/report/history vào thư mục PBI. Report stdout gồm created/updated/skipped/blocked/conflicts.
+`{output_root}/{round_id}/{pbi_id}-{slug}/business.md` và `spec.md`, chính xác hai file Markdown đọc được. Tiêu đề là PBI ID và tên; spec theo [bố cục 18 mục](../../templates/spec-handover.md). Giữ ID, nội dung nghiệp vụ và trạng thái xác nhận; không có front matter, BA-DATA, Contract Summary, JSON hoặc source hashes, kể cả ở cuối/comment. Metadata và bản làm việc giữ nguyên ở .temp/drafts/PBI-ID. Không thêm sidecar/review/report trong thư mục PBI. Manifest phân biệt source_sha256 của draft và sha256 của bản render.
 
 ## Output Validation
 
-Helper post-validates với refs và so SHA-256; xác nhận chỉ hai file. Cùng inputs chạy lại → skip, không đổi mtime. Không đánh dấu approved nếu đang draft publication; phê duyệt status thay đổi bytes đòi review mới.
+Helper post-validates bằng bản làm việc trong .temp và chuỗi nguồn, so file cuối với bản render mong đợi; xác nhận chỉ hai file và không có metadata. Cùng inputs chạy lại → skip, không đổi mtime. Không đánh dấu approved nếu đang draft publication; phê duyệt status thay đổi bytes đòi review mới.
 
 ## Error Handling
 

@@ -20,10 +20,14 @@ def main():
     for skill, (source, filename) in MAPPING.items():
         content = (FIXTURE / source).read_text(encoding="utf-8")
         target = ROOT / "skills" / skill / "references" / filename
-        target.write_text(
-            "> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. "
-            "Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings.\n\n" + content,
-            encoding="utf-8")
+        notice = ("> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. "
+                  "Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. "
+                  "Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.")
+        if skill in ("ba-business", "ba-spec"):
+            notice += ("\n\n> Không copy nguyên mẫu có metadata này vào thư mục PBI. "
+                       "Dùng ba_public.py để preview và ba-publish để xuất bản đọc được; "
+                       "metadata/BA-DATA/Contract Summary giữ trong .temp/drafts.")
+        target.write_text(notice + "\n\n" + content, encoding="utf-8")
 
 
 if __name__ == "__main__":

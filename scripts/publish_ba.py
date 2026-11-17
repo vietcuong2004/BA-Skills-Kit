@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Dry-run by default; publish an approved, validated PBI pair without overwriting."""
 import argparse
+import hashlib
 import json
 import os
 import tempfile
 from pathlib import Path
 
 from ba_core import BAError, Project, Validator, check_output_layout, errors_for, sha, slugify
+from ba_public import public_bytes
 
 
 def read_approvals(project, path):
@@ -80,9 +82,10 @@ def prepare(project, pbi_id, approvals_path=None):
         raise BAError("PUBLISH_CONFLICT", "Existing PBI directory must contain exactly the two expected files", target)
     for doc in (business, spec):
         destination = project.path(target / doc.path.name)
-        action = "create" if not destination.exists() else "skip" if sha(destination) == sha(doc.path) else "conflict"
+        digest = hashlib.sha256(public_bytes(project, doc, validator)).hexdigest()
+        action = "create" if not destination.exists() else "skip" if sha(destination) == digest else "conflict"
         entries.append({"source": project.relative(doc.path), "destination": project.relative(destination),
-                        "sha256": sha(doc.path), "action": action})
+                        "source_sha256": sha(doc.path), "sha256": digest, "action": action})
     diagnostics = []
     try:
         approvals = read_approvals(project, approvals_path or project.planning / "approvals.json")
@@ -103,7 +106,7 @@ def prepare(project, pbi_id, approvals_path=None):
     if approval_file.is_file():
         snapshot[project.relative(approval_file)] = sha(approval_file)
     config_digest = sha(project.config_path)
-    return {"pbi_id": pbi_id, "round_id": rnd["round_id"], "target": project.relative(target), "entries": entries,
+    return {"pbi_id": pbi_id, "round_id": rnd["round_id"], "target": project.relative(target), "format": "readable-v1", "entries": entries,
             "blocked": diagnostics, "snapshot": snapshot, "config_sha256": config_digest}
 
 
@@ -133,11 +136,16 @@ def publish(project, manifest):
         staging = Path(temp) / "pair"
         staging.mkdir()
         for entry in manifest["entries"]:
-            content = project.path(entry["source"]).read_bytes()
+            source = project.path(entry["source"])
+            if sha(source) != entry["source_sha256"]:
+                raise BAError("STALE_INPUT", "Draft changed after dry-run", source)
+            validator = Validator(project)
+            doc = validator.require_valid(source, Path(entry["destination"]).stem, manifest["pbi_id"])
+            content = public_bytes(project, doc, validator)
             staged_file = staging / Path(entry["destination"]).name
             staged_file.write_bytes(content)
             if sha(staged_file) != entry["sha256"]:
-                raise BAError("STALE_INPUT", "Draft changed while copying", entry["source"])
+                raise BAError("STALE_INPUT", "Rendered document changed after dry-run", entry["source"])
         for path, expected in manifest["snapshot"].items():
             if sha(project.path(path)) != expected:
                 raise BAError("STALE_INPUT", "Input changed during staging", path)

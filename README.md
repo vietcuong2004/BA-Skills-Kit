@@ -97,6 +97,8 @@ your-project/
 - **`business.md`** giải thích vì sao cần PBI, ai sử dụng, giá trị, phạm vi và giải pháp nghiệp vụ.
 - **`spec.md`** mô tả phần mềm phải hoạt động thế nào: luồng, quy tắc, quyền, dữ liệu, lỗi và điều kiện nghiệm thu.
 
+Hai file bàn giao chỉ chứa ngôn ngữ tự nhiên, bảng và checklist. Spec có 18 mục, bắt đầu bằng tiêu đề PBI và bảng thông tin; không có phần YAML/metadata ở đầu hoặc cuối. Metadata và dữ liệu kiểm tra được giữ trong bản làm việc ở .temp.
+
 `.specify` chỉ chứa Round/PBI với đúng hai file trên trong mỗi PBI. Tất cả hồ sơ trung gian nằm dưới `.temp`; cần giữ chúng để tiếp tục công việc và kiểm tra nguồn sau này.
 
 Chi tiết kỹ thuật dành cho người bảo trì: [quy ước tài liệu](conventions/BA-CONVENTIONS.md) và [điểm vào cho agent](SKILL.md). `tests/` chỉ giữ local để bảo trì, được Git bỏ qua và không nằm trong gói cài đặt.

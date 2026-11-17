@@ -13,7 +13,7 @@ description: Tạo đặc tả Dev/QA cho một PBI từ business draft hợp l�
 
 Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng nguồn bằng `--check-refs --expected-type <type>`; business thêm `--pbi-id <requested-id>`. Business PBI = requested PBI = backlog PBI; cùng project/version, source hashes fresh. Business thiếu → báo ba-business và exact path, dừng; không tự tạo business thay.
 
@@ -35,6 +35,8 @@ Validate từng nguồn bằng `--check-refs --expected-type <type>`; business t
 `{planning_dir}/drafts/{pbi_id}/spec.md`, metadata spec/ba-spec, đúng identity/requirement_refs và Round từ business nếu đã có. Sources chứa business/backlog/requirements raw-byte hashes. [Template](references/spec-template.md) là ví dụ đủ contract; [folder example](references/folder-example.md) minh họa cách viết hành vi, không chốt quyền mặc định.
 
 ## Output Validation
+
+Bản spec có metadata ở drafts là hồ sơ nội bộ, chỉ nằm trong .temp. Bản bàn giao theo [bố cục 18 mục](../../templates/spec-handover.md): tiêu đề PBI, thông tin, mục tiêu/phạm vi/story, các luồng, rules, validation, EC, AC, dependencies/NFR, câu hỏi, traceability, lịch sử và checklist. Đưa đủ nội dung vào dữ liệu tương ứng, không chỉ ghi “chi tiết ở BA-DATA”. Xem trước bằng python <KIT_ROOT>/scripts/ba_public.py --project-config <config> --file <draft-spec> --write-preview; preview ở .temp/previews/PBI-ID/spec.md. Không copy draft có metadata vào thư mục PBI; ba-publish xuất bản đọc được.
 
 Validator `--project-config <config> --file <spec-path> --expected-type spec --pbi-id <pbi_id> --check-refs --format json`. Kiểm GWT không rỗng, EC outcome/question, local IDs, scope, refs, trace coverage, hash và headings. Sửa format trong phạm vi, không tự sửa business.md.
 

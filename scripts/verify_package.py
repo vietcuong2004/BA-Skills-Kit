@@ -60,6 +60,18 @@ def main():
             result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", timeout=30)
             if result.returncode:
                 raise RuntimeError(result.stdout + result.stderr)
+        # Every installed entrypoint must carry the public renderer and the handover template.
+        skills = sorted((extracted / "skills").glob("ba-*"))
+        for skill in skills:
+            installed = destination / "target/.agents/skills" / skill.name
+            resources = ("scripts/ba_core.py", "scripts/ba_public.py", "scripts/publish_ba.py",
+                         "templates/spec-handover.md", "conventions/BA-CONVENTIONS.md")
+            for resource in resources:
+                if not (installed / "references/kit" / resource).is_file():
+                    raise ValueError(f"Missing installed resource: {skill.name}: {resource}")
+            text = (installed / "SKILL.md").read_text(encoding="utf-8")
+            if "../../conventions/" in text or "../../templates/" in text:
+                raise ValueError(f"Unrewritten source-kit link: {skill.name}")
         # Verify the installed helper also discovers the config when no path is passed.
         installed_auditor = destination / "target/.agents/skills/ba-publish/references/kit/scripts/check_ba_layout.py"
         detected = subprocess.run([sys.executable, "-X", "utf8", str(installed_auditor)], cwd=project,
@@ -69,7 +81,7 @@ def main():
         if (project / "ba-project.yaml").exists() or (project / ".temp/.temp").exists() or (project / ".temp/.specify").exists():
             raise ValueError("Config discovery created an incorrect nested/root project layout")
         report = {"result": "PASS", "archive_sha256": sha(archive), "manifest_files": len(manifest["files"]),
-                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor", "auto-discovered .temp config without root config"]}
+                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor", "auto-discovered .temp config without root config", f"public renderer and handover resources in all {len(skills)} installed skills"]}
     (KIT / "dist/package-verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

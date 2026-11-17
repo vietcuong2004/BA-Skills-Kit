@@ -13,7 +13,7 @@ description: Viết hoặc cập nhật business.md cho đúng một PBI đã c�
 
 Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate mọi nguồn với expected type, project ID, version và `--check-refs`; nếu dùng Round phải validate Round. Chọn đúng một PBI khớp pbi_id; không đoán theo title/thứ tự. Backlog scope/Feature/Epic phải thống nhất. Missing source → báo skill upstream, không tự tạo.
 
@@ -34,6 +34,8 @@ Không sao chép toàn bộ spec. PBI identity/title/scope và requirement_refs 
 `{planning_dir}/drafts/{pbi_id}/business.md`, metadata business/ba-business, pbi_id/epic_id/feature_id/requirement_refs, round_id khi có allocation. `source_documents` hash brainstorm/requirements/backlog và Round nếu đã dùng. [Template](references/business-template.md) có các headings tiếng Việt bắt buộc.
 
 ## Output Validation
+
+Bản có metadata là hồ sơ làm việc trong .temp. Xem bản đọc được bằng python <KIT_ROOT>/scripts/ba_public.py --project-config <config> --file <draft-business> --write-preview. Kiểm đủ câu chuyện, mục tiêu/giá trị, scope, giải pháp, quyền/rules và quyết định; cập nhật dữ liệu nếu preview thiếu. Không đưa front matter, BA-DATA hoặc Contract Summary vào business.md bàn giao.
 
 Validator `--project-config <config> --file <business-path> --expected-type business --pbi-id <pbi_id> --check-refs --format json`. Kiểm PBI/source match, refs, scope, headings/projection và freshness. PASS cấu trúc không duyệt nội dung.
 

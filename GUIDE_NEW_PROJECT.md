@@ -192,7 +192,7 @@ your-project/
             └── spec.md
 ```
 
-Mỗi Round chứa các PBI đã được chọn; mỗi thư mục PBI xuất ra có đúng hai file trên. Giữ `.temp` vì nguồn và tiến độ vẫn được dùng để tiếp tục/review sau này. Việc xuất tài liệu chưa có nghĩa tính năng đã được lập trình hoặc triển khai.
+Mỗi Round chứa các PBI đã được chọn; mỗi thư mục PBI xuất ra có đúng hai file Markdown đọc được. Spec theo [bố cục 18 mục](templates/spec-handover.md), bắt đầu bằng tên PBI; không có front matter, BA-DATA, Contract Summary hay source hashes. Metadata giữ trong drafts dưới .temp. Giữ `.temp` vì nguồn và tiến độ vẫn được dùng để tiếp tục/review sau này. Việc xuất tài liệu chưa có nghĩa tính năng đã được lập trình hoặc triển khai.
 
 ## 7. Tiếp tục công việc hoặc bổ sung yêu cầu
 

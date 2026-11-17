@@ -13,7 +13,7 @@ description: Điều phối toàn bộ pipeline BA từ ý tưởng đến backl
 
 Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Load config (chưa có → đề xuất template và xác nhận giá trị thiết yếu). Đọc files/state đang có, validate trước dùng; không chạy lại bước còn fresh. SINGLE-PBI cần exact ID; SINGLE-ROUND cần exact Round ID rồi resolve pbi_refs, không đoán. RESUME dùng `python <KIT_ROOT>/scripts/workflow_state.py --project-config <config>` và đọc [recovery guide](references/recovery-guide.md).
 
@@ -28,7 +28,7 @@ Chạy từng skill bằng cơ chế runtime sẵn có. Nếu không có direct 
 1. Ý tưởng → ba-brainstorm → validate → ba-requirements → validate → ba-product-backlog → validate.
 2. Checkpoint duyệt backlog/scope và quyết định ảnh hưởng lớn. Chưa có quyết định → lưu state, dừng bước phụ thuộc.
 3. ba-round-plan → validate → checkpoint Approved hoặc Proposed Allowed. Thiếu capacity giữ Proposed.
-4. Với mỗi selected PBI: ba-business → validate → ba-spec → validate → ba-review → validate. FAIL thì báo findings. Chỉ sửa lỗi kỹ thuật trong phạm vi được phép hoặc thay đổi nghiệp vụ đã có quyết định; chỉ retry sau thay đổi có ý nghĩa, không vòng lặp vô hạn.
+4. Với mỗi selected PBI: ba-business → validate → ba-spec → validate → ba_public.py tạo preview business/spec → ba-review đọc cả drafts và preview → validate. Preview nằm trong .temp/previews/PBI-ID; spec có 18 mục, không có metadata. FAIL thì báo findings. Chỉ sửa lỗi kỹ thuật trong phạm vi được phép hoặc thay đổi nghiệp vụ đã có quyết định; chỉ retry sau thay đổi có ý nghĩa, không vòng lặp vô hạn.
 5. Checkpoint publish cho các bytes/PBI cụ thể. ba-publish dry-run → quyết định còn thiếu → apply → post-validate. Không bypass review freshness hoặc human approval.
 
 Mode INTERACTIVE chạy đến checkpoint tiếp theo. DRAFT tạo draft đến checkpoint chưa được cho phép, không ngầm bypass backlog/Round gate; nếu người dùng đã cho phép tiếp tục draft với Proposed allocation, ghi đúng quyết định đó và không publish. RESUME giữ IDs/decisions, tái kiểm bước bị ảnh hưởng. SINGLE-PBI chỉ xử lý ID đã chọn với nguồn đủ; SINGLE-ROUND dùng allocations đã có, không tự đổi Round.

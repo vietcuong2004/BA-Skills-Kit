@@ -1,4 +1,6 @@
-> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings.
+> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
+
+> Không copy nguyên mẫu có metadata này vào thư mục PBI. Dùng ba_public.py để preview và ba-publish để xuất bản đọc được; metadata/BA-DATA/Contract Summary giữ trong .temp/drafts.
 
 ---
 schema_version: '1.0'

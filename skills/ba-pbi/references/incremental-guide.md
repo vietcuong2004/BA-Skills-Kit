@@ -32,3 +32,5 @@ Nếu scope mới đã được duyệt ngay trong yêu cầu và đủ cụ th�
 Sau khi duyệt backlog delta, đọc SKILL.md của ba-business/ba-spec/ba-review ở các thư mục sibling. Với bản cài, không dùng đường dẫn tương đối về Kit source gốc. Business/spec phải cùng PBI ID/title/parents/requirements/scope với backlog; local AC/EC/Flow IDs thuộc PBI mới.
 
 Không cần ép Round để viết draft nếu user chưa chọn đợt. Omit round_id trong metadata và data khi chưa có allocation; không tạo R0/R1 giả. Review tạo đúng source hashes. Publish là bước riêng, cần Round và approvals hiện hành.
+
+Metadata/BA-DATA của business/spec nằm trong drafts dưới .temp. Dùng ba_public.py tạo preview để review bản đọc được; không copy nguyên draft vào thư mục PBI. Chỉ ba-publish xuất hai file cuối không có metadata, spec theo bố cục 18 mục. Bản PBI đã publish cần được giữ để đối chiếu khi phát hiện stale hoặc conflict.

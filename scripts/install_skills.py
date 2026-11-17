@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 from ba_core import BAError, KIT, safe_path, sha
 
-RUNTIME = ["ba_core.py", "validate_ba_document.py", "publish_ba.py", "workflow_state.py", "check_ba_layout.py"]
+RUNTIME = ["ba_core.py", "ba_public.py", "validate_ba_document.py", "publish_ba.py", "workflow_state.py", "check_ba_layout.py"]
 MARKER = ".ba-kit-install.json"
 
 

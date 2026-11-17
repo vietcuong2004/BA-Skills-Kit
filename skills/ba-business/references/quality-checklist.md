@@ -5,3 +5,5 @@
 Giải pháp phải nói được người dùng vào đâu, thấy thành phần gì (Confirmed/Proposed), làm gì, hệ thống phản hồi gì và dữ liệu ở trạng thái nào. Permission/BR có nguồn; không tự chốt UI, số ký tự, thời gian lưu hay SLA. Scope/exclusions phải khớp backlog.
 
 Đối chiếu source_refs với evidence thật. Critical unknown phải nằm trong blockers; rủi ro thông thường có thể nằm risks. Mỗi đoạn không cần lặp toàn bộ spec. As-Is không có evidence: nói chưa xác minh, để dữ liệu as_is rỗng.
+
+Đọc preview từ ba_public.py trước review: câu chuyện, giải pháp, rules/quyền và trạng thái xác nhận phải hiện đầy đủ. Dữ liệu quan trọng chỉ có trong văn xuôi nội bộ phải được bổ sung vào dữ liệu tương ứng. Bản bàn giao không có metadata; template có BA-DATA chỉ dùng cho draft trong .temp.

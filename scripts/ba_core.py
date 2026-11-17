@@ -354,6 +354,8 @@ class Validator:
 
     def _validate(self, path):
         initial_hash = sha(path) if path.is_file() else None
+        if path.is_relative_to(self.project.output):
+            return self._validate_public(path, initial_hash)
         doc = parse(path)
         issues = errors_for("metadata", doc.metadata, path)
         self.diagnostics.extend(issues)
@@ -445,6 +447,34 @@ class Validator:
             self.issue("REFS_NOT_CHECKED", doc, "Cross-document references were not checked", severity="WARNING")
         if sha(path) != initial_hash:
             self.issue("STALE_INPUT", doc, "Document changed during validation; retry from a stable snapshot")
+        self.fingerprints[path] = initial_hash
+        return doc
+
+    def _validate_public(self, path, initial_hash):
+        from ba_public import check_public_text, public_bytes
+
+        parts = path.relative_to(self.project.output).parts
+        match = re.fullmatch(r"(" + re.escape(self.project.config["pbi_prefix"]) + r"-[0-9]{3,})-.+", parts[1]) if len(parts) == 3 else None
+        if not match or parts[2] not in ("business.md", "spec.md"):
+            raise BAError("DOCUMENT_LOCATION", "Expected a published Round/PBI business/spec file", path)
+        kind, pbi_id = path.stem, match.group(1)
+        draft = self.project.planning / "drafts" / pbi_id / path.name
+        canonical = self.require_valid(draft, kind, pbi_id)
+        if not path.is_file():
+            raise BAError("MISSING_INPUT", "Published document not found", path)
+        content = path.read_bytes()
+        try:
+            text = content.decode("utf-8")
+        except UnicodeError as exc:
+            raise BAError("INVALID_ENCODING", "Expected UTF-8 Markdown", path) from exc
+        check_public_text(text, path)
+        doc = Document(path, canonical.metadata, canonical.data, text)
+        check_document_location(self.project, doc)
+        if content != public_bytes(self.project, canonical, self):
+            self.issue("PUBLIC_CONTENT_MISMATCH", doc, "Published prose differs from the current validated draft",
+                       fix="So sánh bản bàn giao với draft trong .temp; review/publish lại theo quy trình, không tự ghi đè.")
+        if sha(path) != initial_hash:
+            self.issue("STALE_INPUT", doc, "Document changed during validation")
         self.fingerprints[path] = initial_hash
         return doc
 

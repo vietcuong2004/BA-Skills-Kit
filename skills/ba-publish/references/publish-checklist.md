@@ -8,5 +8,6 @@
 - Human backlog và Round checkpoint hợp lệ; publish checkpoint gắn exact document hashes và selected PBI IDs.
 - Manifest đã cho người dùng thấy khi cần approval; existing user authorization được tái sử dụng đúng phạm vi, không hỏi lại vô ích.
 - Không target ngoài root, không duplicate PBI path; conflict không overwrite.
-- Final pair đúng bytes, post-validate; chính xác hai file, report stdout.
+- Final pair đúng bytes của bản render, post-validate theo drafts/nguồn trong .temp; chính xác hai file, report stdout.
+- Hai file bàn giao không có front matter, BA-DATA, Contract Summary hay source hashes; spec có đủ 18 mục và nội dung bước/Given-When-Then hiển thị đầy đủ. Metadata chỉ ở .temp, không có sidecar trong PBI.
 - Nếu lỗi hậu kiểm, nêu rõ file nào đã được ghi; không tự xóa dữ liệu.

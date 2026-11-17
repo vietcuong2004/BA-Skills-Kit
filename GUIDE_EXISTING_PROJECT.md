@@ -188,7 +188,7 @@ your-project/
             └── spec.md
 ```
 
-Mỗi Round có thể chứa nhiều PBI; mỗi PBI xuất ra chỉ có đúng hai file. `.specify` không chứa exploration, backlog, review hoặc `_planning`. Đừng xóa `.temp` sau bàn giao vì source refs/hash và RESUME vẫn cần các hồ sơ đó.
+Mỗi Round có thể chứa nhiều PBI; mỗi PBI xuất ra chỉ có đúng hai file đọc được. Spec có 18 mục theo [bố cục bàn giao](templates/spec-handover.md), bắt đầu bằng tên PBI; không có YAML front matter, BA-DATA, Contract Summary hoặc source hashes. Metadata nằm trong drafts dưới .temp. `.specify` không chứa exploration, backlog, review hoặc `_planning`. Đừng xóa `.temp` sau bàn giao vì truy vết nguồn và RESUME vẫn cần các hồ sơ đó.
 
 ## 7. Tiếp tục sau này hoặc bổ sung tính năng mới
 

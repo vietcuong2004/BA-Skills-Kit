@@ -13,7 +13,7 @@ description: Review độc lập business/spec của một PBI về scope, hành
 
 Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng input với `--check-refs --expected-type <type>` và requested PBI cho business/spec. Cùng project/version/identity; nguồn fresh. Nếu lỗi schema, dừng và xuất diagnostic ra báo cáo trả lời, không làm giả review PASS. File review cuối phải đủ contract, không ghi lỗi parser thành verdict nghiệp vụ.
 
@@ -26,6 +26,8 @@ Validate từng input với `--check-refs --expected-type <type>` và requested 
 So mục tiêu ↔ user story ↔ scope ↔ requirement ↔ flow/rule ↔ EC/AC. Tự tìm thiếu case có liên quan: permission changes, concurrency, stale object, cancel, timeout sau success, retry, partial save, integrity. Không coi danh sách EC có sẵn là đủ.
 
 Kiểm Given/When/Then cụ thể, quan sát được, không mâu thuẫn hoặc duplicate; mỗi flow quan trọng có AC. Kiểm solution đã quá chung chung hay vô tình chốt API/UI/quyền/ngưỡng không có nguồn. Đọc semantic prose; Contract Summary khớp không chứng minh mọi câu đúng.
+
+Chạy scripts/ba_public.py --project-config <config> --file <draft> --write-preview cho business và spec, đọc cả preview trong .temp/previews/PBI-ID. Spec có đủ 18 mục, bảng/luồng hiển thị bước và kết quả thực, không trỏ người đọc sang BA-DATA. Preview không chứa front matter, BA-DATA, Contract Summary hay source hashes. Nội dung quan trọng chỉ có trong văn xuôi nội bộ mà chưa có ở dữ liệu/preview là finding cần sửa trước bàn giao.
 
 Mỗi finding có FIND ID, severity, file, section, evidence, impact, recommendation, status. Theo [severity rubric](references/severity-rubric.md): Critical/Major mở hoặc business blocker → FAIL/Blocked; Minor refinement mở → CONDITIONAL/Needs Refinement; không finding mở/blocker → PASS/Ready. Không tự sửa business/spec trong lúc review; không tự ghi approval.
 
