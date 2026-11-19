@@ -24,9 +24,9 @@ Với đường dẫn chuẩn `<project>/.temp/ba-project.yaml`, `repository_roo
 
 Các quy tắc máy đọc ở dưới chỉ áp dụng cho **hồ sơ làm việc trong .temp**, gồm drafts, reviews và tài liệu upstream. Metadata, source hashes, BA-DATA và Contract Summary được giữ ở đó để validate/RESUME.
 
-**Tài liệu bàn giao trong .specify/Round/PBI/** chỉ là Markdown đọc được: tiêu đề PBI, ngôn ngữ tự nhiên, bảng, danh sách và checklist. Không xuất YAML front matter, BA-DATA, Contract Summary, JSON metadata hoặc source hashes vào business.md/spec.md, kể cả chuyển xuống cuối hay giấu trong comment. Không tạo sidecar metadata trong thư mục PBI.
+**Tài liệu bàn giao trong .specify/Round/PBI/** dùng Markdown đọc được, với tên PBI, thông tin hiển thị, văn xuôi, bảng và danh sách. Không xuất YAML front matter, BA-DATA, Contract Summary, JSON metadata hoặc source hashes vào business.md/spec.md, kể cả chuyển xuống cuối hay giấu trong comment. Không tạo sidecar metadata trong thư mục PBI.
 
-Spec bàn giao theo [bố cục 18 mục](../templates/spec-handover.md). scripts/ba_public.py render dữ liệu đã validate, giữ đủ bước/nhánh, rules, trạng thái xác nhận, EC, Given/When/Then và traceability. Thiếu thông tin thì ghi chưa được ghi nhận; không bịa dữ liệu/phê duyệt. Bản làm việc phải chứa đủ dữ liệu cần bàn giao; ba-review đọc cả bản làm việc và preview. Văn xuôi bổ sung trong drafts cũng phải nhất quán với dữ liệu.
+Cặp tài liệu bàn giao theo [mẫu business](../templates/business-handover.md) và [mẫu spec](../templates/spec-handover.md). Khi soạn để bàn giao, ghi chi tiết bảng giải pháp, kịch bản theo từng story, FR/NFR và tiêu chí thành công vào `BA-DATA.handover`. Renderer dùng các bản nháp và nguồn đã validate. Giữ truy vết, lịch sử và metadata máy đọc trong .temp. Đánh dấu thông tin còn thiếu ngay tại vị trí liên quan. Ba-review đối chiếu bản nháp với preview để phát hiện hành vi hoặc quyết định bị bỏ sót khi render.
 
 1. UTF-8; YAML front matter đầu file, phân cách bằng `---`. Metadata theo `contracts/metadata.schema.json`.
 2. Chính xác một `<!-- BA-DATA:START -->` và một `<!-- BA-DATA:END -->`. Bên trong là duy nhất fenced block mở bằng ` ```yaml `, đóng bằng ` ``` `. Không dùng biến thể `yaml ba-data`.
@@ -78,6 +78,8 @@ PBI chỉ ở một active Round; PBI chưa phân bổ vào `unassigned_pbis`. K
 `publish_ba.py` dry-run mặc định; chỉ `--apply` khi có authorization và record phù hợp. Nó audit layout trước/sau, validate nguồn, Round, review và checkpoints; render hai bản đọc được, stage dưới .temp/publish-staging, rồi rename sang thư mục PBI. Không copy draft có metadata. Chỉ business.md và spec.md; report ra stdout (nếu lưu thì ghi trong .temp). Cùng bản render → skip, không đổi mtime. Nội dung khác hoặc file thứ ba → conflict, không ghi đè. Khác filesystem thì rename báo lỗi; không copy cặp dang dở. Không chạy đồng thời nhiều publisher cho cùng PBI; rename không phải distributed transaction.
 
 Validator nhận bản bàn giao bằng đường dẫn Round/PBI, đọc bản làm việc tương ứng trong .temp/drafts/PBI-ID, validate nguồn và so bản render với file cuối. Không parse bản bàn giao như interchange document. Mất drafts, nguồn stale, file cuối bị sửa hoặc còn metadata đều phải báo lỗi; giữ .temp để truy vết.
+
+Bản nháp cũ thiếu `handover` vẫn validate được. Preview dùng bố cục mới với dữ liệu sẵn có và đánh dấu phần chưa đủ căn cứ, như ưu tiên hoặc liên kết AC với từng story. Validator nhận diện bản bàn giao bố cục trước nếu khớp chính xác bản render cũ và nguồn vẫn hợp lệ.
 
 Project đã publish định dạng cũ: cập nhật skills, tạo preview để so sánh, giữ bản cũ và thống nhất việc chuyển bản cũ vào .temp/archive trước khi publish lại. Publisher báo conflict và không tự ghi đè. Không tự thay nguồn/hash/approval để che thay đổi nghiệp vụ; nếu chỉ đổi trình bày, kiểm nguồn/review/approval còn đúng bytes.
 

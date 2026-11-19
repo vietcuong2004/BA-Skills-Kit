@@ -27,6 +27,8 @@ Viết business context, câu chuyện, vấn đề (evidence hay hypothesis), �
 
 Mô tả giải pháp chi tiết theo hành trình: entry point, UI components được xác nhận hoặc Proposed, thao tác người dùng, system feedback, data/state, BR, permission, dependencies, scope, exclusions và risks. Xem [quality checklist](references/quality-checklist.md). Không tự quyết UI, quyền hoặc ngưỡng dữ liệu. Quyết định chưa chốt có ảnh hưởng hành vi bắt buộc vào `blockers`, không chỉ giấu trong risk.
 
+Đọc [mẫu business bàn giao](../../templates/business-handover.md) và điền `BA-DATA.handover` khi tạo hoặc cập nhật để bàn giao. Ghi `purpose`, `customer_needs`, `affected_areas`, `notes` theo dạng fact có `text`, `confirmation_status`, `source_refs`. Ghi `solution_sections` theo thứ tự người dùng thực hiện hoặc thứ tự trường trên giao diện đã xác minh. Mỗi mục có `title`, `paragraphs` dạng fact, trạng thái xác nhận, nguồn và bảng `table` khi phù hợp. Bảng có `columns` và `rows`; mỗi dòng ứng với một trường, điều kiện hoặc biến thể. Chọn cột theo nghiệp vụ, mô tả mặc định, nguồn dữ liệu, bắt buộc, xử lý hợp lệ/sai và thông báo lỗi ở nơi áp dụng. Đánh dấu `[CẦN XÁC NHẬN]` tại từng ô còn thiếu căn cứ. Ghi `quality_constraints` khi có yêu cầu hiệu năng hoặc bảo mật liên quan. Thông tin minh họa dùng link đã cung cấp.
+
 Không sao chép toàn bộ spec. PBI identity/title/scope và requirement_refs phải đúng backlog; nếu cần đổi scope thì báo thay đổi upstream, không âm thầm mở rộng tại business.md.
 
 ## Output Contract
@@ -35,7 +37,7 @@ Không sao chép toàn bộ spec. PBI identity/title/scope và requirement_refs 
 
 ## Output Validation
 
-Bản có metadata là hồ sơ làm việc trong .temp. Xem bản đọc được bằng python <KIT_ROOT>/scripts/ba_public.py --project-config <config> --file <draft-business> --write-preview. Kiểm đủ câu chuyện, mục tiêu/giá trị, scope, giải pháp, quyền/rules và quyết định; cập nhật dữ liệu nếu preview thiếu. Không đưa front matter, BA-DATA hoặc Contract Summary vào business.md bàn giao.
+Bản có metadata là hồ sơ làm việc trong .temp. Xem bản đọc được bằng python <KIT_ROOT>/scripts/ba_public.py --project-config <config> --file <draft-business> --write-preview. Kiểm preview theo mẫu, đặc biệt là **Mục đích**, **Nghiệp vụ**, **Giải pháp phần mềm**, các dòng bảng và phạm vi ảnh hưởng. Đưa thông tin cần bàn giao vào BA-DATA để renderer hiển thị.
 
 Validator `--project-config <config> --file <business-path> --expected-type business --pbi-id <pbi_id> --check-refs --format json`. Kiểm PBI/source match, refs, scope, headings/projection và freshness. PASS cấu trúc không duyệt nội dung.
 

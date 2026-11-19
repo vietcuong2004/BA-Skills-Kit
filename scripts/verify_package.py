@@ -65,7 +65,7 @@ def main():
         for skill in skills:
             installed = destination / "target/.agents/skills" / skill.name
             resources = ("scripts/ba_core.py", "scripts/ba_public.py", "scripts/publish_ba.py",
-                         "templates/spec-handover.md", "conventions/BA-CONVENTIONS.md")
+                         "templates/business-handover.md", "templates/spec-handover.md", "conventions/BA-CONVENTIONS.md")
             for resource in resources:
                 if not (installed / "references/kit" / resource).is_file():
                     raise ValueError(f"Missing installed resource: {skill.name}: {resource}")

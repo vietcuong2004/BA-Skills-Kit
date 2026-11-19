@@ -7,6 +7,7 @@ import re
 import sys
 import unicodedata
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path, PureWindowsPath
 
 import yaml
@@ -405,6 +406,8 @@ class Validator:
                 self.issue("INVALID_FLOW", doc, f"Invalid flow kind or step sequence: {flow['flow_id']}")
         if kind in ("requirements", "spec") and not any(f["kind"] == "main" for f in data["flows"]):
             self.issue("MISSING_MAIN_FLOW", doc, "At least one main flow is required")
+        if kind in ("business", "spec") and "handover" in data:
+            self._handover(doc)
         if kind == "spec":
             if set(data["requirement_refs"]) != {x["requirement_id"] for x in data["traceability"]}:
                 self.issue("TRACE_COVERAGE", doc, "Traceability must cover exactly the selected requirements")
@@ -471,12 +474,65 @@ class Validator:
         doc = Document(path, canonical.metadata, canonical.data, text)
         check_document_location(self.project, doc)
         if content != public_bytes(self.project, canonical, self):
-            self.issue("PUBLIC_CONTENT_MISMATCH", doc, "Published prose differs from the current validated draft",
-                       fix="So sánh bản bàn giao với draft trong .temp; review/publish lại theo quy trình, không tự ghi đè.")
+            if "handover" not in canonical.data and content == public_bytes(self.project, canonical, self, legacy=True):
+                self.issue("LEGACY_HANDOVER", doc, "Published document matches the previous handover format", severity="WARNING")
+            else:
+                self.issue("PUBLIC_CONTENT_MISMATCH", doc, "Published prose differs from the current validated draft",
+                           fix="So sánh bản bàn giao với draft trong .temp; review/publish lại theo quy trình, không tự ghi đè.")
         if sha(path) != initial_hash:
             self.issue("STALE_INPUT", doc, "Document changed during validation")
         self.fingerprints[path] = initial_hash
         return doc
+
+    def _handover(self, doc):
+        data = doc.data
+        handover = data["handover"]
+        if doc.metadata["document_type"] == "business":
+            for index, section in enumerate(handover["solution_sections"]):
+                location = f"/handover/solution_sections/{index}"
+                grid = section.get("table")
+                if not section["paragraphs"] and not grid:
+                    self.issue("EMPTY_HANDOVER_SECTION", doc, "Solution section needs prose or a table", location)
+                if grid and any(len(row) != len(grid["columns"]) for row in grid["rows"]):
+                    self.issue("INVALID_HANDOVER_TABLE", doc, "Each row must match the number of columns", location + "/table")
+            return
+
+        if "created" in handover:
+            try:
+                date.fromisoformat(handover["created"])
+            except ValueError:
+                self.issue("INVALID_HANDOVER_DATE", doc, "Expected a valid creation date", "/handover/created")
+        if len(handover["stories"]) != len(data["user_stories"]):
+            self.issue("HANDOVER_COVERAGE", doc, "Each User Story needs matching handover details", "/handover/stories")
+        acceptance = {item["ac_id"]: set(item["requirement_refs"]) for item in data["acceptance_criteria"]}
+        story_coverage = set()
+        for index, story in enumerate(handover["stories"]):
+            location = f"/handover/stories/{index}"
+            if ("priority" in story) != ("priority_reason" in story):
+                self.issue("INVALID_HANDOVER_PRIORITY", doc, "Provide both the priority and its reason, or omit both", location)
+            story_coverage.update(story["ac_refs"])
+        if story_coverage != acceptance.keys():
+            self.issue("HANDOVER_COVERAGE", doc, "Story scenarios must reference exactly the spec's AC IDs", "/handover/stories")
+        requirement_coverage = set()
+        scenario_coverage = set()
+        for collection, field in (("functional_requirements", "fr_id"), ("nonfunctional_requirements", "nfr_id")):
+            seen = set()
+            for index, item in enumerate(handover[collection]):
+                location = f"/handover/{collection}/{index}"
+                if item[field] in seen:
+                    self.issue("DUPLICATE_ID", doc, item[field], location)
+                seen.add(item[field])
+                if field == "fr_id":
+                    requirements = set(item["requirement_refs"])
+                    scenarios = set(item["ac_refs"])
+                    supported = set().union(*(acceptance.get(ref, set()) for ref in scenarios))
+                    if scenarios - acceptance.keys() or requirements - supported or any(
+                            not requirements.intersection(acceptance.get(ref, ())) for ref in scenarios):
+                        self.issue("HANDOVER_TRACE_MISMATCH", doc, "FR sources and scenarios must cover the same requirements", location)
+                    requirement_coverage.update(requirements)
+                    scenario_coverage.update(scenarios)
+        if requirement_coverage != set(data["requirement_refs"]) or scenario_coverage != acceptance.keys():
+            self.issue("HANDOVER_COVERAGE", doc, "FRs must cover the PBI's requirements and acceptance criteria", "/handover/functional_requirements")
 
     def _references(self, doc, sources):
         data, kind = doc.data, doc.metadata["document_type"]

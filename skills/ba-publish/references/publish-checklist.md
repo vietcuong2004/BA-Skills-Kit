@@ -9,5 +9,5 @@
 - Manifest đã cho người dùng thấy khi cần approval; existing user authorization được tái sử dụng đúng phạm vi, không hỏi lại vô ích.
 - Không target ngoài root, không duplicate PBI path; conflict không overwrite.
 - Final pair đúng bytes của bản render, post-validate theo drafts/nguồn trong .temp; chính xác hai file, report stdout.
-- Hai file bàn giao không có front matter, BA-DATA, Contract Summary hay source hashes; spec có đủ 18 mục và nội dung bước/Given-When-Then hiển thị đầy đủ. Metadata chỉ ở .temp, không có sidecar trong PBI.
+- Hai file bàn giao không có front matter, BA-DATA, Contract Summary hay source hashes; business có các nhóm xử lý và bảng phù hợp, spec có kịch bản Given–When–Then theo từng story và FR/NFR. Metadata chỉ ở .temp, không có sidecar trong PBI.
 - Nếu lỗi hậu kiểm, nêu rõ file nào đã được ghi; không tự xóa dữ liệu.

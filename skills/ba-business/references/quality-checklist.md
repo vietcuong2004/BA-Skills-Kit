@@ -6,4 +6,4 @@ Giải pháp phải nói được người dùng vào đâu, thấy thành phầ
 
 Đối chiếu source_refs với evidence thật. Critical unknown phải nằm trong blockers; rủi ro thông thường có thể nằm risks. Mỗi đoạn không cần lặp toàn bộ spec. As-Is không có evidence: nói chưa xác minh, để dữ liệu as_is rỗng.
 
-Đọc preview từ ba_public.py trước review: câu chuyện, giải pháp, rules/quyền và trạng thái xác nhận phải hiện đầy đủ. Dữ liệu quan trọng chỉ có trong văn xuôi nội bộ phải được bổ sung vào dữ liệu tương ứng. Bản bàn giao không có metadata; template có BA-DATA chỉ dùng cho draft trong .temp.
+Đọc preview từ ba_public.py trước review. Đối chiếu mục đích, câu chuyện, khó khăn, nhu cầu và phạm vi ảnh hưởng. Rà từng hàng trong bảng để thấy cách nhập, xử lý và thông báo tương ứng với đúng trường hoặc biến thể. Dữ liệu quan trọng chỉ có trong văn xuôi nội bộ cần được bổ sung vào BA-DATA; giữ nguồn và trạng thái xác nhận cho từng nội dung.

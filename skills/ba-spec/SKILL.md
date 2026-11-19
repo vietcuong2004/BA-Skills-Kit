@@ -29,6 +29,8 @@ Validate từng nguồn bằng `--check-refs --expected-type <type>`; business t
 4. Chọn EC liên quan theo [checklist](references/edge-case-checklist.md). Mỗi EC có scenario/preconditions, requirement_refs, related_br_refs/related_ac_refs và expected_behavior **hoặc** open_question + Open Question. Không tự đặt min/max hay retry policy. Critical outcome chưa chốt → `blockers`.
 5. Viết AC Given/When/Then có thể kiểm chứng, cover success, alternative, error và EC rủi ro cao. Mỗi AC có requirement_refs, flow_refs, edge_case_refs. [GWT guide](references/ac-gwt-guide.md) phân biệt tiêu chí với test steps.
 6. Lập REQ ↔ BR/Flow/EC ↔ AC matrix. Không dangling refs, mọi AC nằm trong traceability, mọi requirement của PBI được coverage. Kiểm ngữ nghĩa với business, rules và scope, không chỉ đủ trường YAML.
+7. Đọc [mẫu Feature Specification bàn giao](../../templates/spec-handover.md) và điền `BA-DATA.handover` khi tạo hoặc cập nhật để bàn giao. Tách story theo mục tiêu hoặc biến thể có thể kiểm thử độc lập. `handover.stories` cùng thứ tự và số lượng với `user_stories`. Mỗi mục có tiêu đề cụ thể, cặp `priority` (P1/P2/P3) và `priority_reason` nếu có căn cứ, `independent_test` theo điểm vào → thao tác/dữ liệu → kết quả, và `ac_refs` của story. Bao phủ đủ AC. Thêm nhánh, ngày tạo, nền tảng và Figma khi đã biết.
+8. Viết `functional_requirements` theo điều kiện → hệ thống phải làm gì → kết quả, với mã FR ổn định và `requirement_refs`, `ac_refs` thực sự liên quan. Viết `nonfunctional_requirements` có mã NFR nếu áp dụng. Ghi `success_criteria` kiểm được ở cấp PBI, `assumptions` và `dependencies` có tác động rõ. FR/NFR và các fact này đều cần `confirmation_status` và `source_refs`. Đưa hành vi quan trọng từ flow, quyền, dữ liệu, validate hoặc phục hồi vào FR, Acceptance Scenarios hoặc Edge Cases. Giữ matrix nội bộ để đối chiếu story, AC, FR và tiêu chí thành công. Thiếu căn cứ thì ghi câu hỏi hoặc đánh dấu `[CẦN XÁC NHẬN]`.
 
 ## Output Contract
 
@@ -36,7 +38,7 @@ Validate từng nguồn bằng `--check-refs --expected-type <type>`; business t
 
 ## Output Validation
 
-Bản spec có metadata ở drafts là hồ sơ nội bộ, chỉ nằm trong .temp. Bản bàn giao theo [bố cục 18 mục](../../templates/spec-handover.md): tiêu đề PBI, thông tin, mục tiêu/phạm vi/story, các luồng, rules, validation, EC, AC, dependencies/NFR, câu hỏi, traceability, lịch sử và checklist. Đưa đủ nội dung vào dữ liệu tương ứng, không chỉ ghi “chi tiết ở BA-DATA”. Xem trước bằng python <KIT_ROOT>/scripts/ba_public.py --project-config <config> --file <draft-spec> --write-preview; preview ở .temp/previews/PBI-ID/spec.md. Không copy draft có metadata vào thư mục PBI; ba-publish xuất bản đọc được.
+Bản spec có metadata ở drafts là hồ sơ nội bộ trong .temp. Xem bản bàn giao bằng python <KIT_ROOT>/scripts/ba_public.py --project-config <config> --file <draft-spec> --write-preview. Đối chiếu preview ở .temp/previews/PBI-ID/spec.md với mẫu và kiểm thứ tự mục, các kịch bản nằm đúng story, FR/NFR và điều kiện thành công. Đưa chi tiết cần bàn giao vào BA-DATA để renderer hiển thị.
 
 Validator `--project-config <config> --file <spec-path> --expected-type spec --pbi-id <pbi_id> --check-refs --format json`. Kiểm GWT không rỗng, EC outcome/question, local IDs, scope, refs, trace coverage, hash và headings. Sửa format trong phạm vi, không tự sửa business.md.
 

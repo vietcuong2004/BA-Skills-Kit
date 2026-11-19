@@ -691,6 +691,310 @@
       },
       "minItems": 0,
       "uniqueItems": true
+    },
+    "handover": {
+      "type": "object",
+      "properties": {
+        "feature_branch": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "created": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "platform": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "figma_url": {
+          "type": "string",
+          "pattern": "^https?://\\S+$"
+        },
+        "stories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "priority": {
+                "enum": [
+                  "P1",
+                  "P2",
+                  "P3"
+                ]
+              },
+              "priority_reason": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "independent_test": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 2,
+                "uniqueItems": true
+              },
+              "ac_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^AC-[0-9]{3,}$"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "title",
+              "independent_test",
+              "ac_refs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "functional_requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fr_id": {
+                "type": "string",
+                "pattern": "^FR-[0-9]{3,}$"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "confirmation_status": {
+                "enum": [
+                  "Confirmed",
+                  "Proposed",
+                  "Open Question"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "requirement_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^REQ-[0-9]{3,}$"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "ac_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^AC-[0-9]{3,}$"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "fr_id",
+              "text",
+              "confirmation_status",
+              "source_refs",
+              "requirement_refs",
+              "ac_refs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "nonfunctional_requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "nfr_id": {
+                "type": "string",
+                "pattern": "^NFR-[0-9]{3,}$"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "confirmation_status": {
+                "enum": [
+                  "Confirmed",
+                  "Proposed",
+                  "Open Question"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "nfr_id",
+              "text",
+              "confirmation_status",
+              "source_refs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "confirmation_status": {
+                "enum": [
+                  "Confirmed",
+                  "Proposed",
+                  "Open Question"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "text",
+              "confirmation_status",
+              "source_refs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "confirmation_status": {
+                "enum": [
+                  "Confirmed",
+                  "Proposed",
+                  "Open Question"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "text",
+              "confirmation_status",
+              "source_refs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "confirmation_status": {
+                "enum": [
+                  "Confirmed",
+                  "Proposed",
+                  "Open Question"
+                ]
+              },
+              "source_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              }
+            },
+            "required": [
+              "text",
+              "confirmation_status",
+              "source_refs"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "stories",
+        "functional_requirements",
+        "nonfunctional_requirements",
+        "success_criteria",
+        "assumptions",
+        "dependencies"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [

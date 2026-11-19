@@ -48,6 +48,23 @@ EC["anyOf"] = [{"required": ["expected_behavior"]}, {"required": ["open_question
 AC = obj({"ac_id": ident("AC"), "title": S, "given": S, "when": S, "then": S,
           "requirement_refs": refs("REQ", 1), "flow_refs": arr(S, 1), "edge_case_refs": refs("EC"),
           "confirmation_status": STATUS})
+BUSINESS_HANDOVER = obj({"purpose": FACT, "customer_needs": arr(FACT, 1), "affected_areas": arr(FACT),
+    "solution_sections": arr(obj({"title": S, "paragraphs": arr(FACT),
+        "table": obj({"columns": arr(S, 2),
+                      "rows": {"type": "array", "minItems": 1, "items": {"type": "array", "minItems": 2, "items": S}}}),
+        "confirmation_status": STATUS, "source_refs": arr(S, 1)}, ("table",)), 1),
+    "notes": arr(FACT), "quality_constraints": arr(FACT)}, ("quality_constraints",))
+SPEC_HANDOVER = obj({
+    "feature_branch": S, "created": {"type": "string", "pattern": r"^\d{4}-\d{2}-\d{2}$"},
+    "platform": S, "figma_url": {"type": "string", "pattern": r"^https?://\S+$"},
+    "stories": arr(obj({"title": S, "priority": {"enum": ["P1", "P2", "P3"]},
+        "priority_reason": S, "independent_test": arr(S, 2), "ac_refs": refs("AC", 1)},
+        ("priority", "priority_reason")), 1),
+    "functional_requirements": arr(obj({"fr_id": ident("FR"), **FACT["properties"],
+        "requirement_refs": refs("REQ", 1), "ac_refs": refs("AC", 1)}), 1),
+    "nonfunctional_requirements": arr(obj({"nfr_id": ident("NFR"), **FACT["properties"]})),
+    "success_criteria": arr(FACT, 1), "assumptions": arr(FACT), "dependencies": arr(FACT),
+}, ("feature_branch", "created", "platform", "figma_url"))
 
 
 def write(name, schema):
@@ -104,13 +121,15 @@ def main():
         "solution": arr(obj({"entry_point": S, "ui_components": arr(S), "actions": arr(S, 1), "data_state": S,
         "feedback": S, "permission": S, "business_rule_refs": refs("BR"), "confirmation_status": STATUS, "source_refs": arr(S, 1)}), 1),
         "scope": arr(S, 1), "out_of_scope": arr(S), "business_rule_refs": refs("BR"), "dependencies": arr(PBI),
-        "risks": arr(S), "open_questions": arr(S), "blockers": arr(S), "change_history": HISTORY}, ("round_id",)))
+        "risks": arr(S), "open_questions": arr(S), "blockers": arr(S), "change_history": HISTORY,
+        "handover": BUSINESS_HANDOVER}, ("round_id", "handover")))
     write("spec", obj({**identity, "user_stories": arr(obj({"as_a": S, "i_want": S, "so_that": S}), 1),
         "preconditions": arr(S), "postconditions": arr(S, 1), "flows": arr(FLOW, 1), "business_rules": arr(BR),
         "permissions": arr(FACT), "data_states": arr(FACT), "edge_cases": arr(EC), "acceptance_criteria": arr(AC, 1),
         "traceability": arr(obj({"requirement_id": ident("REQ"), "br_refs": refs("BR"), "flow_refs": arr(S, 1),
         "ec_refs": refs("EC"), "ac_refs": refs("AC", 1)}), 1), "scope": arr(S, 1), "out_of_scope": arr(S),
-        "open_questions": arr(S), "blockers": arr(S), "change_history": HISTORY}, ("round_id",)))
+        "open_questions": arr(S), "blockers": arr(S), "change_history": HISTORY,
+        "handover": SPEC_HANDOVER}, ("round_id", "handover")))
     write("review", obj({**identity, "result": {"enum": ["PASS", "CONDITIONAL", "FAIL"]},
         "readiness": {"enum": ["Ready", "Needs Refinement", "Blocked"]}, "blockers": arr(S),
         "findings": arr(obj({"finding_id": ident("FIND"), "severity": {"enum": ["Critical", "Major", "Minor"]},

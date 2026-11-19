@@ -31,7 +31,7 @@ Lấy PBI title/ID đúng backlog, Round duy nhất từ allocation, draft/revie
 
 ## Output Contract
 
-`{output_root}/{round_id}/{pbi_id}-{slug}/business.md` và `spec.md`, chính xác hai file Markdown đọc được. Tiêu đề là PBI ID và tên; spec theo [bố cục 18 mục](../../templates/spec-handover.md). Giữ ID, nội dung nghiệp vụ và trạng thái xác nhận; không có front matter, BA-DATA, Contract Summary, JSON hoặc source hashes, kể cả ở cuối/comment. Metadata và bản làm việc giữ nguyên ở .temp/drafts/PBI-ID. Không thêm sidecar/review/report trong thư mục PBI. Manifest phân biệt source_sha256 của draft và sha256 của bản render.
+`{output_root}/{round_id}/{pbi_id}-{slug}/business.md` và `spec.md`, chính xác hai file Markdown đọc được. Dùng [mẫu business](../../templates/business-handover.md) và [mẫu spec](../../templates/spec-handover.md). Giữ ID, nội dung nghiệp vụ và trạng thái xác nhận; không có front matter, BA-DATA, Contract Summary, JSON hoặc source hashes, kể cả ở cuối/comment. Metadata và bản làm việc giữ nguyên ở .temp/drafts/PBI-ID. Không thêm sidecar/review/report trong thư mục PBI. Manifest phân biệt source_sha256 của draft và sha256 của bản render.
 
 ## Output Validation
 

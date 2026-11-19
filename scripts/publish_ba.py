@@ -106,7 +106,7 @@ def prepare(project, pbi_id, approvals_path=None):
     if approval_file.is_file():
         snapshot[project.relative(approval_file)] = sha(approval_file)
     config_digest = sha(project.config_path)
-    return {"pbi_id": pbi_id, "round_id": rnd["round_id"], "target": project.relative(target), "format": "readable-v1", "entries": entries,
+    return {"pbi_id": pbi_id, "round_id": rnd["round_id"], "target": project.relative(target), "format": "pbi-template-v1", "entries": entries,
             "blocked": diagnostics, "snapshot": snapshot, "config_sha256": config_digest}
 
 

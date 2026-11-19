@@ -18,6 +18,8 @@ SPEC_SECTIONS = [
 EMPTY = "Chưa ghi nhận trong tài liệu nguồn."
 STATES = {"draft": "Bản nháp", "in_review": "Đang review", "approved": "Đã phê duyệt",
           "Confirmed": "Đã xác nhận", "Proposed": "Đề xuất", "Open Question": "Cần làm rõ"}
+SPEC_STATUS = {"draft": "Draft", "in_review": "In Review", "approved": "Approved"}
+UNCONFIRMED = "[CẦN XÁC NHẬN]"
 
 
 def cell(value):
@@ -30,7 +32,7 @@ def table(headers, rows):
     rows = list(rows)
     if not rows:
         return EMPTY
-    return ("| " + " | ".join(headers) + " |\n| " + " | ".join("---" for _ in headers) + " |\n" +
+    return ("| " + " | ".join(map(cell, headers)) + " |\n| " + " | ".join("---" for _ in headers) + " |\n" +
             "\n".join("| " + " | ".join(cell(value) for value in row) + " |" for row in rows))
 
 
@@ -89,7 +91,7 @@ def history(items):
         (x["at"], x["change"], x["affected_ids"], x["reason"]) for x in items])
 
 
-def render_spec(doc, sources):
+def render_legacy_spec(doc, sources):
     data = doc.data
     business = sources.get("business", {})
     requirements = sources.get("requirements", {})
@@ -147,7 +149,7 @@ def render_spec(doc, sources):
         f"## {i}. {heading}\n\n{body}" for i, (heading, body) in enumerate(zip(SPEC_SECTIONS, contents), 1)) + "\n"
 
 
-def render_business(doc, sources):
+def render_legacy_business(doc, sources):
     data = doc.data
     pbi = next((p for p in sources.get("product-backlog", {}).get("pbis", []) if p["pbi_id"] == data["pbi_id"]), {})
     selected_rules = [r for r in sources.get("requirements", {}).get("business_rules", []) if r["br_id"] in data["business_rule_refs"]]
@@ -174,6 +176,162 @@ def render_business(doc, sources):
         f"## {i}. {heading}\n\n{body}" for i, (heading, body) in enumerate(sections, 1)) + "\n"
 
 
+def qualified(text, status):
+    if status != "Confirmed":
+        return f"{text} {UNCONFIRMED} ({STATES[status]})"
+    return text
+
+
+def handover_fact(item):
+    return qualified(item["text"], item["confirmation_status"])
+
+
+def labeled_list(label, items):
+    return f"**{label}:**\n\n{bullets(items)}" if items else ""
+
+
+def blocks(*parts):
+    return "\n\n".join(part for part in parts if part)
+
+
+def render_business(doc, sources):
+    data = doc.data
+    handover = data.get("handover", {})
+    requirements = sources.get("requirements", {})
+    selected_rules = [qualified(f"{r['br_id']} — {r['rule']}", r["confirmation_status"])
+                      for r in requirements.get("business_rules", []) if r["br_id"] in data["business_rule_refs"]]
+    goals = [handover_fact(x) for x in data["goals"] if x != data["business_value"]]
+    purpose = handover_fact(handover["purpose"]) if handover else blocks(
+        handover_fact(data["business_story"]), labeled_list("Mục tiêu", goals),
+        "**Giá trị nghiệp vụ:** " + handover_fact(data["business_value"]))
+    needs = handover.get("customer_needs", data["to_be"])
+    context = blocks("**Câu chuyện nghiệp vụ:** " + handover_fact(data["business_story"]),
+                     labeled_list("Hiện trạng", [handover_fact(x) for x in data["as_is"]]),
+                     labeled_list("Khó khăn", [handover_fact(x) for x in data["problems"]]),
+                     labeled_list("Nhu cầu KH", [handover_fact(x) for x in needs]),
+                     labeled_list("Quy tắc nghiệp vụ", selected_rules))
+    locations = unique([x["entry_point"] for x in data["solution"]])
+    if handover:
+        sections = []
+        for i, item in enumerate(handover["solution_sections"], 1):
+            grid = item.get("table")
+            sections.append(blocks(f"### 3.{i}. {qualified(item['title'], item['confirmation_status'])}",
+                                   *[handover_fact(x) for x in item["paragraphs"]],
+                                   table(grid["columns"], grid["rows"]) if grid else ""))
+    else:
+        headers = ["Vị trí / thành phần", "Thao tác", "Dữ liệu / xử lý", "Phản hồi", "Quyền / quy tắc"]
+        rows = [(qualified(x["entry_point"], x["confirmation_status"]) +
+                 (" — " + ", ".join(x["ui_components"]) if x["ui_components"] else ""),
+                 x["actions"], x["data_state"], x["feedback"], ", ".join([x["permission"], *x["business_rule_refs"]]))
+                for x in data["solution"]]
+        sections = ["### 3.1. Quy định xử lý\n\n" + table(headers, rows)]
+    affected = [handover_fact(x) for x in handover["affected_areas"]] if handover else data["scope"]
+    solution = blocks(labeled_list("Vị trí áp dụng", locations), *sections,
+                      labeled_list("Lưu ý", [handover_fact(x) for x in handover.get("notes", [])]),
+                      labeled_list("Phạm vi ảnh hưởng", affected),
+                      labeled_list("Ngoài phạm vi", data["out_of_scope"]),
+                      labeled_list("Phụ thuộc", data["dependencies"]),
+                      labeled_list("Rủi ro", data["risks"]),
+                      labeled_list("Cần xác nhận", data["open_questions"] + data["blockers"]))
+    quality = [handover_fact(x) for x in handover.get("quality_constraints", [])]
+    return blocks("# Đặc tả yêu cầu nghiệp vụ", f"## {data['title']}",
+                  f"**PBI:** {data['pbi_id']}  \n**Vòng lặp:** {data.get('round_id', 'Chưa phân bổ')}",
+                  "## 1. Mục đích\n\n" + purpose, "## 2. Nghiệp vụ\n\n" + context,
+                  "## 3. Giải pháp phần mềm\n\n" + solution,
+                  "## 4. Yêu cầu hiệu năng, bảo mật\n\n" + bullets(quality) if quality else "") + "\n"
+
+
+def acceptance_scenarios(items):
+    scenarios = []
+    for i, item in enumerate(items, 1):
+        outcome = item["then"].rstrip()
+        if not outcome.endswith((".", "!", "?")):
+            outcome += "."
+        scenarios.append(f"{i}. **Given** {item['given']}, **When** {item['when']}, "
+                         f"**Then** {qualified(outcome, item['confirmation_status'])}")
+    return "\n".join(scenarios) or UNCONFIRMED
+
+
+def render_spec(doc, sources):
+    data = doc.data
+    handover = data.get("handover", {})
+    business = sources.get("business", {})
+    requirements = sources.get("requirements", {})
+    created = handover.get("created", "[CHƯA CÓ]")
+    branch = handover.get("feature_branch")
+    specs = [("Feature Branch", f"`{branch}`" if branch else "[CHƯA CÓ]"),
+             ("Created", created), ("Status", SPEC_STATUS[doc.metadata["status"]]),
+             ("PBI", data["pbi_id"]), ("Platform", handover.get("platform", "[CHƯA CÓ]")),
+             ("Vòng phát hành", data.get("round_id", "Chưa phân bổ"))]
+    header = "  \n".join(f"**{label}:** {value}" for label, value in specs)
+    header += f"\n\n**Link Figma:** {handover.get('figma_url', '[CHƯA CÓ]')}"
+    acceptance = {item["ac_id"]: item for item in data["acceptance_criteria"]}
+    stories = []
+    for i, story in enumerate(data["user_stories"], 1):
+        details = handover["stories"][i - 1] if handover else {}
+        title = details.get("title", story["i_want"])
+        priority = details.get("priority", UNCONFIRMED)
+        if handover:
+            independent_test = " → ".join(details["independent_test"])
+            scenarios = [acceptance[ref] for ref in details["ac_refs"]]
+        elif len(data["user_stories"]) == 1:
+            main = next(flow for flow in data["flows"] if flow["kind"] == "main")
+            independent_test = " → ".join([main["trigger"], *[step["actor_action"] for step in main["steps"]],
+                                           qualified(main["expected_outcome"], main["confirmation_status"])])
+            scenarios = list(acceptance.values())
+        else:
+            independent_test, scenarios = UNCONFIRMED, []
+        stories.append(blocks(f"### User Story {i} — {title} (Priority: {priority})",
+                              f"Là {story['as_a']}, tôi muốn {story['i_want']}, để {story['so_that']}.",
+                              f"**Why this priority:** {details.get('priority_reason', UNCONFIRMED)}",
+                              f"**Independent Test:** {independent_test}",
+                              "**Acceptance Scenarios:**\n\n" + acceptance_scenarios(scenarios)))
+    if not handover and len(stories) > 1:
+        stories.append("### Acceptance Scenarios cần gắn với User Story\n\n" +
+                       acceptance_scenarios(acceptance.values()))
+    edges = []
+    for item in data["edge_cases"]:
+        conditions = item["scenario"]
+        if item["preconditions"]:
+            conditions += f" (Điều kiện trước: {', '.join(item['preconditions'])})"
+        outcome = qualified(item["expected_behavior"], item["confirmation_status"]) if "expected_behavior" in item else ""
+        question = f"{UNCONFIRMED} {item['open_question']}" if "open_question" in item else ""
+        edges.append(f"**{item['title']}:** {conditions} → {outcome or question}" +
+                     (f" {question}" if outcome and question else ""))
+    if handover:
+        functional = [f"**{x['fr_id']}:** {handover_fact(x)}" for x in handover["functional_requirements"]]
+        nonfunctional = [f"**{x['nfr_id']}:** {handover_fact(x)}" for x in handover["nonfunctional_requirements"]]
+        criteria = [handover_fact(x) for x in handover["success_criteria"]]
+        assumptions = [handover_fact(x) for x in handover["assumptions"]]
+        dependencies = [handover_fact(x) for x in handover["dependencies"]]
+    else:
+        selected = [r for r in requirements.get("requirements", []) if r["requirement_id"] in data["requirement_refs"]]
+        functional = [f"**FR-{r['requirement_id'].split('-')[1]}:** " +
+                      qualified(f"Khi {r['trigger']}: {r['expected_outcome']}", r["confirmation_status"]) for r in selected]
+        functional.extend(qualified(f"**{x['br_id']}:** {x['rule']}", x["confirmation_status"])
+                          for x in data["business_rules"])
+        functional.extend(handover_fact(x) for x in data["permissions"] + data["data_states"])
+        nonfunctional = [f"**NFR-{i:03}:** {handover_fact(x)}"
+                         for i, x in enumerate(requirements.get("nonfunctional", []), 1)]
+        criteria = unique([qualified(x["then"], x["confirmation_status"]) for x in acceptance.values()])
+        assumptions = [handover_fact(x) for x in business.get("as_is", [])]
+        dependencies = []
+    assumptions.extend(f"{UNCONFIRMED} {x}" for x in unique(
+        data["open_questions"] + data["blockers"] + business.get("open_questions", []) + business.get("blockers", [])))
+    pbi = next((p for p in sources.get("product-backlog", {}).get("pbis", []) if p["pbi_id"] == data["pbi_id"]), {})
+    for ref in unique(pbi.get("dependencies", []) + business.get("dependencies", [])):
+        if not any(re.search(r"(?<![\w-])" + re.escape(ref) + r"(?![\w-])", item) for item in dependencies):
+            dependencies.append(ref)
+    return blocks(f"# Feature Specification: {data['title']}", header,
+                  "## User Scenarios & Testing", *stories,
+                  "## Edge Cases", bullets(edges),
+                  "## Requirements", "### Functional Requirements", bullets(functional),
+                  "### Non-Functional Requirements", bullets(nonfunctional),
+                  "## Success Criteria", bullets(criteria),
+                  "## Assumptions", bullets(assumptions),
+                  "## Dependencies", bullets(dependencies)) + "\n"
+
+
 def check_public_text(text, path=""):
     if (text.lstrip().startswith("---") or "<!-- BA-DATA:" in text or "## Contract Summary" in text or
             re.search(r"^\x60{3}(?:yaml|json)\b|^(?:schema_version|document_type|project_id|source_documents|generated_by|sha256):", text, re.M)):
@@ -181,16 +339,20 @@ def check_public_text(text, path=""):
                       fix="Giữ bản có metadata trong .temp/drafts; xuất bản đọc được bằng publish_ba.py.")
 
 
-def render_public(doc, sources=None):
+def render_public(doc, sources=None, *, legacy=False):
     kind = doc.metadata["document_type"]
     if kind not in ("business", "spec"):
         raise BAError("WRONG_DOCUMENT_TYPE", "Only business/spec have public handover views", doc.path)
-    text = (render_spec if kind == "spec" else render_business)(doc, sources or {})
+    if legacy:
+        renderer = render_legacy_spec if kind == "spec" else render_legacy_business
+    else:
+        renderer = render_spec if kind == "spec" else render_business
+    text = renderer(doc, sources or {})
     check_public_text(text, doc.path)
     return text
 
 
-def public_bytes(project, doc, validator):
+def public_bytes(project, doc, validator, *, legacy=False):
     """Use only the draft's actual, validated direct sources as rendering context."""
     sources = {}
     for entry in doc.metadata["source_documents"]:
@@ -198,7 +360,7 @@ def public_bytes(project, doc, validator):
         if entry.get("kind", "ba" if path.suffix.lower() == ".md" else "raw") == "ba":
             source = validator.require_valid(path)
             sources.setdefault(source.metadata["document_type"], source.data)
-    return render_public(doc, sources).encode("utf-8")
+    return render_public(doc, sources, legacy=legacy).encode("utf-8")
 
 
 def main():

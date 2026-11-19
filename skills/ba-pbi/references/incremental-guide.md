@@ -33,4 +33,4 @@ Sau khi duyệt backlog delta, đọc SKILL.md của ba-business/ba-spec/ba-revi
 
 Không cần ép Round để viết draft nếu user chưa chọn đợt. Omit round_id trong metadata và data khi chưa có allocation; không tạo R0/R1 giả. Review tạo đúng source hashes. Publish là bước riêng, cần Round và approvals hiện hành.
 
-Metadata/BA-DATA của business/spec nằm trong drafts dưới .temp. Dùng ba_public.py tạo preview để review bản đọc được; không copy nguyên draft vào thư mục PBI. Chỉ ba-publish xuất hai file cuối không có metadata, spec theo bố cục 18 mục. Bản PBI đã publish cần được giữ để đối chiếu khi phát hiện stale hoặc conflict.
+Metadata/BA-DATA của business/spec nằm trong drafts dưới .temp. Dùng ba_public.py tạo preview để review bản đọc được; không copy nguyên draft vào thư mục PBI. Chỉ ba-publish xuất hai file cuối không có metadata, cả hai theo mẫu bàn giao. Bản PBI đã publish cần được giữ để đối chiếu khi phát hiện stale hoặc conflict.

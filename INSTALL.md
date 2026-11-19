@@ -297,7 +297,7 @@ Nếu dùng Codex và Antigravity trên cùng project, có thể dùng chung b�
 
 ## 8. Cập nhật bản đã cài
 
-Bản hiện tại xuất business.md/spec.md dưới dạng Markdown để đọc, không có YAML front matter, BA-DATA hoặc Contract Summary trong thư mục PBI. Metadata giữ ở .temp/drafts. Sau cập nhật, agent dùng ba_public.py để preview và ba-publish để xuất; không copy nguyên draft. Bản đã publish theo định dạng cũ được giữ nguyên để so sánh/chuyển có kiểm soát theo [quy ước bàn giao](conventions/BA-CONVENTIONS.md#round-và-publish).
+Bản hiện tại xuất Markdown theo [mẫu business](templates/business-handover.md) và [mẫu spec](templates/spec-handover.md), không có YAML front matter, BA-DATA hoặc Contract Summary trong thư mục PBI. Metadata giữ ở .temp/drafts. Sau cập nhật, agent dùng ba_public.py để preview và ba-publish để xuất; không copy nguyên draft. Bản đã publish theo định dạng cũ được giữ nguyên để so sánh/chuyển có kiểm soát theo [quy ước bàn giao](conventions/BA-CONVENTIONS.md#round-và-publish).
 
 **BA-PBI** là skill phụ để thêm một PBI mới và tạo bộ tài liệu draft sau duyệt scope. Installer tự thêm `ba-pbi` khi cập nhật. Gọi `$ba-pbi` trong Codex hoặc `/ba-pbi` trong Claude Code, rồi mô tả tính năng; không cần sửa SKILL.md cũ. Cài theo project/global thì dùng lại thư mục đã chọn ở lần cài trước.
 
