@@ -8,4 +8,4 @@
 
 Finding phải có evidence tại file/section; “chưa tốt” không đủ. Recommendation nêu điều cần làm rõ, không chốt business decision thay PO. Resolved cần evidence mới và history; không xóa finding để đạt PASS.
 
-PASS chỉ khi không finding mở/blocker. CONDITIONAL không được gắn approved; publish draft cần quyết định riêng. Structural validator PASS không chứng minh chất lượng nghiệp vụ.
+PASS khi các phát hiện đã được giải quyết. Với CONDITIONAL hoặc FAIL, giữ kết quả thật và ghi phần chưa thể giải quyết vào bản nháp. Xuất bản nháp hợp lệ về kỹ thuật cùng đường dẫn review.

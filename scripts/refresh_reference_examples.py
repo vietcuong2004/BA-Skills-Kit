@@ -20,7 +20,7 @@ def main():
     for skill, (source, filename) in MAPPING.items():
         content = (FIXTURE / source).read_text(encoding="utf-8")
         target = ROOT / "skills" / skill / "references" / filename
-        notice = ("> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. "
+        notice = ("> Ví dụ từ fixture giả lập. Dùng ID, hash và quy tắc của dự án đang làm. "
                   "Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. "
                   "Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.")
         if skill in ("ba-business", "ba-spec"):

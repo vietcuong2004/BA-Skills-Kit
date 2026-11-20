@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate an agent-authored exploration inventory; render raw BA handoff files.
 
-Does not scan semantics, call a model, create approvals or write canonical BA documents.
+Renders exploration documents from an inventory authored by the agent.
 """
 from __future__ import annotations
 
@@ -125,7 +125,7 @@ def render_outputs(data):
     evd = [f"{e['evidence_id']}: {e['path']}:{e['start_line']}-{e['end_line']} ({e['symbol']}, {e['kind']}) — {e['observation']}"
            + (" | Runtime: " + json.dumps(e["runtime"], ensure_ascii=False) if "runtime" in e else "") for e in data["evidence"]]
     hashes = [s["path"] + " — SHA-256 " + s["sha256"] for s in data["source_files"]]
-    report = ("# Khảo sát hiện trạng dự án\n\nDraft; không phải human approval.\n\n" + data["summary"] +
+    report = ("# Khảo sát hiện trạng dự án\n\n" + data["summary"] +
               "\n\n## Phạm vi\n\n" + data["scope"]["requested"] + "\n\nĐã khảo sát:\n" + bullet(data["scope"]["scanned_paths"]) +
               "\n\nBỏ qua:\n" + bullet([s["path"] + ": " + s["reason"] for s in data["scope"]["skipped"]]) +
               "\n\n" + "\n\n".join(sections) + "\n\n## Evidence\n\n" + bullet(evd) +
@@ -134,11 +134,10 @@ def render_outputs(data):
     brief = ("# Đầu vào cho ba-brainstorm — tài liệu hóa sản phẩm hiện có\n\n"
              "Mục tiêu: lập hồ sơ BA cho hành vi hiện hữu, không đề nghị xây mới các feature đã có.\n"
              "Đọc project-exploration.json và project-exploration.md cùng thư mục; giữ EXF/EVD refs.\n"
-             "Mức xác minh code/runtime khác với confirmation/approval nghiệp vụ; không coi UI/mock là hoàn thiện.\n"
+             "Giữ mức xác minh của từng tính năng, gồm phần chỉ có giao diện hoặc dữ liệu mẫu.\n"
              "Nguồn được hash trực tiếp trong brainstorm dạng kind: raw để downstream phát hiện stale code.\n"
-             "Chọn phạm vi tài liệu hóa với người dùng; không tự duyệt backlog, Round hoặc publish.\n\n" + report +
-             "\n## Tiếp theo\n\nDùng ba-brainstorm → ba-requirements → ba-product-backlog, dừng duyệt backlog.\n"
-             "Sau đó ba-round-plan → ba-business → ba-spec → ba-review → ba-publish theo checkpoint cũ.\n")
+             "Dùng phạm vi được nêu trong yêu cầu và ghi điều chưa rõ vào tài liệu.\n\n" + report +
+             "\n## Tiếp theo\n\nDùng ba-workflow để lập backlog, Round, viết và kiểm tra các PBI rồi xuất hai file cho mỗi PBI.\n")
     return report, brief
 
 
@@ -174,12 +173,12 @@ def prepare(project, inventory_path, write=False):
                    for name, content in outputs.items())
     return {"result": "PASS", "written": write, "features": len(data["features"]), "outputs": plan,
             "source_documents": handoff,
-            "next_skill": "ba-brainstorm", "note": "Future output hashes on dry-run; consume only after --write and validation. No approval recorded."}
+            "next_skill": "ba-brainstorm", "note": "Future output hashes on dry-run; consume only after --write and validation."}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
+    parser.add_argument("--project-config", help="Path to .temp/ba-project.yaml (defaults to this path in the working directory)")
     parser.add_argument("--inventory", required=True)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()

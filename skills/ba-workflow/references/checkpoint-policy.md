@@ -1,9 +1,7 @@
-# Checkpoint policy
+# Xử lý dữ kiện chưa đủ
 
-Backlog gate: con người xác nhận scope/PBI và quyết định ảnh hưởng lớn trước Round. Round gate: Approved hoặc cho phép Proposed allocation rõ ràng trước khi workflow đi tiếp. Publish gate: cho phép xuất selected PBI trên phiên bản tài liệu hiện tại, các critical decisions đã giải quyết.
+Dùng yêu cầu và bằng chứng của dự án để chọn phạm vi, viết backlog và lên đợt. Nếu thiếu capacity, dùng Round Proposed và ghi rõ khoảng trống. Thiếu lựa chọn nghiệp vụ thì ghi Proposed hoặc Open Question và tiếp tục xuất bản nháp.
 
-DRAFT không mặc nhiên bỏ checkpoint. Có thể tiếp tục draft khi người dùng đã cho phép scope/proposed plan phù hợp; ghi đúng evidence và hashes. Không có quyết định → lưu state chờ, không tạo approval giả.
+Chỉ hỏi khi thiếu thư mục dự án hoặc thông tin tối thiểu để xác định một chức năng hữu ích. Các điểm còn mở có thể ghi vào tài liệu để người dùng đọc cùng kết quả.
 
-INTERACTIVE dừng ở gate còn thiếu; RESUME không hỏi lại nếu quyết định trong phiên còn đúng scope/hash. Approval cũ hết hiệu lực khi tài liệu được duyệt đổi bytes; cần trình thay đổi. Ba approval decisions không phải các trạng thái schema PASS, review PASS hoặc document approved.
-
-Ghi audit theo approvals.schema.json vào planning/approvals.json; state giữ bản tóm tắt records nhưng publish đọc lại record hiện tại. Danh tính/evidence phải đối chiếu phiên người dùng, không được coi một JSON bất kỳ là chữ ký tin cậy.
+State đã lưu có thể chứa thông tin lịch sử. Tiếp tục theo file thực tế và phạm vi yêu cầu hiện tại.

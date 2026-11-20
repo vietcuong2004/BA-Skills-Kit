@@ -1,61 +1,58 @@
 ---
 name: ba-workflow
-description: Điều phối toàn bộ pipeline BA từ ý tưởng đến backlog, Round, business/spec, review và publish có checkpoint; hỗ trợ INTERACTIVE, DRAFT, RESUME, SINGLE-PBI, SINGLE-ROUND. Dùng khi người dùng yêu cầu nhiều bước hoặc tiếp tục workflow.
+description: Chạy từ ý tưởng hoặc dự án hiện có đến các cặp business.md và spec.md trong .specify. Tự khảo sát, lập backlog và Round, kiểm tra rồi xuất PBI trong cùng lượt. Dùng để viết bộ tài liệu BA hoặc tiếp tục việc còn dở.
 ---
 
 # BA-workflow
 
 ## Input Contract
 
-Ý tưởng mới hoặc workflow state, project_config, mode; selected PBI/round cho mode tương ứng. Đọc [conventions](../../conventions/BA-CONVENTIONS.md), [workflow map](references/workflow-map.md), [checkpoint policy](references/checkpoint-policy.md), [state schema](../../contracts/workflow-state.schema.json). Resolve KIT_ROOT/project paths theo conventions.
+Yêu cầu của người dùng và thư mục dự án đang mở. Với dự án có sẵn, dùng code/tài liệu và hồ sơ BA hiện có. Với dự án mới, dùng ý tưởng người dùng đưa. Đọc [quy ước chung](../../conventions/BA-CONVENTIONS.md), [luồng xử lý](references/workflow-map.md) và [schema state](../../contracts/workflow-state.schema.json).
 
 ## Input Validation
 
-Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
-
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
-
-Load config (chưa có → đề xuất template và xác nhận giá trị thiết yếu). Đọc files/state đang có, validate trước dùng; không chạy lại bước còn fresh. SINGLE-PBI cần exact ID; SINGLE-ROUND cần exact Round ID rồi resolve pbi_refs, không đoán. RESUME dùng `python <KIT_ROOT>/scripts/workflow_state.py --project-config <config>` và đọc [recovery guide](references/recovery-guide.md).
+Đọc cấu hình tại .temp/ba-project.yaml. Nếu thiếu, tạo từ mẫu dùng tên thư mục và các giá trị mặc định theo quy ước chung. Kiểm tra hồ sơ thật trước khi tái sử dụng. Chỉ hỏi khi không xác định được dự án hoặc không có ý tưởng, mã nguồn hay tài liệu để suy ra tính năng có nghĩa.
 
 ## Data Extraction
 
-Đọc current_phase/completed/pending/blockers, artifacts paths/hashes, approvals và selected IDs. State là sổ theo dõi, không chứng minh output hợp lệ; validate file thực và kiểm approval hash lại. Không chỉ tin completed flag.
+Dùng phạm vi từ câu nhắn, tên tính năng, module hoặc PBI ID. Khi yêu cầu viết tài liệu cho cả dự án, chọn các tính năng có bằng chứng và báo các vùng chưa khảo sát. Khi tiếp tục, đọc state và đối chiếu file thật bằng workflow_state.py để biết phần còn thiếu hoặc đã đổi.
 
 ## Processing
 
-Chạy từng skill bằng cơ chế runtime sẵn có. Nếu không có direct invocation API, đọc SKILL.md của skill tương ứng trong Kit (bản cài có sibling skill folders) và thực hiện đúng instructions bằng công cụ đang có; ghi rõ “manual in-session execution”, không giả vờ gọi thành công một API. Workflow điều phối, không thay hợp đồng từng skill và không mặc định tạo sub-agent.
+Mặc định mode AUTO chạy đến cặp PBI trong .specify trong cùng lượt. Thực hiện các skill tại các thư mục sibling. Nếu runtime không có cơ chế gọi skill, đọc và làm theo chỉ dẫn ngay trong phiên.
 
-1. Ý tưởng → ba-brainstorm → validate → ba-requirements → validate → ba-product-backlog → validate.
-2. Checkpoint duyệt backlog/scope và quyết định ảnh hưởng lớn. Chưa có quyết định → lưu state, dừng bước phụ thuộc.
-3. ba-round-plan → validate → checkpoint Approved hoặc Proposed Allowed. Thiếu capacity giữ Proposed.
-4. Với mỗi selected PBI: ba-business → validate → ba-spec → validate → ba_public.py tạo preview business/spec → ba-review đọc cả drafts và preview → validate. Preview nằm trong .temp/previews/PBI-ID; hai bản theo mẫu bàn giao, metadata máy đọc giữ trong drafts. FAIL thì báo findings. Chỉ sửa lỗi kỹ thuật trong phạm vi được phép hoặc thay đổi nghiệp vụ đã có quyết định; chỉ retry sau thay đổi có ý nghĩa, không vòng lặp vô hạn.
-5. Checkpoint publish cho các bytes/PBI cụ thể. ba-publish dry-run → quyết định còn thiếu → apply → post-validate. Không bypass review freshness hoặc human approval.
+1. Dự án hiện có mà thiếu hồ sơ hiện trạng: thực hiện phần khảo sát của ba-explore-project. Kiểm dữ liệu khảo sát và dùng brief, báo cáo, nguồn code/docs làm đầu vào theo handoff guide. Ý tưởng dự án mới đi thẳng vào ba-brainstorm.
+2. Thực hiện ba-brainstorm → ba-requirements → ba-product-backlog, validate sau mỗi bước. Tạo các hồ sơ thiếu và giữ các ID, nội dung còn hiệu lực. Ghi giả định ở trạng thái Proposed và phần thiếu căn cứ vào Open Questions. Tự tiếp tục từ backlog hợp lệ.
+3. Dùng ba-round-plan phân bổ PBI trong phạm vi. Tái sử dụng phân bổ còn hợp lệ. Khi chưa có kế hoạch, lập đợt đề xuất theo prefix của dự án và thứ tự phụ thuộc. Thiếu ước lượng vẫn dùng Proposed để nhóm tài liệu.
+4. Với từng PBI, chạy ba-business → ba-spec → ba-review. Validate nguồn, tạo hai bản đọc thử và đối chiếu ở bước review. Sửa các lỗi có thể giải quyết từ bằng chứng rồi review lại. Ghi nhận các câu hỏi nghiệp vụ và vấn đề còn mở vào bản nháp và review.
+5. Dùng ba-publish xuất cặp business.md/spec.md vào Round tương ứng. Tự thực hiện kiểm tra và ghi file. PBI có vấn đề nghiệp vụ còn mở được bàn giao dạng nháp với các vấn đề nêu rõ. Xử lý tiếp các PBI khác nếu một cặp gặp lỗi kỹ thuật hoặc xung đột đích.
 
-Mode INTERACTIVE chạy đến checkpoint tiếp theo. DRAFT tạo draft đến checkpoint chưa được cho phép, không ngầm bypass backlog/Round gate; nếu người dùng đã cho phép tiếp tục draft với Proposed allocation, ghi đúng quyết định đó và không publish. RESUME giữ IDs/decisions, tái kiểm bước bị ảnh hưởng. SINGLE-PBI chỉ xử lý ID đã chọn với nguồn đủ; SINGLE-ROUND dùng allocations đã có, không tự đổi Round.
+DRAFT hoặc yêu cầu chỉ viết nháp kết thúc ở bản làm việc và preview. Yêu cầu một bước giữ đúng phạm vi bước đó. SINGLE-PBI và SINGLE-ROUND dùng mã tương ứng. RESUME khôi phục phần đang làm theo [hướng dẫn tiếp tục](references/recovery-guide.md) và đi tiếp đến kết quả trong phạm vi. INTERACTIVE trong state cũ được tiếp tục theo luồng AUTO.
 
 ## Output Contract
 
-`{planning_dir}/workflow-state.md` theo schema state và metadata workflow-state/ba-workflow. Gồm mode, current_phase, completed, pending, blockers, artifacts (path/hash), approvals, last_updated (ISO 8601 có timezone), selected_pbis, selected_round khi cần, change_history. `artifacts` giữ snapshot riêng, metadata.source_documents rỗng để state vẫn đọc được khi output stale. Không sửa app source.
+- Mỗi PBI đã xuất có đúng business.md và spec.md trong .specify/Round/PBI-ID-slug.
+- Hồ sơ khảo sát, backlog, kế hoạch, draft, preview và review nằm dưới .temp.
+- Ghi {planning_dir}/workflow-state.md gồm mode, current_phase, completed, pending, blockers, artifacts (đường dẫn và hash), last_updated có múi giờ, selected_pbis, selected_round nếu có và change_history. Metadata.source_documents của state để rỗng.
 
 ## Output Validation
 
-Sau mỗi handoff, dùng validator `--check-refs --expected-type <type>`; ghi path/schema/hash/result vào state hoặc report. State cũng validate. Chỉ completed khi output tồn tại và PASS; recorded approval không thay review. Check kết quả helper, không coi gọi lệnh là đã thành công.
+Kiểm schema, refs và hash của hồ sơ. Kiểm từng cặp file xuất theo ba-publish. Báo riêng PBI đã xuất, PBI gắn nhãn bản nháp và PBI gặp lỗi kỹ thuật.
 
 ## Error Handling
 
-Input thiếu khi chạy **toàn pipeline**: được điều phối upstream tương ứng trong phạm vi user yêu cầu, theo đúng thứ tự/checkpoints. Skill đơn lẻ vẫn fail-fast. Missing business trong SINGLE-PBI chỉ điều phối ba-business nếu yêu cầu bao gồm tạo bộ tài liệu, không tự mở rộng yêu cầu “chỉ review”. Invalid nguồn → dừng đúng phase, báo code/path/next action, lưu blockers.
+Tạo upstream còn thiếu trong phạm vi. Nguồn đổi thì đọc và kiểm lại phần ảnh hưởng. Khi gặp xung đột file, giữ cặp đã có, để bản mới ở preview và báo đường dẫn. Khi thiếu một dữ kiện mà vẫn có thể viết tài liệu có ích, ghi câu hỏi ngay trong tài liệu và tiếp tục.
 
 ## Traceability
 
-RESUME so hash toàn chain và invalidated downstream; không tự refresh hash để bỏ stale. Giữ Confirmed decisions và IDs; approved sources đổi phải re-checkpoint theo bytes mới. History ghi Round transfer và các bước đã sửa; approval có scope/hashes cụ thể.
+Giữ ID và evidence refs qua các bước. State lưu file đã thực sự tạo và phần cần tiếp tục.
 
 ## Example Invocation
 
-- `$ba-workflow mode=INTERACTIVE project_config=./.temp/ba-project.yaml` — “Tôi muốn website ghi chú; dừng để duyệt backlog và Round.”
-- `$ba-workflow mode=RESUME project_config=./.temp/ba-project.yaml` — “Tiếp tục từ state.”
-- `$ba-workflow mode=SINGLE-PBI pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` — “Làm bộ tài liệu draft cho PBI này.”
-- `$ba-workflow mode=SINGLE-ROUND round_id=R1 project_config=./.temp/ba-project.yaml` — “Review các PBI trong Round đã chọn.”
+“Dùng skill ba-workflow để khảo sát dự án đang mở và xuất tài liệu PBI cho các tính năng hiện có.”
+
+“Dùng skill ba-workflow để viết và xuất PBI cho ứng dụng đặt lịch học theo mô tả sau: [ý tưởng].”
 
 ## Completion Criteria
 
-State phản ánh việc đã làm và checkpoint còn chờ, output thật PASS và hash recorded. Chỉ hoàn tất toàn pipeline khi selected PBI được publish hợp lệ; dừng checkpoint phải báo là đang chờ, không giả thành completed. Acceptance: unchanged resume → không viết lại; source REQ đổi → invalidate downstream; review FAIL/approval thiếu → không publish.
+Trả danh sách PBI cùng đường dẫn business.md/spec.md và các điểm cần làm rõ. Kết thúc ở backlog hoặc preview khi người dùng yêu cầu đầu ra đó. Chỉ báo đã xuất khi helper đã ghi và kiểm tra cặp file.

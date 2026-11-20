@@ -11,9 +11,9 @@ Config, `{planning_dir}/brainstorm.md` và `requirements.md`. Đọc [convention
 
 ## Input Validation
 
-Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+Đọc `.temp/ba-project.yaml` bằng `Project.load` theo quy ước chung. Giá trị `repository_root: .` chỉ thư mục dự án chứa `.temp`.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng file với `--project-config <config> --file <path> --expected-type <type> --check-refs`. Cùng project/version, không stale; REQ.capability_refs phải tồn tại. Chưa đạt thì dừng tại nguồn lỗi.
 
@@ -27,7 +27,7 @@ Nhóm Epic → Feature theo giá trị sản phẩm, không chỉ menu UI. Phân
 
 Mỗi PBI có pbi_id, epic_id, feature_id, title, user_story, business_value, scope/out_of_scope, requirement_refs, dependencies, priority_proposal, estimation_status=Unestimated, confirmation_status, open_questions và lý do INVEST. Không tự đặt story points. Feature ghi requirement_refs và đúng Epic parent.
 
-Kiểm tra overlap, oversized PBI, dependency cycles và coverage: mỗi REQ thuộc ít nhất một PBI hoặc nằm trong unassigned_requirements với reason. Cho phép REQ thuộc nhiều PBI khi các lát cắt không trùng giá trị. Priority là đề xuất. Backlog mới luôn draft đến checkpoint con người.
+Kiểm tra mục trùng, PBI quá lớn, vòng lặp phụ thuộc và coverage. Mỗi REQ thuộc ít nhất một PBI hoặc nằm trong unassigned_requirements kèm lý do. Dùng một REQ ở nhiều PBI khi các lát cắt khác giá trị. Ghi ưu tiên đề xuất để workflow lập Round từ backlog hợp lệ.
 
 ## Output Contract
 
@@ -43,7 +43,7 @@ Thiếu brainstorm → ba-brainstorm; thiếu requirements → ba-requirements. 
 
 ## Traceability
 
-CAP → REQ → Feature → PBI. Giữ IDs khi update; thêm history cho added/changed/deprecated. PBI đã dùng không tự xóa hoặc đổi số. Thay đổi backlog làm Round/drafts/reviews và approvals gắn hash cũ hết hiệu lực.
+CAP → REQ → Feature → PBI. Giữ ID khi cập nhật và ghi lịch sử thay đổi. Kiểm tra tác động tới Round, draft và review khi backlog đổi.
 
 ## Example Invocation
 
@@ -51,4 +51,4 @@ CAP → REQ → Feature → PBI. Giữ IDs khi update; thêm history cho added/c
 
 ## Completion Criteria
 
-Output PASS; coverage đầy đủ hoặc gaps có reason; INVEST được phân tích; không có estimate AI tự chốt. Báo PBI count, Proposed/unassigned và nhắc checkpoint duyệt scope trước điều phối Round. Acceptance: missing source/broken parent/cycle → fail; requirement nhiều-nhiều hợp lệ → pass.
+Output hợp lệ, coverage đầy đủ hoặc ghi lý do cho phần còn thiếu. Báo số PBI, phần Proposed và phần chưa phân bổ. Workflow tiếp tục lập Round từ backlog đã kiểm.

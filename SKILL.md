@@ -6,8 +6,9 @@ BA Skills Kit — Điểm vào cho agent
 
 | Yêu cầu                                                                          | Đọc tiếp                                             | Đầu ra chính                                         |
 | ---------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------- |
-| Thêm một tính năng/PBI mới vào dự án hiện hữu                            | [ba-pbi](skills/ba-pbi/SKILL.md)                         | Backlog delta và business/spec/review sau duyệt scope |
-| Repository đã có tính năng nhưng thiếu tài liệu; chưa biết hiện trạng | [ba-explore-project](skills/ba-explore-project/SKILL.md) | Inventory/evidence/report và brief cho ba-brainstorm   |
+| Thêm một tính năng/PBI mới vào dự án hiện hữu | [ba-pbi](skills/ba-pbi/SKILL.md) | Cặp business.md/spec.md của PBI mới |
+| Viết PBI cho dự án đã có tính năng | [ba-workflow](skills/ba-workflow/SKILL.md) | Khảo sát bằng ba-explore-project và xuất các PBI |
+| Chỉ khảo sát hiện trạng | [ba-explore-project](skills/ba-explore-project/SKILL.md) | Báo cáo và brief trong .temp |
 | Ý tưởng mới, pipeline nhiều bước, resume, một PBI/Round                    | [ba-workflow](skills/ba-workflow/SKILL.md)               | Điều phối và workflow-state.md                      |
 | Làm rõ ý tưởng/sản phẩm                                                     | [ba-brainstorm](skills/ba-brainstorm/SKILL.md)           | brainstorm.md                                           |
 | Phân tích yêu cầu từ discovery                                                | [ba-requirements](skills/ba-requirements/SKILL.md)       | requirements.md                                         |
@@ -22,12 +23,12 @@ BA Skills Kit — Điểm vào cho agent
 
 ## Trình tự sử dụng
 
-1. Xác định project đích, config, ý tưởng hoặc PBI ID thật theo yêu cầu. Thiếu thông tin quyết định thì hỏi đúng phần thiếu, không tự chọn project fixture.
+1. Xác định dự án đích và mục tiêu từ yêu cầu cùng tài liệu hiện có. Khi thiếu cấu hình, tạo .temp/ba-project.yaml theo quy ước chung. Dùng các mặc định hợp lý và ghi phần còn chưa rõ vào hồ sơ.
 2. Đọc [quy ước](conventions/BA-CONVENTIONS.md), SKILL.md đã chọn và schema liên quan. Chỉ đọc references của mode cần thực hiện.
 3. Thực hiện Input Validation → Data Extraction → Processing → Output Validation theo skill. Công cụ validate/publish/state ở `scripts/`; chúng không tự gọi model để sinh nội dung.
 4. Ghi output theo repository root trong config. Validate bằng `validate_ba_document.py --project-config <config> --file <output> --check-refs`; PBI thêm expected type và requested PBI ID.
    `planning_dir` phải dưới `.temp`. `.specify` chỉ chứa các Round/PBI với đúng hai file business.md/spec.md đọc được, không có metadata/BA-DATA/Contract Summary. Metadata và toàn bộ hồ sơ phân tích, draft, review, preview, tiến độ nằm trong `.temp`. Dùng ba_public.py để preview và ba-publish để xuất; cặp tài liệu theo [mẫu business](templates/business-handover.md) và [mẫu spec](templates/spec-handover.md). Nếu gặp cấu hình cũ dưới output_root, báo migration cần thiết, không tiếp tục ghi vào `_planning`.
-5. Báo path, schema/hash/result, Proposed/Open Questions/blockers và checkpoint còn chờ. Không coi PASS là phê duyệt.
+5. Với yêu cầu tạo PBI, thực hiện tới khi xuất file trong cùng lượt. Trả đường dẫn hai file, kết quả kiểm tra và điểm còn mở.
 
 ## Khi Kit chưa được cài vào runtime
 
@@ -37,7 +38,7 @@ Người dùng có thể chỉ định đọc root này bằng đường dẫn, 
 Đọc D:/BA-Skills-Kit/AGENTS.md và D:/BA-Skills-Kit/SKILL.md.
 Dùng hướng dẫn ba-workflow trong Kit để phân tích project đang mở,
 với config ./.temp/ba-project.yaml và nhu cầu: [mô tả].
-Đi đến backlog và dừng để tôi duyệt phạm vi.
+Hãy phân tích và xuất các cặp business.md/spec.md cho các PBI.
 ```
 
 Đây là thực hiện instructions từ file được chỉ định; không tuyên bố runtime đã discovery skill. Phải đọc được Kit và chạy được Python đã có dependencies. Muốn gọi skill qua selector/tên trong các phiên sau, cài theo INSTALL.

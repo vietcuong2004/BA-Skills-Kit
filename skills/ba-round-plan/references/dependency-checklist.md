@@ -5,6 +5,6 @@
 3. Dependency PBI phải cùng/trước Round; cùng Round cần nêu thứ tự và rủi ro nếu chưa hoàn thành.
 4. Round dependency phải ở trước trong mảng rounds. Không sắp thứ tự bằng so sánh chuỗi R10/R2.
 5. Capacity không có → Proposed + capacity_gaps, không suy effort từ số dòng YAML.
-6. Chuyển PBI-001 từ R1 sang R2 giữ ID, ghi history; nếu đã publish, hỏi cách lưu bản cũ, không tự nhân đôi.
+6. Giữ ID và lịch sử khi chuyển phân bổ. Nếu đã có cặp bàn giao ở R1, giữ cặp hiện có và báo xung đột khi xuất vào R2.
 
 Ví dụ PBI-002 tìm kiếm phụ thuộc PBI-001 tạo dữ liệu: có thể cùng R1 với thứ tự thực hiện rõ, hoặc R1/R2 theo capacity. Không bắt buộc phải dùng hai Round.

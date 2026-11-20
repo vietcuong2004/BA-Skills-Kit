@@ -1,4 +1,4 @@
 interface:
   display_name: "BA-explore-project"
   short_description: "Khảo sát tính năng hiện có để chuẩn bị hồ sơ BA"
-  default_prompt: "Dùng $ba-explore-project để khảo sát tính năng hiện có trong dự án và chuẩn bị đầu vào cho bộ tài liệu PBI."
+  default_prompt: "Dùng $ba-explore-project để tìm các tính năng hiện có rồi tiếp tục xuất tài liệu PBI."

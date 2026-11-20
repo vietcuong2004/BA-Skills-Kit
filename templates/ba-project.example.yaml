@@ -11,4 +11,3 @@ round_prefix: R
 pbi_prefix: PBI
 language: vi
 skill_runtime: codex
-approval_policy: human_checkpoints

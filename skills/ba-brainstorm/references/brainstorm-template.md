@@ -1,4 +1,4 @@
-> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
+> Ví dụ đầy đủ từ fixture giả lập. Dùng ID, hash và quy tắc của dự án đang làm. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
 
 ---
 schema_version: '1.0'
@@ -141,7 +141,7 @@ Bốn capability: cá nhân, công ty, mẫu và tìm kiếm; không bỏ sót n
 
 ## Goals
 
-Ưu tiên tạo/đọc lại ghi chú cá nhân là đề xuất cần backlog checkpoint.
+Ưu tiên tạo và đọc lại ghi chú cá nhân là đề xuất dùng để lập backlog.
 
 ## Scope
 

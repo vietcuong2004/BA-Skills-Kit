@@ -1,6 +1,6 @@
 ---
 name: ba-round-plan
-description: Đề xuất mục tiêu và phân bổ PBI vào Round từ backlog/requirements hợp lệ, có dependency, capacity gaps và trạng thái phê duyệt. Round là chu kỳ tùy biến, không mặc định Sprint.
+description: Phân bổ PBI vào các đợt từ backlog và requirements, theo phụ thuộc và thông tin ước lượng hiện có.
 ---
 
 # BA-round-plan
@@ -11,11 +11,11 @@ Config, `{planning_dir}/product-backlog.md`, `requirements.md`; goals/capacity/v
 
 ## Input Validation
 
-Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+Đọc `.temp/ba-project.yaml` bằng `Project.load` theo quy ước chung. Giá trị `repository_root: .` chỉ thư mục dự án chứa `.temp`.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
-Validate hai nguồn bằng `--project-config <config> --file <path> --expected-type <type> --check-refs`. Resolve dependency graph, phát hiện missing node/cycle. Trong workflow phải đã qua backlog checkpoint. Khi chạy độc lập, chưa duyệt backlog chỉ được tạo bản đề xuất nếu user yêu cầu, không ghi approval thay họ.
+Validate hai nguồn bằng `--project-config <config> --file <path> --expected-type <type> --check-refs`. Kiểm tra phụ thuộc trước khi phân bổ. Dùng backlog hợp lệ để tiếp tục lập Round.
 
 ## Data Extraction
 
@@ -25,7 +25,7 @@ Validate hai nguồn bằng `--project-config <config> --file <path> --expected-
 
 Xác định Round goals theo các lát cắt dùng được. Xếp theo value, risk, dependency và readiness, giải thích allocation_rationale. Số Round theo nhu cầu/capacity, không hardcode. `round_prefix` từ config; thứ tự mảng rounds là thứ tự thực hiện, nhãn không ngầm mang nghĩa Scrum.
 
-Thiếu capacity/estimate: `status: Proposed`, nêu capacity_gaps/assumptions, không cam kết thời lượng/khối lượng. Cho phép `unassigned_pbis`. Mỗi Round có goal, status, pbi_refs, dependencies, risks, capacity_assumptions, capacity_gaps, allocation_rationale, approval_status mặc định Pending.
+Thiếu capacity/ước lượng thì dùng `status: Proposed` và nêu khoảng trống. Phân bổ các PBI trong phạm vi cần xuất. Dùng `unassigned_pbis` cho mục ngoài phạm vi hoặc thiếu phụ thuộc. Mỗi Round có goal, status, pbi_refs, dependencies, risks, capacity_assumptions, capacity_gaps và allocation_rationale.
 
 Mỗi PBI chỉ một active allocation hoặc unassigned. Dependency ở cùng/trước Round; nếu cùng Round thì nêu thứ tự thực hiện. Xem [dependency checklist](references/dependency-checklist.md). Không tạo mới PBI và không đổi ID. Chuyển Round ghi from/to/reason vào history; đã publish thì cần quyết định migration/history trước.
 
@@ -39,7 +39,7 @@ Validator `--expected-type round-plan --check-refs --format json`; kiểm alloca
 
 ## Error Handling
 
-Thiếu nguồn báo ba-product-backlog/ba-requirements và exact path. Cycle/missing dependency → dừng. Chưa được duyệt → giữ Proposed/Pending; không tự gọi ba-business.
+Thiếu nguồn thì báo đường dẫn và skill tạo nguồn. Sửa chu trình hoặc phụ thuộc sai từ nguồn trước khi bàn giao. Phân bổ Proposed hợp lệ có thể được workflow dùng để viết và xuất PBI.
 
 ## Traceability
 
@@ -51,4 +51,4 @@ Round tham chiếu đúng PBI backlog; không sao chép PBI thành ID mới. Gi�
 
 ## Completion Criteria
 
-Output PASS; tất cả PBI allocated/unassigned rõ; không duplicate/cycle; capacity gap công khai. Báo Round goals, assumptions, hash và checkpoint duyệt/cho phép Proposed. Acceptance: cùng PBI hai Round → fail; thiếu capacity → warning và Proposed.
+Output hợp lệ, mỗi PBI có đúng một Round hoặc được ghi là chưa phân bổ. Báo phân bổ và khoảng trống capacity. Một PBI xuất hiện ở hai Round hoặc có vòng lặp là lỗi kỹ thuật.

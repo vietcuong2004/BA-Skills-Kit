@@ -1,13 +1,8 @@
-# Recovery / RESUME
+# Tiếp tục công việc
 
-Kiểm layout trước: state, artifacts và hồ sơ trung gian thuộc `.temp`. Config cũ chứa planning_dir bên trong `.specify` phải được chuyển theo conventions; không chạy tiếp để tạo `_planning` mới hoặc chỉ đổi config mà bỏ broken refs/hashes.
+1. Chạy workflow_state.py để kiểm tra file đã lưu và nguồn phụ thuộc.
+2. Tìm bước sớm nhất cần làm lại trong phạm vi. Đọc nguồn mới, giữ ID và nội dung còn đúng.
+3. Cập nhật phần ảnh hưởng, review cặp draft mới rồi dùng ba-publish để xuất. Giữ cặp đã bàn giao nếu có xung đột và đặt bản sửa trong preview.
+4. Ghi kết quả thật, phạm vi đã xử lý và việc còn lại vào state. State lịch sử có thể chứa mục dừng từ luồng trước. Tiếp tục dựa trên file hiện tại.
 
-File bàn giao trong Round/PBI không có metadata. Validator dùng drafts tương ứng trong .temp để kiểm nguồn và so bản render; không tự thêm front matter vào file cuối để chữa MISSING_INPUT. Nếu thiếu drafts thì khôi phục hồ sơ làm việc trước; bản cũ còn metadata phải chuyển định dạng theo conventions, giữ dữ liệu và xử lý conflict.
-
-1. Validate config và state schema. State `artifacts` chứa snapshot path/hash, không dùng metadata.sources để state vẫn mở được khi output thay đổi.
-2. Chạy workflow_state.py để đọc từng artifact thật, so hash và validate recursive source chain. MISSING_INPUT/STALE_INPUT/CONTENT_CHANGED tạo invalidated, không tự xóa.
-3. Tìm bước sớm nhất ảnh hưởng selected PBI/Round. Đọc lại nguồn, giữ IDs/Confirmed decisions, giải quyết conflict; chỉ thực hiện bước trong scope user yêu cầu.
-4. Cập nhật output theo quyết định đã có, validate; review lại khi pair đổi; approval gắn hash cũ phải trình lại checkpoint.
-5. Cập nhật state snapshot sau khi hoàn thành thực tế, ghi history và pending/blockers chính xác.
-
-Không sửa hash downstream đơn thuần để bỏ STALE_INPUT. Không reset toàn pipeline hoặc renumber IDs. Nếu không có runtime invocation API, đọc skill và thực hiện trong phiên, ghi `manual in-session execution`; nếu chưa thực hiện phải ghi NOT RUN.
+Khi thiếu hồ sơ làm việc, tái tạo từ nguồn có căn cứ nếu được. Metadata phục vụ kiểm tra nằm trong .temp. File trong .specify là bản đọc và chia sẻ.

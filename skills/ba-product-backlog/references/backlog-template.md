@@ -1,4 +1,4 @@
-> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
+> Ví dụ đầy đủ từ fixture giả lập. Dùng ID, hash và quy tắc của dự án đang làm. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
 
 ---
 schema_version: '1.0'
@@ -187,7 +187,7 @@ Các mở rộng dựa trên khả năng tạo tài liệu; không có vòng l�
 
 ## Open Questions
 
-Công ty/mẫu/search cần chốt policy trước triển khai. Backlog sẽ qua checkpoint test riêng.
+Quy tắc của ghi chú công ty, mẫu và tìm kiếm còn mở. Ghi rõ trong bản nháp PBI.
 
 ## Contract Summary
 

@@ -369,7 +369,7 @@ def main():
     from ba_core import Project, Validator
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", help="Default: .temp/ba-project.yaml, then legacy root config")
+    parser.add_argument("--project-config", help="Path to .temp/ba-project.yaml (defaults to this path in the working directory)")
     parser.add_argument("--file", required=True, help="Canonical business/spec draft under .temp")
     parser.add_argument("--write-preview", action="store_true", help="Write only to .temp/previews/PBI-ID/")
     args = parser.parse_args()

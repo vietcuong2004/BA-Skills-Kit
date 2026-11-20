@@ -1,4 +1,4 @@
 interface:
   display_name: "BA-PBI"
   short_description: "Thêm một PBI mới và soạn tài liệu tính năng"
-  default_prompt: "Dùng $ba-pbi để phân tích tính năng mới, thêm một PBI vào dự án hiện tại và chuẩn bị business/spec sau khi tôi duyệt phạm vi."
+  default_prompt: "Dùng $ba-pbi để phân tích tính năng mới và xuất business.md cùng spec.md cho PBI."

@@ -122,8 +122,7 @@
           "risks",
           "capacity_assumptions",
           "capacity_gaps",
-          "allocation_rationale",
-          "approval_status"
+          "allocation_rationale"
         ],
         "additionalProperties": false
       },

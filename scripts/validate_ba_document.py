@@ -7,7 +7,7 @@ from ba_core import BAError, Project, Validator
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
+    parser.add_argument("--project-config", help="Path to .temp/ba-project.yaml (defaults to this path in the working directory)")
     parser.add_argument("--file", required=True)
     parser.add_argument("--check-refs", action="store_true")
     parser.add_argument("--expected-type")

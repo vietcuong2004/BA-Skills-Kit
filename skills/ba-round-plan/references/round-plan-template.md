@@ -1,4 +1,4 @@
-> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
+> Ví dụ đầy đủ từ fixture giả lập. Dùng ID, hash và quy tắc của dự án đang làm. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
 
 ---
 schema_version: '1.0'
@@ -29,7 +29,6 @@ rounds:
   capacity_gaps:
   - Chưa có ước lượng hoặc năng lực nhóm
   allocation_rationale: Chọn lát cắt có quy tắc rõ; các PBI mở rộng chưa ready
-  approval_status: Pending
 unassigned_pbis:
 - PBI-002
 - PBI-003
@@ -54,10 +53,6 @@ PBI-001 không có dependency; mở rộng chưa được phân bổ.
 
 Thiếu capacity và estimate: allocation Proposed, không cam kết số ngày.
 
-## Approval State
-
-Chưa gắn Approved; test checkpoint cho phép Proposed có evidence riêng.
-
 ## Change History
 
 Kế hoạch đầu tiên, chưa chuyển PBI giữa Round.
@@ -66,4 +61,4 @@ Kế hoạch đầu tiên, chưa chuyển PBI giữa Round.
 
 | ID | Title | State |
 | --- | --- | --- |
-| R1 | Kiểm chứng tạo và đọc lại ghi chú cá nhân | Pending |
+| R1 | Kiểm chứng tạo và đọc lại ghi chú cá nhân | Proposed |

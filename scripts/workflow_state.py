@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect saved state and invalidate changed outputs; does not invoke an LLM or approve work."""
+"""Inspect saved state and identify changed outputs."""
 import argparse
 import json
 from ba_core import BAError, Project, Validator, sha
@@ -22,13 +22,13 @@ def resume(project, state_path=None):
         else:
             current.append(artifact["path"])
     return {"mode": "RESUME", "current": current, "invalidated": invalid,
-            "next_action": "Revalidate/revise affected artifacts and refresh human checkpoints" if invalid else "Continue at saved pending checkpoint",
-            "saved_pending": state.data["pending"], "approvals_reused": False}
+            "next_action": "Revalidate and revise affected artifacts" if invalid else "Continue the remaining work in scope",
+            "saved_pending": state.data["pending"]}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--project-config", help="Explicit config; default: .temp/ba-project.yaml, then legacy ba-project.yaml in CWD")
+    parser.add_argument("--project-config", help="Path to .temp/ba-project.yaml (defaults to this path in the working directory)")
     parser.add_argument("--state")
     args = parser.parse_args()
     try:

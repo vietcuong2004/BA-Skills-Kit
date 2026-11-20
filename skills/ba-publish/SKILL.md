@@ -1,54 +1,48 @@
 ---
 name: ba-publish
-description: Kiểm tra và xuất đúng cặp business.md/spec.md của PBI vào Round sau review và phê duyệt con người. Có dry-run, kiểm hash, idempotence và chặn xung đột; không tự duyệt hoặc ghi đè.
+description: Kiểm tra và xuất business.md cùng spec.md vào thư mục PBI. Tự kiểm nguồn, Round và xung đột. Có chế độ xem trước khi được yêu cầu.
 ---
 
 # BA-publish
 
 ## Input Contract
 
-Config, selected PBI IDs rõ ràng, backlog, Round plan, draft business/spec, review, quyết định publish thực tế của người dùng. Đọc [conventions](../../conventions/BA-CONVENTIONS.md), [checklist](references/publish-checklist.md), [approval schema](../../contracts/approvals.schema.json). Resolve KIT_ROOT/project paths theo conventions.
+Cấu hình, backlog, Round, PBI ID, cặp draft và review của đúng hai draft đó. Đọc [quy ước chung](../../conventions/BA-CONVENTIONS.md) và [checklist xuất](references/publish-checklist.md).
 
 ## Input Validation
 
-Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
-
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
-
-Dùng `scripts/publish_ba.py` để kiểm tất cả inputs/recursive source hashes/đúng project-PBI-Round. Review FAIL hoặc business/spec blockers → chặn. CONDITIONAL chỉ cho draft khi có quyết định Draft Publication. Kiểm backlog checkpoint và Round Approved/Proposed Allowed gắn đúng bytes; không suy approval từ PASS hoặc front matter approved.
+Dùng Project.load với .temp/ba-project.yaml. Kiểm schema, refs, hash, PBI ID và phân bổ Round bằng scripts/publish_ba.py. Hồ sơ nghiệp vụ còn mở được xuất dưới dạng bản nháp khi dữ liệu kỹ thuật hợp lệ.
 
 ## Data Extraction
 
-Lấy PBI title/ID đúng backlog, Round duy nhất từ allocation, draft/review hashes và human record. Target = output_root/round_id/PBI-ID-slug. Slug theo helper, không lấy path từ nội dung user tự do. Bằng chứng approval phải từ quyết định thật, không sao chép fixture.
+Lấy PBI ID, tiêu đề, Round và đường dẫn đích từ backlog/plan. Đọc kết quả review và các vấn đề được ghi trong draft.
 
 ## Processing
 
-1. Chạy dry-run: `python <KIT_ROOT>/scripts/publish_ba.py --project-config <config> --pbi-id <id>` (optional `--approvals <path>`). Trình manifest paths/action/hash và blockers; xem [ví dụ](references/dry-run-example.md).
-2. Hoàn thành toàn bộ kiểm tra trước khi hỏi quyền còn thiếu. Nếu đã có authorization đúng selected IDs và bytes trong phiên, ghi audit record, không hỏi lại. Nếu thiếu, xin quyết định checkpoint, giải thích theo quy ước Kit; không tự approve.
-3. Ghi `{planning_dir}/approvals.json` đúng schema sau quyết định thật. Publish record bao phủ backlog, Round, business, spec và review hiện tại. Quyết định critical chưa chốt phải được xử lý trong nguồn và review lại; ghi tên quyết định ở resolved_decisions.
-4. Xem preview business/spec bằng scripts/ba_public.py --project-config <config> --file <draft> --write-preview. Chạy lại dry-run để đảm bảo approvals/hash current rồi `--apply`. Helper render bản đọc được, stage cặp file và kiểm hash/nguồn trước/sau. Không copy draft có metadata vào thư mục PBI.
-5. Với nhiều PBI, xử lý từng cặp theo dependency order, báo partial completion trung thực. Đây không phải transaction toàn Round. Không chạy nhiều publisher đồng thời cùng PBI.
+- Khi người dùng yêu cầu PBI hoặc xuất tài liệu, chạy python <KIT_ROOT>/scripts/publish_ba.py --project-config <config> --pbi-id <id> --apply. Helper tự kiểm tra trước khi ghi. Với nhiều PBI, xử lý từng cặp theo thứ tự phụ thuộc và tiếp tục những cặp còn lại khi một cặp xung đột.
+- Chỉ bỏ --apply nếu người dùng yêu cầu xem trước. Xem [ví dụ lệnh](references/dry-run-example.md).
+- Giữ trạng thái nháp cho nội dung mới. Với review CONDITIONAL/FAIL, ghi các giới hạn trong bản nháp và báo kết quả review thực tế khi trả file.
 
 ## Output Contract
 
-`{output_root}/{round_id}/{pbi_id}-{slug}/business.md` và `spec.md`, chính xác hai file Markdown đọc được. Dùng [mẫu business](../../templates/business-handover.md) và [mẫu spec](../../templates/spec-handover.md). Giữ ID, nội dung nghiệp vụ và trạng thái xác nhận; không có front matter, BA-DATA, Contract Summary, JSON hoặc source hashes, kể cả ở cuối/comment. Metadata và bản làm việc giữ nguyên ở .temp/drafts/PBI-ID. Không thêm sidecar/review/report trong thư mục PBI. Manifest phân biệt source_sha256 của draft và sha256 của bản render.
+Hai file đọc được tại .specify/Round/PBI-ID-slug, theo [mẫu business](../../templates/business-handover.md) và [mẫu spec](../../templates/spec-handover.md). Metadata, nguồn và review ở .temp. Business/spec bàn giao chứa nội dung nghiệp vụ, bảng và kịch bản kiểm thử.
 
 ## Output Validation
 
-Helper post-validates bằng bản làm việc trong .temp và chuỗi nguồn, so file cuối với bản render mong đợi; xác nhận chỉ hai file và không có metadata. Cùng inputs chạy lại → skip, không đổi mtime. Không đánh dấu approved nếu đang draft publication; phê duyệt status thay đổi bytes đòi review mới.
+Helper kiểm lại đầu ra, bảo toàn hai file và hash của cặp nguồn. Cùng nội dung thì bỏ qua file đã có.
 
 ## Error Handling
 
-Conflict hoặc file thứ ba → dừng, giữ dữ liệu cũ. Helper không hỗ trợ tự overwrite/update, dù manifest có thể báo conflict; cần so bản cũ/mới và quyết định lưu lịch sử trước. PBI đã ở Round/path khác → ROUND_TRANSFER_CONFLICT; giữ ID, hỏi phương án migration/history/link, không tự xóa hoặc tạo duplicate. Lỗi sau ghi → báo path và trạng thái thực tế, không tự xóa để che lỗi.
+Nguồn thiếu hoặc đổi thì sửa và kiểm lại phần ảnh hưởng. Xung đột đường dẫn hay nội dung giữ nguyên file đã có, lưu bản đọc thử dưới .temp/previews và báo chính xác PBI bị ảnh hưởng. Không tạo PBI ID trùng ở Round khác.
 
 ## Traceability
 
-Review phải hash đúng hai drafts; approval gắn bytes hiện tại. Recompute input hash ngay trước ghi. Approval record không phải cơ chế chứng thực danh tính; agent chịu trách nhiệm đối chiếu quyết định người dùng.
+Review khớp hash của hai bản làm việc. Báo cáo xuất gắn PBI, Round và đường dẫn review.
 
 ## Example Invocation
 
-`$ba-publish pbi_id=PBI-001 project_config=./.temp/ba-project.yaml` — “Kiểm tra và cho tôi xem dry-run trước publish.”
+“Dùng skill ba-publish để xuất tài liệu PBI-001.”
 
 ## Completion Criteria
 
-Chỉ báo published khi helper apply và post-validation thành công. Báo created/skipped/blocked/conflicts, target và hash; không claim publish nếu chỉ dry-run. Acceptance: FAIL/stale/missing approval/path escape → chặn; rerun → skip; user edits → preserve conflict.
+Trả đường dẫn hai file, trạng thái review và điểm còn mở. Phân biệt file đã ghi, file trùng nội dung và xung đột. Chỉ báo đã xuất khi helper hoàn tất hậu kiểm.

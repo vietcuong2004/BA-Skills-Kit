@@ -20,7 +20,7 @@
       "minLength": 1,
       "pattern": "\\S",
       "default": ".",
-      "description": "For .temp/ba-project.yaml, relative to the project above .temp; for legacy configs, relative to the config directory. Parent traversal is forbidden."
+      "description": "Relative to the project directory containing .temp/ba-project.yaml. Parent traversal is forbidden."
     },
     "output_root": {
       "type": "string",
@@ -53,7 +53,8 @@
       "const": "codex"
     },
     "approval_policy": {
-      "const": "human_checkpoints"
+      "const": "human_checkpoints",
+      "description": "Optional field accepted in existing project files. Export does not use it."
     }
   },
   "required": [
@@ -66,8 +67,7 @@
     "round_prefix",
     "pbi_prefix",
     "language",
-    "skill_runtime",
-    "approval_policy"
+    "skill_runtime"
   ],
   "additionalProperties": false
 }

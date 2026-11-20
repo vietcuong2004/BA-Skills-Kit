@@ -1,4 +1,4 @@
-> Ví dụ đầy đủ từ fixture giả lập. Không sao chép IDs, hashes, policy hay approval sang project thật. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
+> Ví dụ đầy đủ từ fixture giả lập. Dùng ID, hash và quy tắc của dự án đang làm. Khi dùng như template, thay dữ liệu bằng nguồn project đích; đọc schema và giữ headings. Đây là mẫu hồ sơ làm việc nội bộ, chỉ lưu dưới .temp.
 
 ---
 schema_version: '1.0'
@@ -79,7 +79,7 @@ change_history:
 
 ## Review Result
 
-CONDITIONAL: structural PASS không thay review ngữ nghĩa hoặc human approval.
+CONDITIONAL. Cặp draft hợp lệ về cấu trúc và còn điểm nhỏ về nội dung.
 
 ## Findings
 
@@ -99,7 +99,7 @@ Needs Refinement
 
 ## Blockers
 
-Không còn Major/Critical; còn Minor về UI, chỉ phù hợp draft publication nếu được cho phép.
+Còn điểm Minor về UI. Bàn giao bản nháp và ghi rõ điểm còn mở.
 
 ## Sources
 

@@ -74,14 +74,15 @@ def main():
                 raise ValueError(f"Unrewritten source-kit link: {skill.name}")
         # Verify the installed helper also discovers the config when no path is passed.
         installed_auditor = destination / "target/.agents/skills/ba-publish/references/kit/scripts/check_ba_layout.py"
+        before = set(project.rglob("*"))
         detected = subprocess.run([sys.executable, "-X", "utf8", str(installed_auditor)], cwd=project,
                                   capture_output=True, text=True, encoding="utf-8", timeout=30)
         if detected.returncode or json.loads(detected.stdout)["planning_dir"] != ".temp":
             raise RuntimeError(detected.stdout + detected.stderr)
-        if (project / "ba-project.yaml").exists() or (project / ".temp/.temp").exists() or (project / ".temp/.specify").exists():
-            raise ValueError("Config discovery created an incorrect nested/root project layout")
+        if set(project.rglob("*")) != before:
+            raise ValueError("The layout audit changed the project files")
         report = {"result": "PASS", "archive_sha256": sha(archive), "manifest_files": len(manifest["files"]),
-                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor", "auto-discovered .temp config without root config", f"public renderer and handover resources in all {len(skills)} installed skills"]}
+                  "checks": ["ZIP CRC", "no local tests in package", "user guides included", "per-file SHA-256", "extracted validator", "portable installation", "installed validator with private contracts", "installed output layout auditor", "auto-discovered .temp config with read-only audit", f"public renderer and handover resources in all {len(skills)} installed skills"]}
     (KIT / "dist/package-verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

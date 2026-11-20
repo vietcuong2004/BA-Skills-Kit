@@ -11,9 +11,9 @@ description: Tạo đặc tả Dev/QA cho một PBI từ business draft hợp l�
 
 ## Input Validation
 
-Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+Đọc `.temp/ba-project.yaml` bằng `Project.load` theo quy ước chung. Giá trị `repository_root: .` chỉ thư mục dự án chứa `.temp`.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng nguồn bằng `--check-refs --expected-type <type>`; business thêm `--pbi-id <requested-id>`. Business PBI = requested PBI = backlog PBI; cùng project/version, source hashes fresh. Business thiếu → báo ba-business và exact path, dừng; không tự tạo business thay.
 
@@ -44,7 +44,7 @@ Validator `--project-config <config> --file <spec-path> --expected-type spec --p
 
 ## Error Handling
 
-Missing/wrong PBI/stale nguồn → dừng, báo code/file/upstream skill. Unconfirmed critical behavior → dừng hoặc draft với blockers rõ; không tự duyệt. Không chạy review/publish trong skill đơn lẻ.
+Thiếu nguồn, sai PBI hoặc nguồn đổi thì báo đường dẫn và bước cần sửa. Ghi hành vi quan trọng chưa rõ vào blockers và tiếp tục viết draft có nhãn. Workflow dùng draft để review và xuất.
 
 ## Traceability
 

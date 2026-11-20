@@ -76,12 +76,14 @@ def write(name, schema):
 
 def main():
     write("project-config", obj({"config_version": {"const": "1.0"}, "project_id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
-        "project_name": S, "repository_root": {**S, "default": ".", "description": "For .temp/ba-project.yaml, relative to the project above .temp; for legacy configs, relative to the config directory. Parent traversal is forbidden."},
+        "project_name": S, "repository_root": {**S, "default": ".", "description": "Relative to the project directory containing .temp/ba-project.yaml. Parent traversal is forbidden."},
         "output_root": {**S, "default": ".specify", "description": "Published Round/PBI pairs only; must be disjoint from .temp."},
         "planning_dir": {**S, "default": ".temp", "description": "Must resolve to project/.temp or a directory below it. Never inside output_root."},
         "round_prefix": {"type": "string", "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"},
         "pbi_prefix": {"type": "string", "pattern": "^[A-Z][A-Z0-9]*$"}, "language": S,
-        "skill_runtime": {"const": "codex"}, "approval_policy": {"const": "human_checkpoints"}}))
+        "skill_runtime": {"const": "codex"},
+        "approval_policy": {"const": "human_checkpoints", "description": "Optional field accepted in existing project files. Export does not use it."}},
+        ("approval_policy",)))
     types = ["brainstorm", "requirements", "product-backlog", "round-plan", "business", "spec", "review", "workflow-state"]
     meta = obj({"schema_version": {"const": "1.0"}, "document_type": {"enum": types}, "project_id": S,
         "status": DOC_STATUS, "source_documents": arr(SOURCE), "generated_by": {"enum": ["ba-" + t for t in types[:-1]] + ["ba-workflow"]},
@@ -112,7 +114,8 @@ def main():
         "unassigned_requirements": arr(obj({"requirement_id": ident("REQ"), "reason": S})), "change_history": HISTORY}))
     write("round-plan", obj({"rounds": arr(obj({"round_id": ROUND, "goal": S, "status": STATUS,
         "pbi_refs": arr(PBI), "dependencies": arr(ROUND), "risks": arr(S), "capacity_assumptions": arr(FACT),
-        "capacity_gaps": arr(S), "allocation_rationale": S, "approval_status": {"enum": ["Pending", "Approved", "Proposed Allowed"]}}), 1),
+        "capacity_gaps": arr(S), "allocation_rationale": S,
+        "approval_status": {"enum": ["Pending", "Approved", "Proposed Allowed"]}}, ("approval_status",)), 1),
         "unassigned_pbis": arr(PBI), "change_history": HISTORY}))
     identity = {"pbi_id": PBI, "epic_id": ident("EPIC"), "feature_id": ident("FEAT"), "round_id": ROUND,
                 "requirement_refs": refs("REQ", 1), "title": S}
@@ -138,10 +141,10 @@ def main():
     approval = obj({"checkpoint": {"enum": ["backlog", "round-plan", "publish"]}, "decision": {"enum": ["Approved", "Proposed Allowed", "Draft Publication"]},
         "actor": S, "evidence": S, "decided_at": S, "pbi_refs": arr(PBI), "documents": arr(SOURCE, 1), "resolved_decisions": arr(S)})
     write("approvals", obj({"schema_version": {"const": "1.0"}, "project_id": S, "approvals": arr(approval)}))
-    write("workflow-state", obj({"mode": {"enum": ["INTERACTIVE", "DRAFT", "RESUME", "SINGLE-PBI", "SINGLE-ROUND"]},
+    write("workflow-state", obj({"mode": {"enum": ["AUTO", "INTERACTIVE", "DRAFT", "RESUME", "SINGLE-PBI", "SINGLE-ROUND"]},
         "current_phase": S, "completed": arr(S), "pending": arr(S), "blockers": arr(S), "artifacts": arr(SOURCE),
         "approvals": arr(approval), "last_updated": S, "selected_pbis": arr(PBI), "selected_round": S,
-        "change_history": HISTORY}, ("selected_round",)))
+        "change_history": HISTORY}, ("selected_round", "approvals")))
 
 
 if __name__ == "__main__":

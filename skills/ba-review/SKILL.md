@@ -1,6 +1,6 @@
 ---
 name: ba-review
-description: Review độc lập business/spec của một PBI về scope, hành vi, traceability và readiness; xuất findings có bằng chứng và PASS/CONDITIONAL/FAIL. Không tự sửa tài liệu hay phê duyệt thay con người.
+description: Kiểm tra business/spec của một PBI về phạm vi, hành vi và khả năng kiểm thử. Ghi phát hiện có bằng chứng và kết quả PASS, CONDITIONAL hoặc FAIL.
 ---
 
 # BA-review
@@ -11,9 +11,9 @@ description: Review độc lập business/spec của một PBI về scope, hành
 
 ## Input Validation
 
-Cấu hình mới ở `.temp/ba-project.yaml`; `repository_root: .` vẫn là root project. Tìm/đọc bằng `Project.load` theo conventions, tương thích config cũ ở root.
+Đọc `.temp/ba-project.yaml` bằng `Project.load` theo quy ước chung. Giá trị `repository_root: .` chỉ thư mục dự án chứa `.temp`.
 
-Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, approvals, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
+Bố trí file bắt buộc: `planning_dir` phải là `.temp` hoặc thư mục con dưới `.temp` của project. Mọi hồ sơ trung gian/output của bước này (inputs, exploration, backlog, plan, draft, review, request, state, log/manifest/staging) nằm tại đó. `.specify` chỉ dành cho `Round/PBI-ID-slug/{business.md,spec.md}` do publish tạo. Hai file bàn giao chỉ có nội dung đọc được, không có front matter, BA-DATA, Contract Summary hoặc source hashes; metadata giữ trong `.temp`. Nếu config/đường dẫn cũ dùng `_planning` hoặc `_planing` trong `.specify`, dừng ghi và xử lý migration theo conventions; không tự xóa hồ sơ cũ.
 
 Validate từng input với `--check-refs --expected-type <type>` và requested PBI cho business/spec. Cùng project/version/identity; nguồn fresh. Nếu lỗi schema, dừng và xuất diagnostic ra báo cáo trả lời, không làm giả review PASS. File review cuối phải đủ contract, không ghi lỗi parser thành verdict nghiệp vụ.
 
@@ -29,7 +29,7 @@ Kiểm Given/When/Then cụ thể, quan sát được, không mâu thuẫn hoặ
 
 Chạy scripts/ba_public.py --project-config <config> --file <draft> --write-preview cho business và spec, đọc cả preview trong .temp/previews/PBI-ID. Đối chiếu [mẫu business](../../templates/business-handover.md) và [mẫu spec](../../templates/spec-handover.md). Kiểm tra mục đích, khó khăn, nhu cầu, từng trường/biến thể trong giải pháp và phạm vi ảnh hưởng. Với spec, kiểm từng story có Independent Test và Acceptance Scenarios tương ứng, FR/NFR có mã và căn cứ, Success Criteria kiểm được, Assumptions và Dependencies có tác động rõ. Dùng liên kết AC/FR trong bản nháp để phát hiện hành vi bị mất hoặc ghép sai khi render. Preview không chứa front matter, BA-DATA, Contract Summary hay source hashes. Nội dung quan trọng chỉ có trong văn xuôi nội bộ mà chưa có ở dữ liệu/preview là finding cần sửa trước bàn giao.
 
-Mỗi finding có FIND ID, severity, file, section, evidence, impact, recommendation, status. Theo [severity rubric](references/severity-rubric.md): Critical/Major mở hoặc business blocker → FAIL/Blocked; Minor refinement mở → CONDITIONAL/Needs Refinement; không finding mở/blocker → PASS/Ready. Không tự sửa business/spec trong lúc review; không tự ghi approval.
+Mỗi finding có FIND ID, mức độ, file, mục, bằng chứng, ảnh hưởng, đề xuất và trạng thái. Dùng [rubric](references/severity-rubric.md) để ghi kết quả thật. Trả kết quả cho workflow để sửa dựa trên nguồn và ghi phần còn mở trong bản nháp.
 
 ## Output Contract
 
@@ -37,7 +37,7 @@ Mỗi finding có FIND ID, severity, file, section, evidence, impact, recommenda
 
 ## Output Validation
 
-Validator `--project-config <config> --file <review-path> --expected-type review --pbi-id <pbi_id> --check-refs --format json`. So kết quả với severity/readiness/blockers, refs/identity và freshness. PASS review không tương đương human approval.
+Validator `--project-config <config> --file <review-path> --expected-type review --pbi-id <pbi_id> --check-refs --format json`. Kiểm kết quả, mức độ, trạng thái và nguồn. CONDITIONAL/FAIL nêu giới hạn của bản nháp để workflow bàn giao cùng tài liệu.
 
 ## Error Handling
 

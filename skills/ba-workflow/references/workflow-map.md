@@ -1,16 +1,14 @@
-# Workflow map
+# Luồng tạo PBI
 
-| Bước | Input đã validate | Output / checkpoint |
+| Bước | Nguồn | Kết quả |
 | --- | --- | --- |
-| ba-brainstorm | idea + config | brainstorm.md |
-| ba-requirements | brainstorm | requirements.md |
-| ba-product-backlog | brainstorm + requirements | product-backlog.md; duyệt scope |
-| ba-round-plan | backlog + requirements | round-plan.md; duyệt/cho phép Proposed |
-| ba-business | selected PBI + brainstorm/requirements/backlog, Round nếu có | drafts/ID/business.md |
-| ba-spec | same PBI business + requirements/backlog | drafts/ID/spec.md |
-| ba-review | same PBI pair + requirements/backlog | reviews/ID-review.md |
-| ba-publish | Round/PBI/pair/review + human checkpoints | output_root/Round/ID-slug/{business,spec}.md — bản đọc được, không metadata |
+| ba-explore-project, khi cần | Code và tài liệu dự án hiện có | Báo cáo chức năng, inventory và brief |
+| ba-brainstorm | Ý tưởng hoặc brief khảo sát | brainstorm.md |
+| ba-requirements | Brainstorm | requirements.md |
+| ba-product-backlog | Brainstorm và requirements | product-backlog.md |
+| ba-round-plan | Backlog và requirements | round-plan.md |
+| ba-business và ba-spec | PBI, yêu cầu và Round | Draft business.md/spec.md |
+| ba-review | Hai draft và bản đọc thử | Kết quả kiểm tra và các điểm còn mở |
+| ba-publish | Draft, review và nguồn hợp lệ | Hai file đọc được trong .specify/Round/PBI-ID-slug |
 
-Tám skill trên độc lập; ba-workflow là skill thứ chín điều phối bằng file thật. Nó ghi workflow-state sau mỗi handoff/checkpoint. Không coi text trả lời trong chat là thay cho input file đã validate.
-
-Các output từ brainstorm đến review là hồ sơ nội bộ dưới .temp. Sau business/spec, dùng ba_public.py tạo preview trong .temp/previews/PBI-ID để review cả nội dung bàn giao. Metadata giữ ở drafts; hai file cuối trong Round/PBI chỉ có ngôn ngữ tự nhiên, bảng và checklist.
+Các bước diễn ra trong cùng lượt và kiểm nguồn giữa các bước. Dùng Round đề xuất khi thiếu ước lượng. Ghi giả định và câu hỏi trong tài liệu. Xem [cách xử lý dữ kiện chưa đủ](checkpoint-policy.md).

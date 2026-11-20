@@ -23,11 +23,11 @@ HEADINGS = {
     "brainstorm": ["Product Overview", "Vision", "Target Users", "Problems", "Capabilities", "Goals", "Scope", "Assumptions", "Open Questions", "Metrics"],
     "requirements": ["Actors", "Functional Requirements", "Business Rules", "Data", "Permissions", "As-Is / To-Be", "Flows", "Edge Cases", "Nonfunctional Considerations", "Coverage", "Open Questions"],
     "product-backlog": ["Product Backlog Overview", "Epics", "Features", "PBIs", "INVEST", "Requirement Coverage", "Dependencies", "Open Questions"],
-    "round-plan": ["Round Goals", "Allocations", "Dependencies", "Capacity Gaps", "Approval State", "Change History"],
+    "round-plan": ["Round Goals", "Allocations", "Dependencies", "Capacity Gaps", "Change History"],
     "business": ["Thông tin PBI", "Câu chuyện nghiệp vụ", "Vấn đề", "Đối tượng", "Mục tiêu", "Giá trị", "As-Is/To-Be", "Giải pháp phần mềm chi tiết", "Scope", "Rules", "Dependencies", "Risks", "Open Questions", "Sources"],
     "spec": ["PBI Information", "User Stories", "Preconditions", "Postconditions", "Main Flow", "Alternative Flows", "Exception Flows", "Business Rules", "Permissions", "Data and States", "Edge Cases", "Acceptance Criteria", "Traceability", "Scope", "Open Questions"],
     "review": ["Review Result", "Findings", "Coverage", "Readiness", "Blockers", "Sources"],
-    "workflow-state": ["Current Phase", "Completed", "Pending", "Blockers", "Artifacts", "Approvals", "Recovery"],
+    "workflow-state": ["Current Phase", "Completed", "Pending", "Blockers", "Artifacts", "Recovery"],
 }
 REQUIRED_SOURCES = {
     "brainstorm": set(), "requirements": {"brainstorm"},
@@ -89,7 +89,7 @@ def schema(name):
 def errors_for(name, value, file):
     return [{"severity": "ERROR", "code": "SCHEMA_INVALID", "file": str(file),
              "location": "/" + "/".join(map(str, e.absolute_path)), "message": e.message,
-             "suggested_fix": f"Đối chiếu contracts/{name}.schema.json; không tự duyệt quyết định nghiệp vụ."}
+             "suggested_fix": f"Sửa dữ liệu theo contracts/{name}.schema.json rồi kiểm tra lại."}
             for e in Draft202012Validator(schema(name)).iter_errors(value)]
 
 
@@ -124,35 +124,26 @@ class Project:
     root: Path
     config: dict
 
-    @staticmethod
-    def find_config(start=None):
-        """Look only in the working project, preferring its .temp config over legacy root config."""
-        directory = Path(start or Path.cwd()).absolute()
-        preferred = directory / ".temp" / "ba-project.yaml"
-        legacy = directory / "ba-project.yaml"
-        for candidate in (preferred, legacy):
-            if candidate.exists() or candidate.is_symlink():
-                return candidate
-        return preferred
-
     @classmethod
     def load(cls, config_path=None):
-        requested = Path(config_path if config_path is not None else cls.find_config()).absolute()
-        # Recognize only the canonical .temp/ba-project.yaml layout. Anchor before resolving
-        # the file so a .temp symlink cannot silently change the chosen project boundary.
-        # Path.match follows the platform's case rules (Windows accepts .TEMP/BA-PROJECT.YAML).
-        in_temp = requested.match(".temp/ba-project.yaml")
-        anchor = requested.parent.parent.resolve() if in_temp else requested.resolve().parent
-        path = safe_path(anchor, requested) if in_temp else requested.resolve()
+        config_location = ".temp/ba-project.yaml"
+        requested = Path.cwd() / config_location if config_path is None else Path(config_path).absolute()
+        if not requested.match(config_location):
+            raise BAError("CONFIG_LOCATION", f"Expected {config_location} inside the project", requested,
+                          fix=f"Chỉ định đường dẫn tới {config_location} của dự án.")
+        # Anchor before resolving the file so links cannot change the project boundary.
+        anchor = requested.parent.parent.resolve()
+        path = safe_path(anchor, requested)
+        if not path.is_relative_to(safe_path(anchor, ".temp")):
+            raise BAError("CONFIG_LOCATION", f"Expected {config_location} inside .temp", requested,
+                          fix=f"Lưu cấu hình tại {config_location} của dự án.")
         if not path.is_file():
             raise BAError("MISSING_CONFIG", "Project config not found", path,
-                          fix="Tạo .temp/ba-project.yaml từ template tại project đang mở và xác nhận các giá trị thiết yếu với người dùng.")
+                          fix=f"Tạo {config_location} từ mẫu và xác nhận thông tin dự án với người dùng.")
         cfg = yaml_load(path.read_text(encoding="utf-8-sig"), path)
         issues = errors_for("project-config", cfg, path)
         if issues:
             raise BAError("INVALID_CONFIG", issues[0]["message"], path)
-        # Canonical config: repository_root is relative to the project above .temp.
-        # Legacy config: preserve its original directory-based resolution.
         root = safe_path(anchor, cfg["repository_root"])
         if not root.is_dir():
             raise BAError("INVALID_CONFIG", "repository_root must be an existing directory", root)
@@ -540,7 +531,7 @@ class Validator:
             # State approval actors are humans, not ACT IDs; approval PBI lists are historical scope.
             for artifact in data["artifacts"]:
                 self.project.path(artifact["path"])
-            for approval in data["approvals"]:
+            for approval in data.get("approvals", []):
                 for source in approval["documents"]:
                     self.project.path(source["path"])
             return

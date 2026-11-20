@@ -5,6 +5,7 @@
   "properties": {
     "mode": {
       "enum": [
+        "AUTO",
         "INTERACTIVE",
         "DRAFT",
         "RESUME",
@@ -245,7 +246,6 @@
     "pending",
     "blockers",
     "artifacts",
-    "approvals",
     "last_updated",
     "selected_pbis",
     "change_history"

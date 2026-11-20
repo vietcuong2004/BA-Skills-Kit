@@ -15,7 +15,7 @@ Kit gồm **11 skill**, dùng với các coding agent như Codex, Claude Code v�
 - Tạo cặp `business.md` và `spec.md` cho mỗi PBI được chọn, rồi review trước khi bàn giao.
 - Bổ sung một PBI khi muốn phát triển thêm tính năng cho dự án hiện hữu.
 
-Bạn vẫn quyết định phạm vi và các quy tắc nghiệp vụ. AI ghi rõ đề xuất/câu hỏi còn mở và dừng ở các điểm cần bạn duyệt. Kết quả của Kit là **hồ sơ phân tích và đặc tả**; nhóm phát triển dùng chúng để triển khai và kiểm thử.
+Một câu yêu cầu có thể chạy từ khảo sát hoặc ý tưởng đến cặp tài liệu PBI trong cùng lượt. Trợ lý dùng phạm vi bạn nêu hoặc tự chọn phần có căn cứ, rồi ghi giả định và câu hỏi còn mở ngay trong bản nháp.
 
 ## Thuật ngữ dễ hiểu
 
@@ -64,7 +64,7 @@ Chuẩn bị công cụ AI đã đăng nhập, Python 3.10 trở lên và thư m
 1. Tải/clone [BA-Skills-Kit](https://github.com/vietcuong2004/BA-Skills-Kit) về máy.
 2. Làm theo **[INSTALL.md — Cài cho Claude Code, Codex và Antigravity](INSTALL.md)** để tạo môi trường Python, cài thư viện và cài các skill vào đúng công cụ. Có thể cài cá nhân một lần cho nhiều project hoặc cài riêng từng project.
 3. Mở agent tại thư mục gốc `your-project`, kiểm tra nhận diện được `ba-workflow`, `ba-explore-project` và `ba-pbi`. Nếu chưa thấy sau khi cài, mở phiên mới.
-4. Chuẩn bị `.temp/ba-project.yaml` theo mẫu trong INSTALL. Nếu chưa biết cấu hình, yêu cầu agent đề xuất và hỏi bạn xác nhận tên dự án cùng nơi lưu output.
+4. Gửi yêu cầu tạo PBI. Trợ lý tạo `.temp/ba-project.yaml` từ mẫu khi cần.
 
 Chỉ đặt Kit trên ổ đĩa chưa có nghĩa agent đã nhận diện skill. Hướng dẫn cài đặt cũng chỉ rõ cách cập nhật và xử lý lỗi thiếu thư viện.
 
@@ -74,10 +74,10 @@ Chỉ đặt Kit trên ổ đĩa chưa có nghĩa agent đã nhận diện skill
 
 | Tình huống của bạn | Mở hướng dẫn |
 | --- | --- |
-| Dự án đã có giao diện và tính năng; bạn chưa hiểu hiện trạng hoặc muốn bổ sung bộ tài liệu | **[Dự án hiện có: khảo sát bằng ba-explore-project rồi viết tài liệu PBI](GUIDE_EXISTING_PROJECT.md)** |
+| Dự án đã có giao diện và tính năng | **[Khảo sát và xuất PBI cho dự án hiện có](GUIDE_EXISTING_PROJECT.md)** |
 | Dự án mới; bạn chỉ có một nhu cầu hoặc ý tưởng chưa rõ phạm vi | **[Dự án mới: từ ý tưởng mơ hồ đến bộ tài liệu PBI](GUIDE_NEW_PROJECT.md)** |
 
-Hai hướng dẫn có câu nhắn để copy vào agent, thứ tự thực hiện, file đầu ra và các điểm cần bạn duyệt. Tên `your-project`, các ID PBI và nội dung trong ngoặc vuông là ví dụ để thay bằng dự án thực tế.
+Hai hướng dẫn có câu nhắn ngắn để dán vào chat và chỉ rõ nơi mở file kết quả.
 
 ## Kết quả được lưu ở đâu?
 
